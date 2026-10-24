@@ -24,6 +24,10 @@ header{position:sticky;top:0;z-index:20;background:rgba(4,47,53,.82);backdrop-fi
 .nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
 .brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:22px;letter-spacing:2px}
 .brand img{width:40px;height:40px;border-radius:10px}
+.bt{display:flex;flex-direction:column;line-height:1.1}
+.bt small{font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--acc);direction:ltr;text-align:left;margin-top:3px}
+#stars{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+main,footer{position:relative;z-index:1}
 .links{display:flex;gap:26px;font-weight:600;color:var(--muted)}
 .links a:hover{color:var(--acc)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 26px;border-radius:999px;font-weight:800;font-size:16px;transition:transform .2s,box-shadow .2s;white-space:nowrap}
@@ -121,9 +125,10 @@ footer .brand{justify-content:center;margin-bottom:8px;color:var(--txt)}
 </head>
 <body>
 
+<canvas id="stars" aria-hidden="true"></canvas>
 <header>
  <div class="wrap nav">
-  <a href="#top" class="brand"><img src="assets/logo.png" alt="NOURYS">NOURYS</a>
+  <a href="#top" class="brand"><img src="assets/logo.png" alt="NOURYS"><span class="bt">NOURYS<small>by Marwan Nouiri</small></span></a>
   <nav class="links">
    <a href="#services">خدماتنا</a>
    <a href="#works">أعمالنا</a>
@@ -285,7 +290,7 @@ footer .brand{justify-content:center;margin-bottom:8px;color:var(--txt)}
 </main>
 
 <footer>
- <div class="brand"><img src="assets/logo.png" alt="">NOURYS</div>
+ <div class="brand"><img src="assets/logo.png" alt=""><span class="bt">NOURYS<small>by Marwan Nouiri</small></span></div>
  <div>أتمتة، مواقع ولاندينغ بيج للمتاجر الإلكترونية</div>
  <div class="en">© 2026 NOURYS</div>
 </footer>
@@ -293,6 +298,24 @@ footer .brand{justify-content:center;margin-bottom:8px;color:var(--txt)}
 <a class="fab" href="https://wa.me/213697680910" target="_blank" rel="noopener" aria-label="راسلنا في واتساب"><img src="assets/chat.png" alt=""></a>
 
 <script>
+(function(){
+  var c=document.getElementById('stars'),x=c.getContext('2d'),W,H,D=Math.min(window.devicePixelRatio||1,2),P=[];
+  var cols=['63,209,198','187,232,236'];
+  var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function size(){W=innerWidth;H=innerHeight;c.width=W*D;c.height=H*D;x.setTransform(D,0,0,D,0,0);}
+  function mk(y){return{x:Math.random()*W,y:y==null?Math.random()*H:H+10,r:Math.random()*2.2+1,v:Math.random()*0.5+0.2,a:Math.random()*0.45+0.45,w:Math.random()*Math.PI*2,c:cols[Math.random()<0.7?0:1]};}
+  function init(){size();var n=Math.round(W*H/4500);P=[];for(var i=0;i<n;i++)P.push(mk());}
+  function draw(){
+    x.clearRect(0,0,W,H);
+    for(var i=0;i<P.length;i++){var p=P[i];
+      if(!still){p.y-=p.v;p.w+=0.02;p.x+=Math.sin(p.w)*0.15;if(p.y<-10)P[i]=p=mk(1);}
+      var tw=p.a*(0.75+0.25*Math.sin(p.w*2));
+      x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle='rgba('+p.c+','+tw+')';
+      x.shadowColor='rgba('+p.c+',0.9)';x.shadowBlur=p.r*4;x.fill();}
+    if(!still)requestAnimationFrame(draw);
+  }
+  addEventListener('resize',init);init();draw();
+})();
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 const vo=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){v.play().catch(()=>{})}else v.pause()}),{threshold:.4});
