@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#053B42">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://d2ol7oe51mr4n9.cloudfront.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -80,87 +81,52 @@ a{ color:inherit; }
 
 /* ---------- PART A: hero (sticky inside its own track) ---------- */
 .hero{ position:relative; z-index:2; height:300vh; min-height:1800px; background:var(--bg); }
-.sticky{
-  position:sticky; top:0; height:100vh; height:100svh; overflow:hidden;
-  display:flex; flex-direction:column;
-  background:
-    radial-gradient(rgba(187,232,236,.09) 1px, transparent 1.2px) 0 0/22px 22px,
-    radial-gradient(90% 70% at 50% 38%, #0C5A63 0%, #053B42 58%, #042F35 100%);
+.sticky{ position:sticky; top:0; height:100vh; height:100svh; overflow:hidden; }
+.stage{ position:absolute; inset:0; z-index:0; overflow:hidden; background:var(--bg); }
+.stage video{
+  position:absolute; top:50%; left:50%; width:100%; height:100%;
+  transform:translate(-50%,-50%) scale(1.02); object-fit:cover; will-change:transform;
 }
+/* Teal wash: heavier at the top and bottom edges (nav + footer), soft brand tint in the middle,
+   so light text stays legible even on bright footage. */
+.veil{
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    linear-gradient(to bottom, rgba(5,59,66,.7) 0%, rgba(5,59,66,0) 16%, rgba(5,59,66,0) 50%, rgba(4,47,53,.88) 100%);
+}
+.grain{ display:none; }
+.grain-off{
+  position:absolute; inset:-50%; opacity:.08; mix-blend-mode:overlay; pointer-events:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.5'/></svg>");
+}
+.stage .flip{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:none; transform:scale(1.02); }
+.stage.flipping .flip{ display:block; }
+.stage.flipping video{ visibility:hidden; }
 .meter{ position:absolute; top:0; right:0; z-index:50; height:2px; width:100%; transform:scaleX(0); transform-origin:100% 50%; background:var(--accent); opacity:.8; }
 
-/* n8n-style workflow in real CSS 3D: a tilted floor, extruded node blocks, a tracking camera */
-.wf-wrap{
-  position:relative; z-index:10; flex:1 1 auto; min-height:0; overflow:hidden;
-  padding:max(74px, calc(env(safe-area-inset-top, 0px) + 66px)) 0 0;
-  perspective:1300px; perspective-origin:50% 35%;
-}
-.scene{ position:absolute; inset:max(74px, calc(env(safe-area-inset-top, 0px) + 66px)) 0 0 0; transform-style:preserve-3d; }
-.plane{ position:absolute; left:50%; top:50%; transform-style:preserve-3d; will-change:transform; }
-.floor{ position:absolute; inset:-60px; border-radius:40px;
-  background:radial-gradient(rgba(187,232,236,.14) 1.2px, transparent 1.6px) 0 0/24px 24px, radial-gradient(70% 70% at 50% 50%, rgba(16,128,138,.35), rgba(5,59,66,0) 75%);
-  -webkit-mask-image:radial-gradient(75% 75% at 50% 50%, #000 55%, transparent 100%); mask-image:radial-gradient(75% 75% at 50% 50%, #000 55%, transparent 100%); }
-.wf-links{ position:absolute; left:0; top:0; overflow:visible; transform:translateZ(1px); }
-.wf-links .base{ fill:none; stroke:rgba(187,232,236,.28); stroke-width:3; stroke-dasharray:7 8; }
-.wf-links .live{ fill:none; stroke:#3FD1C6; stroke-width:5; stroke-linecap:round; }
-.wf-links .glow{ fill:none; stroke:rgba(63,209,198,.22); stroke-width:16; stroke-linecap:round; }
-.wf-links .dot{ fill:#E9FBFA; stroke:rgba(63,209,198,.45); stroke-width:8; }
-.cube{ position:absolute; transform-style:preserve-3d; transform:translateZ(0); transition:transform .6s var(--ease); }
-.cube.on{ transform:translateZ(22px); }
-.cube .face{ position:absolute; backface-visibility:visible; }
-.cube .top{
-  inset:0; transform:translateZ(var(--d)); border-radius:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
-  background:linear-gradient(160deg,#0E5F69,#073F46); border:2px solid rgba(187,232,236,.3); color:rgba(233,251,250,.65);
-  transition:background .5s, border-color .5s, box-shadow .5s, color .5s; text-align:center; padding:4px;
-}
-.cube .top .ic{ font-size:30px; line-height:1.1; opacity:.55; transition:opacity .5s; }
-.cube .top .lg{ display:grid; place-items:center; width:42px; height:42px; border-radius:12px; margin-bottom:4px; box-shadow:0 6px 16px rgba(1,20,23,.35); }
-.cube .top .lg svg{ width:24px; height:24px; }
-.cube .top .nm{ font-size:13.5px; font-weight:800; direction:ltr; }
-.cube .top .sb{ font-size:12.5px; color:rgba(187,232,236,.6); line-height:1.3; }
-.cube .side{ background:linear-gradient(#0A4A52,#032B30); border:1px solid rgba(63,209,198,.18); }
-.cube .s-b{ left:0; width:100%; height:var(--d); top:100%; transform-origin:top; transform:rotateX(90deg); }
-.cube .s-t{ left:0; width:100%; height:var(--d); bottom:100%; transform-origin:bottom; transform:rotateX(-90deg); }
-.cube .s-l{ top:0; height:100%; width:var(--d); right:100%; transform-origin:right; transform:rotateY(90deg); }
-.cube .s-r{ top:0; height:100%; width:var(--d); left:100%; transform-origin:left; transform:rotateY(-90deg); }
-.cube .shadow{ inset:-14px; border-radius:30px; background:radial-gradient(closest-side, rgba(1,20,23,.6), rgba(1,20,23,0)); transform:translateZ(0); }
-.cube.on .shadow{ background:radial-gradient(closest-side, rgba(63,209,198,.45), rgba(63,209,198,0)); }
-.cube.on .top{ background:linear-gradient(160deg,#18A3A0,#0B5560); border-color:#3FD1C6; color:#E9FBFA; box-shadow:0 0 30px rgba(63,209,198,.6), inset 0 1px 0 rgba(255,255,255,.25); }
-.cube.on .top .ic{ opacity:1; }
-.cube.on .top .sb{ color:#BBE8EC; }
-.cube.on .side{ background:linear-gradient(#138C90,#05434A); }
-.cube .ok{ position:absolute; top:-10px; left:-10px; width:24px; height:24px; border-radius:50%; background:#3FD1C6; color:#053B42; font-weight:800; font-size:14px; display:grid; place-items:center; opacity:0; transition:opacity .4s; }
-.cube.on .ok{ opacity:1; }
-.bub{
-  position:absolute; left:50%; top:50%; white-space:nowrap; transform-origin:50% 100%;
-  padding:6px 14px; border-radius:999px; background:#E9FBFA; color:#053B42; font-size:13px; font-weight:800;
-  box-shadow:0 10px 30px rgba(1,20,23,.45); opacity:0; transition:opacity .45s var(--ease);
-}
-.cube.on .bub{ opacity:1; }
-
-/* text sits BELOW the workflow */
-.panels{ position:relative; z-index:20; flex:0 0 auto; height:clamp(240px, 37vh, 330px); pointer-events:none; margin-bottom:max(46px, calc(env(safe-area-inset-bottom, 0px) + 40px)); }
+.panels{ position:absolute; inset:0; z-index:20; pointer-events:none; }
 .panel{
   position:absolute; inset:0; display:flex; flex-direction:column;
-  align-items:center; justify-content:flex-start; text-align:center;
-  padding:6px clamp(20px, 5vw, 60px) 0;
+  align-items:center; justify-content:flex-end; text-align:center;
+  padding:max(104px, calc(env(safe-area-inset-top, 0px) + 88px)) clamp(20px, 5vw, 60px) max(64px, calc(env(safe-area-inset-bottom, 0px) + 56px));
   opacity:0; will-change:opacity,transform;
 }
 .eyebrow{
   display:flex; align-items:center; justify-content:center; flex-wrap:wrap;
   gap:6px 12px; font-size:13px; font-weight:600; color:var(--accent);
-  margin-bottom:10px; max-width:min(46ch, 100%);
+  margin-bottom:clamp(14px,2vw,20px); max-width:min(46ch, 100%);
 }
 .panel h1{
-  font-weight:800; font-size:clamp(28px, 3.8vw, 54px); line-height:1.2;
-  letter-spacing:0; max-width:22ch; text-wrap:balance; color:var(--fg);
+  font-weight:800; font-size:clamp(30px, 4.4vw, 60px); line-height:1.2;
+  letter-spacing:0; max-width:20ch; text-wrap:balance; color:var(--fg);
+  text-shadow:0 2px 18px rgba(4,47,53,.85);
 }
 .sub{
-  margin-top:12px; font-size:clamp(14.5px,1.2vw,18px);
-  line-height:1.7; color:var(--light); max-width:min(52ch, 100%); text-wrap:pretty;
+  margin-top:12px; font-size:clamp(14.5px,1.2vw,18px); text-shadow:0 1px 10px rgba(4,47,53,.9);
+  line-height:1.7; color:var(--light); max-width:min(46ch, 100%); text-wrap:pretty;
 }
 .cta{ margin-top:clamp(16px,2vw,24px); pointer-events:auto; width:100%; display:flex; justify-content:center; }
-.cta .pill{ height:46px; padding:0 26px; font-size:15px; max-width:min(100%, 320px); }
+.cta .pill{ height:48px; padding:0 27px; font-size:15.5px; max-width:min(100%, 320px); }
 
 .foot{
   position:absolute; bottom:0; left:0; right:0; z-index:40; display:flex; justify-content:center;
@@ -344,23 +310,16 @@ td.status-cell{ position:relative; overflow:hidden; }
   .node{ flex-direction:row; gap:10px; }
   .node .txt{ text-align:right; }
 }
+@media (max-width:900px){
+  .veil{ background:linear-gradient(to bottom, rgba(5,59,66,.75) 0%, rgba(5,59,66,0) 14%, rgba(5,59,66,0) 42%, rgba(4,47,53,.92) 100%); }
+}
 @media (max-width:720px){
   .nav a:not(.pill){ display:none; }
   .mark b{ font-size:17px; }
   .nav .pill{ height:38px; padding:0 16px; font-size:13.5px; }
-  .panel h1{ max-width:14ch; font-size:clamp(25px, 7.6vw, 36px); }
-  .sub{ font-size:14px; max-width:34ch; margin-top:8px; }
-  .panel{ padding:0 16px; }
-  .panels{ height:clamp(220px, 35vh, 270px); }
-  .eyebrow{ margin-bottom:6px; font-size:12px; }
-  .cta{ margin-top:14px; }
-  .cta .pill{ height:44px; }
-  .scene{ top:max(64px, calc(env(safe-area-inset-top, 0px) + 58px)); }
-  .cube .top .ic{ font-size:24px; }
-  .cube .top .lg{ width:32px; height:32px; border-radius:9px; margin-bottom:2px; }
-  .cube .top .lg svg{ width:18px; height:18px; }
-  .cube .top .nm{ font-size:11.5px; }
-  .cube .top .sb{ font-size:11px; }
+  .panel h1{ max-width:14ch; font-size:clamp(26px, 8vw, 38px); }
+  .sub{ font-size:15px; max-width:34ch; }
+  .panel{ padding:max(92px, calc(env(safe-area-inset-top, 0px) + 76px)) 18px max(56px, calc(env(safe-area-inset-bottom, 0px) + 48px)); }
   .foot{ font-size:11px; }
   .cards{ grid-template-columns:1fr; }
   .steps li{ font-size:12px; padding:5px 10px 5px 9px; }
@@ -369,15 +328,15 @@ td.status-cell{ position:relative; overflow:hidden; }
 }
 @media (max-width:420px){
   .nav .pill{ height:36px; padding:0 14px; font-size:13px; }
-  .panel h1{ font-size:clamp(24px, 7.4vw, 30px); }
+  .panel h1{ font-size:clamp(24px, 7.6vw, 32px); }
   .eyebrow{ font-size:12px; max-width:28ch; }
   .cta .pill{ width:100%; max-width:280px; height:44px; padding:0 20px; font-size:14px; }
   .phone{ border-radius:38px; padding:10px; }
   .screen{ border-radius:30px; }
 }
 @media (max-height:520px) and (orientation:landscape){
-  .panels{ height:150px; margin-bottom:30px; }
-  .panel h1{ font-size:clamp(22px, 6vh, 32px); }
+  .panel{ padding:max(72px, calc(env(safe-area-inset-top, 0px) + 56px)) 24px max(64px, calc(env(safe-area-inset-bottom, 0px) + 48px)); }
+  .panel h1{ font-size:clamp(28px, 8vh, 44px); }
   .sub{ margin-top:12px; font-size:14px; }
   .cta{ margin-top:16px; }
 }
@@ -389,6 +348,11 @@ td.status-cell{ position:relative; overflow:hidden; }
 </style>
 </head>
 <body>
+
+<div class="boot" id="boot">
+  <div class="bar"><i id="bootBar"></i></div>
+  <p id="bootPct">جاري التحميل 0%</p>
+</div>
 
 <header class="chrome">
   <a class="mark" href="https://nourys.netlify.app" aria-label="NOURYS">
@@ -405,8 +369,11 @@ td.status-cell{ position:relative; overflow:hidden; }
 <!-- ============ PART A: scroll-scrubbed hero ============ -->
 <section class="hero" id="hero">
   <div class="sticky">
-    <div class="wf-wrap">
-      <div class="scene" role="img" aria-label="workflow: واتساب ← ذكاء اصطناعي ← جوجل شيت ← تيليغرام ← تأكيد ← واتساب"><div class="plane" id="plane"></div></div>
+    <div class="stage">
+      <video id="clip" muted playsinline preload="auto" disablepictureinpicture></video>
+      <canvas id="flip" class="flip" aria-hidden="true"></canvas>
+      <div class="veil"></div>
+      <div class="grain"></div>
     </div>
     <i class="meter" id="meter"></i>
 
@@ -599,35 +566,30 @@ td.status-cell{ position:relative; overflow:hidden; }
   var BOT_TYPING = 900;     // base typing-indicator time for the bot (ms)
 
   /* =====================================================================
-     PART A — n8n-style workflow drawn by scroll
+     PART A — scroll-scrubbed hero (engine from the motion reference)
      ===================================================================== */
-  // Edit the nodes here: icon, name (n8n style), Arabic subtitle, sample output bubble.
-  // Brand logos (simple-icons paths, 24x24) used on the workflow nodes.
-  var LOGOS = {"whatsapp": ["#25D366", "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"], "openai": ["#10A37F", "M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"], "sheets": ["#0F9D58", "M11.318 12.545H7.91v-1.909h3.41v1.91zM14.728 0v6h6l-6-6zm1.363 10.636h-3.41v1.91h3.41v-1.91zm0 3.273h-3.41v1.91h3.41v-1.91zM20.727 6.5v15.864c0 .904-.732 1.636-1.636 1.636H4.909a1.636 1.636 0 0 1-1.636-1.636V1.636C3.273.732 4.005 0 4.909 0h9.318v6.5h6.5zm-3.273 2.773H6.545v7.909h10.91v-7.91zm-6.136 4.636H7.91v1.91h3.41v-1.91z"], "telegram": ["#26A5E4", "M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"], "n8n": ["#EA4B71", "M21.4737 5.6842c-1.1772 0-2.1663.8051-2.4468 1.8947h-2.8955c-1.235 0-2.289.893-2.492 2.111l-.1038.623a1.263 1.263 0 0 1-1.246 1.0555H11.289c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947s-2.1663.8051-2.4467 1.8947H4.973c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947C1.1311 9.4737 0 10.6047 0 12s1.131 2.5263 2.5263 2.5263c1.1772 0 2.1663-.8051 2.4468-1.8947h1.4223c.2804 1.0896 1.2696 1.8947 2.4467 1.8947 1.1772 0 2.1663-.8051 2.4468-1.8947h1.0008a1.263 1.263 0 0 1 1.2459 1.0555l.1038.623c.203 1.218 1.257 2.111 2.492 2.111h.3692c.2804 1.0895 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263c-1.1772 0-2.1664.805-2.4468 1.8947h-.3692a1.263 1.263 0 0 1-1.246-1.0555l-.1037-.623A2.52 2.52 0 0 0 13.9607 12a2.52 2.52 0 0 0 .821-1.4794l.1038-.623a1.263 1.263 0 0 1 1.2459-1.0555h2.8955c.2805 1.0896 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263m0 1.2632a1.263 1.263 0 0 1 1.2631 1.2631 1.263 1.263 0 0 1-1.2631 1.2632 1.263 1.263 0 0 1-1.2632-1.2632 1.263 1.263 0 0 1 1.2632-1.2631M2.5263 10.7368A1.263 1.263 0 0 1 3.7895 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 1.2632 12a1.263 1.263 0 0 1 1.2631-1.2632m6.3158 0A1.263 1.263 0 0 1 10.1053 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 7.579 12a1.263 1.263 0 0 1 1.2632-1.2632m10.1053 3.7895a1.263 1.263 0 0 1 1.2631 1.2632 1.263 1.263 0 0 1-1.2631 1.2631 1.263 1.263 0 0 1-1.2632-1.2631 1.263 1.263 0 0 1 1.2632-1.2632"]};
-  var NODES = [
-    { logo:"whatsapp", name:"WhatsApp Trigger", sub:"ميساج جديد",      out:"شحال السعر؟" },
-    { logo:"openai",   name:"AI Agent",         sub:"يجاوب بالدارجة",  out:"السعر 4500 دج 🚚" },
-    { logo:"sheets",   name:"Google Sheets",    sub:"يسجل الطلبية",    out:"ORD-1024 ✓" },
-    { logo:"telegram", name:"Telegram",         sub:"ينبّه التاجر",    out:"🛒 طلبية جديدة" },
-    { logo:"n8n",      name:"IF",               sub:"الطلبية مؤكدة؟",  out:"مؤكدة ✓" },
-    { logo:"whatsapp", name:"WhatsApp Send",    sub:"يأكد للزبون",     out:"✅ طلبيتك تأكدت" }
-  ];
+  // TODO: replace with a WhatsApp/automation themed all-intra mp4
+  // 1920x1080, 10.04s, 241 frames, all-intra: every frame is a keyframe, so a scroll
+  // scrub can land on an exact frame instantly.
+  var VIDEO_URL = "https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/45567745-d826-44a2-a5ce-7ef670944e60.mp4";
 
+  var clip = document.getElementById("clip");
+  var boot = document.getElementById("boot");
+  var bootBar = document.getElementById("bootBar");
+  var bootPct = document.getElementById("bootPct");
   var meter = document.getElementById("meter");
   var hero = document.getElementById("hero");
   var panels = [].slice.call(document.querySelectorAll("[data-panel]"));
-  var NS = "http://www.w3.org/2000/svg";
 
-  // Panel cues [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd] in hero progress, with
-  // dead zones between them so two panels are never readable at once.
+  // Each panel owns [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd] of hero progress.
+  // The gaps between panels are deliberate dead zones (video only), so two panels are
+  // never readable at the same time.
   var CUES = [
     [0.00, 0.00, 0.15, 0.23],
     [0.35, 0.43, 0.57, 0.65],
     [0.77, 0.85, 1.10, 1.20]
   ];
-  var DRIFT = 22;
-  // When each node lights up (hero progress). Links draw between consecutive starts.
-  var NODE_AT = [0.0, 0.14, 0.40, 0.56, 0.78, 0.94];
+  var DRIFT = 22; // px of counter-scroll travel per panel
 
   function clamp(v, a, b){ return v < a ? a : v > b ? b : v; }
   function smooth(t){ return t * t * (3 - 2 * t); }
@@ -635,158 +597,246 @@ td.status-cell{ position:relative; overflow:hidden; }
     if (b <= a) return p >= b ? 1 : 0;
     return smooth(clamp((p - a) / (b - a), 0, 1));
   }
-  function el(tag, attrs, parent){
-    var e = document.createElementNS(NS, tag);
-    for (var k in attrs) e.setAttribute(k, attrs[k]);
-    if (parent) parent.appendChild(e);
-    return e;
-  }
 
-  var nodeEls = [], links = [], layout = "", geo = null;
-  var plane = document.getElementById("plane");
-  var scene = plane.parentNode;
-
-  function build(){
-    var mobile = window.innerWidth <= 720;
-    var key = mobile ? "m" : "d";
-    if (key === layout) return;
-    layout = key;
-    plane.innerHTML = "";
-    nodeEls = []; links = [];
-    var W, H, w, h, d, pos;
-    if (mobile){
-      W = 360; H = 470; w = 132; h = 100; d = 20;
-      pos = [[88,70],[272,70],[272,235],[88,235],[88,400],[272,400]];
-    } else {
-      W = 1240; H = 300; w = 160; h = 120; d = 30;
-      pos = []; for (var i = 0; i < NODES.length; i++) pos.push([110 + i * 204, 150]);
-    }
-    geo = { W: W, H: H, pos: pos, mobile: mobile, d: d };
-    plane.style.width = W + "px"; plane.style.height = H + "px";
-    plane.style.marginLeft = (-W / 2) + "px"; plane.style.marginTop = (-H / 2) + "px";
-    var floor = document.createElement("div"); floor.className = "floor"; plane.appendChild(floor);
-    var svg = el("svg", { "class": "wf-links", width: W, height: H, viewBox: "0 0 " + W + " " + H }, plane);
-
-    for (var j = 0; j < NODES.length - 1; j++){
-      var a = pos[j], b = pos[j + 1], dd, x1, y1, x2, y2;
-      if (Math.abs(b[0] - a[0]) > Math.abs(b[1] - a[1])){
-        var dir = b[0] > a[0] ? 1 : -1;
-        x1 = a[0] + dir * w / 2; y1 = a[1]; x2 = b[0] - dir * w / 2; y2 = b[1];
-        var mx = (x1 + x2) / 2;
-        dd = "M" + x1 + " " + y1 + " C" + mx + " " + y1 + " " + mx + " " + y2 + " " + x2 + " " + y2;
-      } else {
-        x1 = a[0]; y1 = a[1] + h / 2; x2 = b[0]; y2 = b[1] - h / 2;
-        var my = (y1 + y2) / 2;
-        dd = "M" + x1 + " " + y1 + " C" + x1 + " " + my + " " + x2 + " " + my + " " + x2 + " " + y2;
-      }
-      el("path", { d: dd, "class": "base" }, svg);
-      var glow = el("path", { d: dd, "class": "glow", pathLength: 1, "stroke-dasharray": "1 1", "stroke-dashoffset": 1 }, svg);
-      var live = el("path", { d: dd, "class": "live", pathLength: 1, "stroke-dasharray": "1 1", "stroke-dashoffset": 1 }, svg);
-      var dot = el("circle", { r: mobile ? 6 : 8, "class": "dot", opacity: 0 }, svg);
-      links.push({ live: live, glow: glow, dot: dot, len: live.getTotalLength(), last: -1 });
-    }
-
-    NODES.forEach(function(n, i){
-      var c = document.createElement("div");
-      c.className = "cube";
-      c.style.cssText = "left:" + (pos[i][0] - w / 2) + "px;top:" + (pos[i][1] - h / 2) + "px;width:" + w + "px;height:" + h + "px;--d:" + d + "px";
-      c.innerHTML =
-        '<div class="face shadow"></div>' +
-        '<div class="face side s-b"></div><div class="face side s-l"></div><div class="face side s-r"></div>' +
-        '<div class="face top"><span class="ok">✓</span><span class="ic lg" style="background:' + LOGOS[n.logo][0] + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="' + LOGOS[n.logo][1] + '"/></svg></span><span class="nm">' + n.name + '</span><span class="sb">' + n.sub + '</span></div>' +
-        (mobile ? "" : '<div class="bub">' + n.out + '</div>');
-      plane.appendChild(c);
-      nodeEls.push({ g: c, on: false, bub: c.querySelector(".bub") });
-    });
-  }
-
-  // camera: tilt, turn and follow the data as you scroll
-  function camera(p){
-    if (!geo) return;
-    var rx = geo.mobile ? 50 - p * 8 : 56 - p * 10;     // tilt back
-    var rz = geo.mobile ? -14 + p * 10 : -22 + p * 14;   // turn
-    // focus point = where the data dot is now
-    var k = Math.min(links.length, Math.max(0, 0));
-    var fx = geo.W / 2, fy = geo.H / 2;
-    for (var i = 0; i < NODE_AT.length - 1; i++){
-      if (p >= NODE_AT[i] && p <= NODE_AT[i + 1]){
-        var t = (p - NODE_AT[i]) / (NODE_AT[i + 1] - NODE_AT[i]);
-        fx = geo.pos[i][0] + (geo.pos[i + 1][0] - geo.pos[i][0]) * t;
-        fy = geo.pos[i][1] + (geo.pos[i + 1][1] - geo.pos[i][1]) * t;
-        break;
-      }
-      if (p > NODE_AT[NODE_AT.length - 1]){ fx = geo.pos[geo.pos.length - 1][0]; fy = geo.pos[geo.pos.length - 1][1]; }
-    }
-    var follow = geo.mobile ? 0.35 : 0.5;
-    var tx = (geo.W / 2 - fx) * follow, ty = (geo.H / 2 - fy) * follow;
-    var sw = scene.clientWidth, sh = scene.clientHeight;
-    var rzr = Math.abs(rz) * Math.PI / 180, rxr = rx * Math.PI / 180;
-    var projW = geo.W * Math.cos(rzr) + geo.H * Math.sin(rzr);
-    var projH = (geo.W * Math.sin(rzr) + geo.H * Math.cos(rzr)) * Math.cos(rxr) + geo.d * 2;
-    var sc = Math.min(sw * (geo.mobile ? 1.02 : 0.98) / projW, sh * 0.92 / projH, geo.mobile ? 1.05 : 1.15);
-    plane.style.transform = "scale(" + sc.toFixed(4) + ") rotateX(" + rx.toFixed(2) + "deg) rotateZ(" + rz.toFixed(2) + "deg) translate(" + tx.toFixed(1) + "px," + ty.toFixed(1) + "px)";
-    // speech bubbles always face the camera
-    var bb = "translate(-50%,-50%) translateZ(" + (geo.d + 70) + "px) rotateZ(" + (-rz).toFixed(2) + "deg) rotateX(" + (-rx).toFixed(2) + "deg) translateY(-30px)";
-    for (var n = 0; n < nodeEls.length; n++) if (nodeEls[n].bub) nodeEls[n].bub.style.transform = bb;
-  }
-
-    var progress = 0, shown = 0, dirty = true, heroOnScreen = true;
+  var progress = 0, seekTo = 0, seekAt = 0, duration = 0, ready = false;
 
   // Progress is computed from the hero section only (its track), not the whole page.
   function readScroll(){
     var max = hero.offsetHeight - window.innerHeight;
     var top = hero.getBoundingClientRect().top;
     progress = max > 0 ? clamp(-top / max, 0, 1) : 0;
-    heroOnScreen = top + hero.offsetHeight > 0;
-    partBOn = top + hero.offsetHeight < window.innerHeight + 40;
+    if (duration) seekTo = progress * duration;
   }
 
   function paint(){
     meter.style.transform = "scaleX(" + progress + ")";
     for (var i = 0; i < panels.length; i++){
-      var c = CUES[i], pe = panels[i];
+      var c = CUES[i], el = panels[i];
       var enter = ramp(progress, c[0], c[1]);
       var leave = ramp(progress, c[2], c[3]);
       var o = enter * (1 - leave);
       var y = (1 - enter) * DRIFT - leave * DRIFT;
-      pe.style.opacity = o;
-      pe.style.transform = "translate3d(0," + y + "px,0)";
-      pe.style.pointerEvents = o > 0.6 ? "auto" : "none";
-    }
-    // workflow: camera, light nodes, draw links, move the data dot
-    camera(shown);
-    for (var n = 0; n < nodeEls.length; n++){
-      var on = shown >= NODE_AT[n] - 0.001;
-      if (on !== nodeEls[n].on){ nodeEls[n].on = on; nodeEls[n].g.classList.toggle("on", on); }
-    }
-    for (var k = 0; k < links.length; k++){
-      var L = links[k];
-      var t = clamp((shown - NODE_AT[k]) / (NODE_AT[k + 1] - NODE_AT[k]), 0, 1);
-      if (Math.abs(t - L.last) < 0.0005) continue;
-      L.last = t;
-      L.live.setAttribute("stroke-dashoffset", 1 - t);
-      L.glow.setAttribute("stroke-dashoffset", 1 - t);
-      if (t > 0 && t < 1){
-        var pt = L.live.getPointAtLength(t * L.len);
-        L.dot.setAttribute("cx", pt.x); L.dot.setAttribute("cy", pt.y); L.dot.setAttribute("opacity", 1);
-      } else {
-        L.dot.setAttribute("opacity", 0);
-      }
+      el.style.opacity = o;
+      el.style.transform = "translate3d(0," + y + "px,0)";
+      el.style.pointerEvents = o > 0.6 ? "auto" : "none";
     }
   }
 
   function frame(){
-    var gap = progress - shown;
-    if (gap !== 0 || dirty){
-      shown = Math.abs(gap) > 0.0004 ? shown + gap * 0.22 : progress; // light easing, keeps up with the finger
-      dirty = false;
-      if (heroOnScreen) paint();
+    if (flipReady){
+      drawFlip();
+    } else if (ready && duration && !extracting){
+      var gap = seekTo - seekAt;
+      if (Math.abs(gap) > 0.0008){
+        seekAt += gap * 0.3;                         // faster follow: no felt lag behind the finger
+        if (clip.readyState >= 2 && !clip.seeking){
+          try { clip.currentTime = seekAt; } catch (e) {}
+        }
+      }
     }
+    paint();
     requestAnimationFrame(frame);
   }
 
-  build();
-  window.addEventListener("resize", function(){ build(); links.forEach(function(L){ L.last = -1; }); dirty = true; });
+  function setProgress(f){
+    bootBar.style.transform = "scaleX(" + f + ")";
+    bootPct.textContent = "جاري التحميل " + Math.round(f * 100) + "%";
+  }
+
+  var started = false;
+  function start(){
+    if (started) return;
+    started = true;
+    ready = true;
+    boot.classList.add("done");
+    readScroll();
+    seekAt = seekTo;
+  }
+
+  var attached = false;
+  function attach(src){
+    if (attached) return;
+    attached = true;
+    clip.addEventListener("loadedmetadata", function(){
+      duration = clip.duration || 0;
+      clip.pause();
+      readScroll();
+      seekAt = seekTo;
+      try { clip.currentTime = seekAt; } catch (e) {}
+    });
+    clip.addEventListener("loadeddata", function(){ if (src.indexOf("blob:") === 0) extract(); else start(); });
+    clip.addEventListener("error", start);
+    clip.src = src;
+    clip.load();
+    setTimeout(start, 12000); // a stalled decode never strands the page behind the preloader
+  }
+
+  // Fetch the whole mp4 as a blob first: seeking inside a buffered blob is near instant,
+  // while range requests over the network turn the scrub into a slideshow.
+  function preload(){
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var bail = setTimeout(function(){
+      if (attached) return;
+      if (ctrl) ctrl.abort();
+      setProgress(1);
+      attach(VIDEO_URL);
+    }, 15000);
+
+    fetch(VIDEO_URL, ctrl ? { signal: ctrl.signal } : {})
+      .then(function(res){
+        if (!res.ok || !res.body) throw new Error("bad response");
+        var total = +res.headers.get("content-length") || 0;
+        var reader = res.body.getReader();
+        var chunks = [], got = 0;
+        return new Promise(function(resolve, reject){
+          function pump(){
+            reader.read().then(function(r){
+              if (r.done){ resolve(new Blob(chunks, { type: "video/mp4" })); return; }
+              chunks.push(r.value);
+              got += r.value.length;
+              setProgress(total ? got / total : Math.min(got / 11e6, 0.95));
+              pump();
+            }).catch(reject);
+          }
+          pump();
+        });
+      })
+      .then(function(blob){
+        clearTimeout(bail);
+        setProgress(1);
+        attach(URL.createObjectURL(blob));
+      })
+      .catch(function(){
+        // CORS failure, abort or offline: stream directly instead.
+        clearTimeout(bail);
+        setProgress(1);
+        attach(VIDEO_URL);
+      });
+  }
+
+
+  /* ---------- Flipbook: smooth scrub on phones ----------
+     Seeking a 1080p video on every scroll step makes the phone decode a full frame each time,
+     which looks heavy. Once the video is loaded, grab ~100 small JPEG frames from it, then
+     draw those on a canvas while scrolling. Falls back to the plain video scrub on any error. */
+  var flipCv = document.getElementById("flip"), flipCtx = flipCv.getContext("2d");
+  var stageEl = flipCv.parentNode;
+  var extracting = false;
+  var frames = [], flipReady = false, flipPos = 0, drawnIdx = -1, wantIdx = -1;
+  var cache = new Map(), pending = {};
+
+  function seekOnce(t){
+    return new Promise(function(res){
+      var done = false;
+      function ok(){ if (done) return; done = true; clip.removeEventListener("seeked", ok); res(); }
+      clip.addEventListener("seeked", ok);
+      setTimeout(ok, 2500);
+      try { clip.currentTime = t; } catch (e) { ok(); }
+    });
+  }
+
+  function extract(){
+    if (!clip.videoWidth || !clip.duration){ start(); return; }
+    duration = clip.duration;
+    var small = Math.min(window.innerWidth, window.innerHeight) < 700;
+    var N = small ? 90 : 120;
+    var fw = small ? 720 : 1280, fh = Math.round(fw * clip.videoHeight / clip.videoWidth);
+    var cv = document.createElement("canvas"); cv.width = fw; cv.height = fh;
+    var c2 = cv.getContext("2d");
+    flipCv.width = fw; flipCv.height = fh;
+    var i = 0, bailed = false;
+    extracting = true;
+    var bail = setTimeout(function(){ bailed = true; extracting = false; start(); }, 30000);
+    bootPct.textContent = "تجهيز الحركة 0%";
+    // muted inline playback is allowed everywhere; this lets iOS paint frames
+    var pp = clip.play(); if (pp && pp.then) pp.then(function(){ clip.pause(); }).catch(function(){}); else clip.pause();
+
+    function next(){
+      if (bailed) return;
+      if (i >= N){
+        clearTimeout(bail);
+        extracting = false;
+        flipReady = true;
+        stageEl.classList.add("flipping");
+        readScroll();
+        flipPos = (seekTo / duration) * (N - 1);
+        start();
+        return;
+      }
+      seekOnce(duration * 0.999 * i / (N - 1)).then(function(){
+        try {
+          c2.drawImage(clip, 0, 0, fw, fh);
+          if (i === 0){ // blank first frame = the browser will not paint video into canvas: give up
+            var px = c2.getImageData(fw >> 1, fh >> 1, 1, 1).data;
+            if (px[0] + px[1] + px[2] + px[3] === 0) throw new Error("blank");
+          }
+        } catch (e){ clearTimeout(bail); extracting = false; frames = []; start(); return; }
+        cv.toBlob(function(b){
+          if (!b){ clearTimeout(bail); extracting = false; frames = []; start(); return; }
+          frames.push(b);
+          i++;
+          var f = i / N;
+          bootBar.style.transform = "scaleX(" + f + ")";
+          bootPct.textContent = "تجهيز الحركة " + Math.round(f * 100) + "%";
+          next();
+        }, "image/jpeg", 0.82);
+      });
+    }
+    next();
+  }
+
+  function getBitmap(k){
+    if (cache.has(k)) return;
+    if (pending[k] || !frames[k]) return;
+    pending[k] = true;
+    var p = window.createImageBitmap ? createImageBitmap(frames[k]) : new Promise(function(res){
+      var im = new Image(); im.onload = function(){ res(im); }; im.src = URL.createObjectURL(frames[k]);
+    });
+    p.then(function(bm){
+      delete pending[k];
+      cache.set(k, bm);
+      if (cache.size > 40){ // keep memory small on phones
+        var first = cache.keys().next().value;
+        var old = cache.get(first); cache.delete(first);
+        if (old && old.close) old.close();
+      }
+      if (k === wantIdx) paintFlip(k);
+    }).catch(function(){ delete pending[k]; });
+  }
+
+  function paintFlip(k){
+    var bm = cache.get(k);
+    if (!bm) return;
+    flipCtx.drawImage(bm, 0, 0, flipCv.width, flipCv.height);
+    drawnIdx = k;
+  }
+
+  function drawFlip(){
+    var N = frames.length;
+    var target = duration ? (seekTo / duration) * (N - 1) : 0;
+    flipPos += (target - flipPos) * 0.35;
+    if (Math.abs(target - flipPos) < 0.02) flipPos = target;
+    var k = Math.round(flipPos);
+    wantIdx = k;
+    if (k !== drawnIdx){
+      if (cache.has(k)) paintFlip(k); else getBitmap(k);
+    }
+    // decode the frames around the current one ahead of time
+    var dir = target >= flipPos ? 1 : -1;
+    for (var j = 1; j <= 4; j++) getBitmap(clamp(k + dir * j, 0, N - 1));
+    getBitmap(clamp(k - dir, 0, N - 1));
+  }
+
+  // iOS will not paint a frame from a video that has never been played,
+  // so nudge it once on the first interaction and pause immediately.
+  function unlock(){
+    var p = clip.play();
+    if (p && p.then) p.then(function(){ clip.pause(); }).catch(function(){});
+    else clip.pause();
+  }
+  ["touchstart", "pointerdown", "wheel", "keydown"].forEach(function(ev){
+    window.addEventListener(ev, unlock, { once: true, passive: true });
+  });
 
   /* =====================================================================
      PART B — live WhatsApp simulation
@@ -961,8 +1011,8 @@ td.status-cell{ position:relative; overflow:hidden; }
      ===================================================================== */
   var sky = document.getElementById("sky");
   var ctx = sky.getContext("2d");
-  var dots = [], W = 0, H = 0, DPR = 1, partBOn = false, SPR = {};
-  // pre-render one soft glowing dot per colour (shadowBlur on every dot each frame is very slow)
+  var dots = [], W = 0, H = 0, DPR = 1, SPR = {};
+  // one pre-rendered glow per colour: much cheaper than shadowBlur on every dot
   function sprite(c){
     var cv = document.createElement("canvas"); cv.width = cv.height = 32;
     var g = cv.getContext("2d"), gr = g.createRadialGradient(16, 16, 0, 16, 16, 16);
@@ -1009,7 +1059,7 @@ td.status-cell{ position:relative; overflow:hidden; }
   }
   function skyLoop(t){
     // only spend frames when PART B is on screen
-    if (partBOn) drawDots(t);
+    if (hero.getBoundingClientRect().bottom < window.innerHeight + 40) drawDots(t);
     if (!REDUCED) requestAnimationFrame(skyLoop);
   }
   makeDots();
@@ -1021,8 +1071,8 @@ td.status-cell{ position:relative; overflow:hidden; }
   window.addEventListener("resize", readScroll);
 
   readScroll();
-  shown = progress;
   paint();
+  preload();
   requestAnimationFrame(frame);
 })();
 </script>

@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NOURYS | شات بوت الواتساب</title>
+<meta name="description" content="ديمو تفاعلي لشات بوت الواتساب من NOURYS: يجاوب الزبائن في ثواني، يسجل الطلبية في جوجل شيت، يبعث تنبيه للتاجر، ويأكد للزبون أوتوماتيك. للمتاجر الإلكترونية في الجزائر.">
+<meta name="theme-color" content="#053B42">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#053B42;
+  --bg-deep:#042F35;
+  --teal:#10808A;
+  --teal-2:#0C6873;
+  --accent:#3FD1C6;
+  --light:#BBE8EC;
+  --fg:#E9FBFA;
+  --fg-soft:rgba(233,251,250,.74);
+  --fg-faint:rgba(187,232,236,.6);
+  --rule:rgba(63,209,198,.22);
+  --glass:rgba(4,47,53,.62);
+  --glass-border:rgba(63,209,198,.25);
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --pill-fg:#053B42;
+}
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+body{
+  background:var(--bg-deep); color:var(--fg);
+  font-family:'Cairo','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:400;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden; letter-spacing:0;
+}
+a{ color:inherit; }
+.ltr{ direction:ltr; unicode-bidi:isolate; display:inline-block; }
+
+/* ---------- Preloader ---------- */
+.boot{
+  position:fixed; inset:0; z-index:90; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:16px;
+  background:radial-gradient(120% 90% at 50% 40%, #10808A 0%, #053B42 55%, #042F35 100%);
+  transition:opacity .7s var(--ease), visibility .7s;
+}
+.boot.done{ opacity:0; visibility:hidden; }
+.boot p{ font-size:13px; color:var(--light); }
+.bar{ width:150px; height:2px; background:rgba(187,232,236,.18); overflow:hidden; border-radius:2px; }
+.bar i{ display:block; height:100%; width:100%; background:var(--accent); transform:scaleX(0); transform-origin:100% 50%; }
+
+/* ---------- Header (fixed, whole page) ---------- */
+.chrome{
+  position:fixed; left:0; right:0; top:0; z-index:40; display:flex;
+  align-items:center; justify-content:space-between; gap:12px;
+  padding:max(14px, calc(env(safe-area-inset-top, 0px) + 12px)) clamp(16px, 3.4vw, 44px) 14px;
+  background:linear-gradient(to bottom, rgba(4,47,53,.94) 0%, rgba(4,47,53,.74) 72%, rgba(4,47,53,0) 100%);
+}
+.mark{ display:flex; flex-direction:column; line-height:1.05; text-decoration:none; color:var(--fg); min-width:0; flex-shrink:1; }
+.mark b{ font-weight:800; font-size:19px; letter-spacing:.06em; direction:ltr; }
+.mark b span{ color:var(--accent); }
+.mark small{ font-size:11px; color:var(--fg-faint); direction:ltr; text-align:right; }
+.nav{ display:flex; align-items:center; gap:clamp(14px, 2.4vw, 32px); flex-shrink:0; }
+.nav a:not(.pill){ color:var(--fg); text-decoration:none; font-size:14.5px; opacity:.88; transition:opacity .3s var(--ease); min-height:36px; display:inline-flex; align-items:center; }
+.nav a:not(.pill):hover{ opacity:1; }
+
+.pill{
+  display:inline-flex; align-items:center; justify-content:center; height:40px;
+  padding:0 21px; border-radius:999px;
+  background:linear-gradient(135deg, #3FD1C6 0%, #BBE8EC 100%);
+  color:var(--pill-fg); font-size:14.5px; font-weight:600; text-decoration:none;
+  white-space:nowrap; border:1px solid rgba(187,232,236,.35);
+  box-shadow:0 1px 0 rgba(255,255,255,.3) inset, 0 8px 24px rgba(63,209,198,.18);
+  -webkit-text-fill-color:var(--pill-fg); cursor:pointer; font-family:inherit;
+  transition:transform .4s var(--ease), box-shadow .3s var(--ease), filter .3s var(--ease);
+}
+.nav .pill{ color:#053B42; -webkit-text-fill-color:#053B42; }
+.pill:hover, .pill:focus-visible{ transform:translateY(-2px); filter:brightness(1.06); box-shadow:0 1px 0 rgba(255,255,255,.3) inset, 0 12px 30px rgba(63,209,198,.3); color:#053B42; -webkit-text-fill-color:#053B42; }
+.pill:focus-visible{ outline:2px solid var(--light); outline-offset:2px; }
+
+/* ---------- PART A: hero (sticky inside its own track) ---------- */
+.hero{ position:relative; z-index:2; height:300vh; min-height:1800px; background:var(--bg); }
+.sticky{
+  position:sticky; top:0; height:100vh; height:100svh; overflow:hidden;
+  display:flex; flex-direction:column;
+  background:
+    radial-gradient(rgba(187,232,236,.09) 1px, transparent 1.2px) 0 0/22px 22px,
+    radial-gradient(90% 70% at 50% 38%, #0C5A63 0%, #053B42 58%, #042F35 100%);
+}
+.meter{ position:absolute; top:0; right:0; z-index:50; height:2px; width:100%; transform:scaleX(0); transform-origin:100% 50%; background:var(--accent); opacity:.8; }
+
+/* n8n-style workflow in real CSS 3D: a tilted floor, extruded node blocks, a tracking camera */
+.wf-wrap{
+  position:relative; z-index:10; flex:1 1 auto; min-height:0; overflow:hidden;
+  padding:max(74px, calc(env(safe-area-inset-top, 0px) + 66px)) 0 0;
+  perspective:1300px; perspective-origin:50% 35%;
+}
+.scene{ position:absolute; inset:max(74px, calc(env(safe-area-inset-top, 0px) + 66px)) 0 0 0; transform-style:preserve-3d; }
+.plane{ position:absolute; left:50%; top:50%; transform-style:preserve-3d; will-change:transform; }
+.floor{ position:absolute; inset:-60px; border-radius:40px;
+  background:radial-gradient(rgba(187,232,236,.14) 1.2px, transparent 1.6px) 0 0/24px 24px, radial-gradient(70% 70% at 50% 50%, rgba(16,128,138,.35), rgba(5,59,66,0) 75%);
+  -webkit-mask-image:radial-gradient(75% 75% at 50% 50%, #000 55%, transparent 100%); mask-image:radial-gradient(75% 75% at 50% 50%, #000 55%, transparent 100%); }
+.wf-links{ position:absolute; left:0; top:0; overflow:visible; transform:translateZ(1px); }
+.wf-links .base{ fill:none; stroke:rgba(187,232,236,.28); stroke-width:3; stroke-dasharray:7 8; }
+.wf-links .live{ fill:none; stroke:#3FD1C6; stroke-width:5; stroke-linecap:round; }
+.wf-links .glow{ fill:none; stroke:rgba(63,209,198,.22); stroke-width:16; stroke-linecap:round; }
+.wf-links .dot{ fill:#E9FBFA; stroke:rgba(63,209,198,.45); stroke-width:8; }
+.cube{ position:absolute; transform-style:preserve-3d; transform:translateZ(0); transition:transform .6s var(--ease); }
+.cube.on{ transform:translateZ(22px); }
+.cube .face{ position:absolute; backface-visibility:visible; }
+.cube .top{
+  inset:0; transform:translateZ(var(--d)); border-radius:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  background:linear-gradient(160deg,#0E5F69,#073F46); border:2px solid rgba(187,232,236,.3); color:rgba(233,251,250,.65);
+  transition:background .5s, border-color .5s, box-shadow .5s, color .5s; text-align:center; padding:4px;
+}
+.cube .top .ic{ font-size:30px; line-height:1.1; opacity:.55; transition:opacity .5s; }
+.cube .top .lg{ display:grid; place-items:center; width:42px; height:42px; border-radius:12px; margin-bottom:4px; box-shadow:0 6px 16px rgba(1,20,23,.35); }
+.cube .top .lg svg{ width:24px; height:24px; }
+.cube .top .nm{ font-size:13.5px; font-weight:800; direction:ltr; }
+.cube .top .sb{ font-size:12.5px; color:rgba(187,232,236,.6); line-height:1.3; }
+.cube .side{ background:linear-gradient(#0A4A52,#032B30); border:1px solid rgba(63,209,198,.18); }
+.cube .s-b{ left:0; width:100%; height:var(--d); top:100%; transform-origin:top; transform:rotateX(90deg); }
+.cube .s-t{ left:0; width:100%; height:var(--d); bottom:100%; transform-origin:bottom; transform:rotateX(-90deg); }
+.cube .s-l{ top:0; height:100%; width:var(--d); right:100%; transform-origin:right; transform:rotateY(90deg); }
+.cube .s-r{ top:0; height:100%; width:var(--d); left:100%; transform-origin:left; transform:rotateY(-90deg); }
+.cube .shadow{ inset:-14px; border-radius:30px; background:radial-gradient(closest-side, rgba(1,20,23,.6), rgba(1,20,23,0)); transform:translateZ(0); }
+.cube.on .shadow{ background:radial-gradient(closest-side, rgba(63,209,198,.45), rgba(63,209,198,0)); }
+.cube.on .top{ background:linear-gradient(160deg,#18A3A0,#0B5560); border-color:#3FD1C6; color:#E9FBFA; box-shadow:0 0 30px rgba(63,209,198,.6), inset 0 1px 0 rgba(255,255,255,.25); }
+.cube.on .top .ic{ opacity:1; }
+.cube.on .top .sb{ color:#BBE8EC; }
+.cube.on .side{ background:linear-gradient(#138C90,#05434A); }
+.cube .ok{ position:absolute; top:-10px; left:-10px; width:24px; height:24px; border-radius:50%; background:#3FD1C6; color:#053B42; font-weight:800; font-size:14px; display:grid; place-items:center; opacity:0; transition:opacity .4s; }
+.cube.on .ok{ opacity:1; }
+.bub{
+  position:absolute; left:50%; top:50%; white-space:nowrap; transform-origin:50% 100%;
+  padding:6px 14px; border-radius:999px; background:#E9FBFA; color:#053B42; font-size:13px; font-weight:800;
+  box-shadow:0 10px 30px rgba(1,20,23,.45); opacity:0; transition:opacity .45s var(--ease);
+}
+.cube.on .bub{ opacity:1; }
+
+/* text sits BELOW the workflow */
+.panels{ position:relative; z-index:20; flex:0 0 auto; height:clamp(240px, 37vh, 330px); pointer-events:none; margin-bottom:max(46px, calc(env(safe-area-inset-bottom, 0px) + 40px)); }
+.panel{
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:flex-start; text-align:center;
+  padding:6px clamp(20px, 5vw, 60px) 0;
+  opacity:0; will-change:opacity,transform;
+}
+.eyebrow{
+  display:flex; align-items:center; justify-content:center; flex-wrap:wrap;
+  gap:6px 12px; font-size:13px; font-weight:600; color:var(--accent);
+  margin-bottom:10px; max-width:min(46ch, 100%);
+}
+.panel h1{
+  font-weight:800; font-size:clamp(28px, 3.8vw, 54px); line-height:1.2;
+  letter-spacing:0; max-width:22ch; text-wrap:balance; color:var(--fg);
+}
+.sub{
+  margin-top:12px; font-size:clamp(14.5px,1.2vw,18px);
+  line-height:1.7; color:var(--light); max-width:min(52ch, 100%); text-wrap:pretty;
+}
+.cta{ margin-top:clamp(16px,2vw,24px); pointer-events:auto; width:100%; display:flex; justify-content:center; }
+.cta .pill{ height:46px; padding:0 26px; font-size:15px; max-width:min(100%, 320px); }
+
+.foot{
+  position:absolute; bottom:0; left:0; right:0; z-index:40; display:flex; justify-content:center;
+  padding:14px clamp(16px, 4vw, 24px) max(16px, calc(env(safe-area-inset-bottom, 0px) + 12px));
+  font-size:12px; line-height:1.6; color:var(--fg-faint); text-align:center; pointer-events:none;
+  background:linear-gradient(to top, rgba(4,47,53,.92) 0%, rgba(4,47,53,.7) 72%, rgba(4,47,53,0) 100%);
+}
+
+/* ---------- PART B ---------- */
+#sky{ position:fixed; inset:0; z-index:0; width:100%; height:100%; pointer-events:none; }
+.partb{ position:relative; z-index:1; }
+.section{ padding:clamp(72px, 10vw, 120px) clamp(16px, 4vw, 48px); max-width:1240px; margin:0 auto; }
+.sec-head{ text-align:center; margin-bottom:clamp(28px, 4vw, 48px); }
+.tag{ display:inline-flex; align-items:center; gap:8px; font-size:12.5px; font-weight:600; color:var(--accent); border:1px solid var(--glass-border); border-radius:999px; padding:4px 14px; background:rgba(63,209,198,.06); }
+.sec-head h2{ font-weight:800; font-size:clamp(28px, 4.2vw, 48px); line-height:1.3; margin-top:14px; }
+.sec-head p{ color:var(--light); font-size:clamp(15px, 1.4vw, 18px); line-height:1.7; margin-top:10px; max-width:52ch; margin-inline:auto; }
+
+.glass{
+  background:linear-gradient(160deg, rgba(16,128,138,.16) 0%, rgba(4,47,53,.66) 60%);
+  border:1px solid var(--glass-border); border-radius:28px;
+  box-shadow:0 24px 60px rgba(2,24,27,.45), 0 1px 0 rgba(187,232,236,.08) inset;
+}
+
+/* steps */
+.steps{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-bottom:22px; list-style:none; }
+.steps li{
+  display:flex; align-items:center; gap:8px; font-size:13px; color:var(--fg-faint);
+  padding:6px 14px 6px 12px; border-radius:999px; border:1px solid rgba(63,209,198,.16);
+  background:rgba(4,47,53,.5); transition:all .4s var(--ease); min-height:36px;
+}
+.steps li b{ display:grid; place-items:center; width:22px; height:22px; border-radius:50%; font-size:12px; background:rgba(187,232,236,.12); color:var(--light); }
+.steps li.on{ color:#053B42; background:linear-gradient(135deg,#3FD1C6,#BBE8EC); border-color:transparent; box-shadow:0 8px 26px rgba(63,209,198,.3); font-weight:600; }
+.steps li.on b{ background:#053B42; color:var(--accent); }
+.steps li.done{ color:var(--light); border-color:rgba(63,209,198,.4); }
+.steps li.done b{ background:var(--accent); color:#053B42; }
+
+.controls{ display:flex; justify-content:center; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:28px; }
+.btn-ghost{
+  height:44px; padding:0 22px; border-radius:999px; border:1px solid var(--glass-border);
+  background:rgba(4,47,53,.6); color:var(--fg); font:600 14.5px 'Cairo',sans-serif; cursor:pointer;
+  transition:background .3s var(--ease), transform .3s var(--ease);
+}
+.btn-ghost:hover{ background:rgba(16,128,138,.35); transform:translateY(-2px); }
+.controls .pill{ height:44px; }
+.sim-label{ font-size:12px; color:var(--fg-faint); border:1px dashed rgba(187,232,236,.3); border-radius:999px; padding:4px 12px; }
+
+.demo-grid{ display:grid; grid-template-columns:minmax(280px, 340px) minmax(110px, 160px) minmax(0, 1fr); gap:clamp(14px, 2vw, 28px); align-items:center; }
+
+/* phone */
+.phone{
+  position:relative; width:100%; max-width:340px; margin:0 auto; aspect-ratio:9/18.5; max-height:660px;
+  max-height:min(660px, 80vh); max-height:min(660px, 80svh); border-radius:44px; padding:12px; background:linear-gradient(160deg,#10808A,#042F35 70%);
+  border:1px solid rgba(187,232,236,.25); box-shadow:0 30px 80px rgba(1,20,23,.6), 0 0 0 6px rgba(4,47,53,.8);
+}
+.screen{ position:relative; height:100%; border-radius:34px; overflow:hidden; display:flex; flex-direction:column; background:#06292E; }
+.notch{ position:absolute; top:8px; left:50%; transform:translateX(-50%); width:90px; height:22px; border-radius:20px; background:#021A1D; z-index:3; }
+.chat-top{ display:flex; align-items:center; gap:10px; padding:38px 14px 12px; background:#0A4F57; border-bottom:1px solid rgba(63,209,198,.15); }
+.avatar{ width:36px; height:36px; border-radius:50%; display:grid; place-items:center; font-weight:800; color:#053B42; background:linear-gradient(135deg,#3FD1C6,#BBE8EC); flex-shrink:0; }
+.chat-top .who{ line-height:1.25; min-width:0; }
+.chat-top .who b{ font-size:14px; font-weight:600; display:block; }
+.chat-top .who small{ font-size:11.5px; color:var(--accent); }
+.chat-top .ico{ margin-inline-start:auto; display:flex; gap:12px; opacity:.7; }
+.msgs{
+  flex:1; overflow-y:auto; padding:14px 10px; display:flex; flex-direction:column; gap:8px; scroll-behavior:smooth;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(63,209,198,.05) 0 2px, transparent 3px) 0 0/26px 26px,
+    #06292E;
+  scrollbar-width:none;
+}
+.msgs::-webkit-scrollbar{ display:none; }
+.day{ align-self:center; font-size:11px; color:var(--fg-faint); background:rgba(4,47,53,.8); padding:3px 10px; border-radius:8px; }
+.msg{
+  max-width:84%; padding:7px 11px 5px; border-radius:14px; font-size:13.5px; line-height:1.6;
+  animation:msgIn .45s var(--ease) both; position:relative; word-wrap:break-word;
+}
+.msg .t{ display:block; font-size:10px; opacity:.6; margin-top:2px; text-align:left; direction:ltr; }
+.msg.me{ align-self:flex-start; background:#1B7F78; color:#F2FFFE; border-start-start-radius:4px; }
+.msg.bot{ align-self:flex-end; background:#0D3F45; color:var(--fg); border:1px solid rgba(63,209,198,.18); border-start-end-radius:4px; }
+.msg.bot .lbl{ display:block; font-size:10.5px; color:var(--accent); font-weight:600; margin-bottom:1px; }
+.msg.auto{ border-color:rgba(63,209,198,.55); box-shadow:0 0 0 3px rgba(63,209,198,.12); }
+@keyframes msgIn{ from{ opacity:0; transform:translateY(10px) scale(.97); } to{ opacity:1; transform:none; } }
+.typing{ align-self:flex-end; display:flex; gap:4px; padding:11px 14px; border-radius:14px; background:#0D3F45; border:1px solid rgba(63,209,198,.18); animation:msgIn .3s var(--ease) both; }
+.typing i{ width:6px; height:6px; border-radius:50%; background:var(--light); animation:dot 1s infinite ease-in-out; }
+.typing i:nth-child(2){ animation-delay:.15s; } .typing i:nth-child(3){ animation-delay:.3s; }
+@keyframes dot{ 0%,80%,100%{ transform:translateY(0); opacity:.4; } 40%{ transform:translateY(-4px); opacity:1; } }
+.composer{ display:flex; align-items:center; gap:8px; padding:10px; background:#0A3F46; }
+.composer .field{ flex:1; min-height:38px; border-radius:20px; background:#06292E; border:1px solid rgba(63,209,198,.15); padding:8px 14px; font-size:13px; color:var(--fg); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.composer .field:empty::before{ content:"اكتب ميساج…"; color:var(--fg-faint); }
+.composer .send{ width:38px; height:38px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,#3FD1C6,#BBE8EC); color:#053B42; flex-shrink:0; }
+
+/* flow column */
+.flow{ position:relative; height:100%; min-height:340px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; }
+.flow svg.line{ width:100%; height:70px; overflow:visible; }
+.flow .path{ fill:none; stroke:rgba(187,232,236,.22); stroke-width:2; stroke-dasharray:6 8; }
+.flow .path.live{ stroke:var(--accent); animation:dash 1s linear infinite; filter:drop-shadow(0 0 6px rgba(63,209,198,.7)); }
+@keyframes dash{ to{ stroke-dashoffset:-28; } }
+.node{
+  display:flex; flex-direction:column; align-items:center; gap:4px; padding:12px 16px; border-radius:20px;
+  background:rgba(4,47,53,.85); border:1px solid var(--glass-border); text-align:center; transition:all .4s var(--ease);
+}
+.node .gear{ width:30px; height:30px; color:var(--accent); }
+.node b{ display:block; font-size:13px; direction:ltr; }
+.node small{ display:block; }
+.node small{ font-size:11px; color:var(--fg-faint); }
+.node.live{ border-color:var(--accent); box-shadow:0 0 0 4px rgba(63,209,198,.12), 0 0 34px rgba(63,209,198,.35); }
+.node.live .gear{ animation:spin 2.4s linear infinite; }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.flow .arrow-v{ display:none; }
+
+/* sheet + telegram */
+.right{ position:relative; display:flex; flex-direction:column; gap:16px; min-width:0; }
+.sheet{ padding:0; overflow:hidden; border-radius:24px; }
+.sheet-bar{ display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid var(--rule); background:rgba(16,128,138,.14); }
+.sheet-bar .ico{ width:28px; height:28px; border-radius:8px; display:grid; place-items:center; background:rgba(63,209,198,.18); color:var(--accent); flex-shrink:0; }
+.sheet-bar b{ font-size:14px; font-weight:600; }
+.sheet-bar small{ font-size:11.5px; color:var(--fg-faint); margin-inline-start:auto; }
+.table-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+table{ width:100%; border-collapse:collapse; font-size:12.5px; min-width:760px; }
+th, td{ padding:9px 10px; text-align:right; white-space:nowrap; border-bottom:1px solid rgba(63,209,198,.12); border-inline-start:1px solid rgba(63,209,198,.08); }
+th{ font-weight:600; color:var(--light); background:rgba(4,47,53,.7); font-size:12px; }
+th.idx, td.idx{ width:34px; text-align:center; color:var(--fg-faint); background:rgba(4,47,53,.55); }
+td{ color:var(--fg-soft); }
+tr.new td{ animation:rowIn .6s var(--ease) both, glow 1.5s ease-out .2s; color:var(--fg); }
+@keyframes rowIn{ from{ opacity:0; transform:translateY(-8px); } to{ opacity:1; transform:none; } }
+@keyframes glow{ 0%{ background:rgba(63,209,198,.42); } 100%{ background:transparent; } }
+.status{ display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:999px; font-size:11.5px; font-weight:600; }
+.st-new{ background:rgba(250,204,120,.16); color:#F6D58E; border:1px solid rgba(250,204,120,.3); }
+.st-ok{ background:rgba(63,209,198,.18); color:var(--accent); border:1px solid rgba(63,209,198,.4); }
+.st-done{ background:rgba(187,232,236,.1); color:var(--light); border:1px solid rgba(187,232,236,.2); }
+td.status-cell{ position:relative; overflow:hidden; }
+.ripple{ position:absolute; width:16px; height:16px; border-radius:50%; background:rgba(63,209,198,.55); transform:translate(-50%,-50%) scale(0); animation:ripple .8s ease-out forwards; pointer-events:none; }
+@keyframes ripple{ to{ transform:translate(-50%,-50%) scale(9); opacity:0; } }
+.cursor{ position:absolute; width:22px; height:22px; z-index:5; pointer-events:none; opacity:0; transition:opacity .3s, transform .9s var(--ease); filter:drop-shadow(0 2px 4px rgba(0,0,0,.5)); }
+
+.toast{
+  display:flex; gap:12px; align-items:flex-start; padding:14px 16px; border-radius:22px;
+  background:linear-gradient(135deg, rgba(16,128,138,.5), rgba(4,47,53,.92)); border:1px solid rgba(63,209,198,.4);
+  box-shadow:0 18px 44px rgba(1,20,23,.55); opacity:0; transform:translateY(-14px) scale(.98);
+  transition:opacity .5s var(--ease), transform .5s var(--ease); max-width:420px;
+}
+.toast.show{ opacity:1; transform:none; }
+.toast .ico{ width:40px; height:40px; border-radius:50%; display:grid; place-items:center; background:linear-gradient(135deg,#3FD1C6,#BBE8EC); color:#053B42; flex-shrink:0; }
+.toast .meta{ font-size:11.5px; color:var(--fg-faint); }
+.toast b{ display:block; font-size:14.5px; margin:1px 0 2px; }
+.toast p{ font-size:12.5px; color:var(--light); line-height:1.6; }
+
+/* benefits */
+.cards{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; }
+.card{ padding:26px 22px; border-radius:26px; }
+.card .ic{ width:48px; height:48px; border-radius:16px; display:grid; place-items:center; font-size:24px; background:rgba(63,209,198,.12); border:1px solid var(--glass-border); margin-bottom:16px; }
+.card h3{ font-size:19px; font-weight:800; line-height:1.4; }
+.card p{ font-size:14.5px; color:var(--light); line-height:1.75; margin-top:8px; }
+
+/* final cta */
+.final{ text-align:center; padding:clamp(36px, 6vw, 64px) clamp(20px, 4vw, 48px); border-radius:32px; }
+.final h2{ font-size:clamp(26px, 4vw, 44px); font-weight:800; line-height:1.35; }
+.final p{ color:var(--light); margin:12px auto 26px; max-width:46ch; line-height:1.7; }
+.final .pill{ height:52px; padding:0 30px; font-size:16px; }
+.final .more{ display:inline-block; margin-top:18px; color:var(--accent); text-decoration:none; font-weight:600; min-height:36px; line-height:36px; }
+.final .more:hover{ text-decoration:underline; }
+.pagefoot{ text-align:center; padding:28px 16px max(28px, calc(env(safe-area-inset-bottom, 0px) + 20px)); color:var(--fg-faint); font-size:12.5px; }
+.pagefoot a{ color:var(--light); }
+
+/* about */
+.about{ display:grid; grid-template-columns:200px 1fr; gap:32px; align-items:center; padding:28px; border-radius:28px; }
+.about img{ width:200px; height:auto; aspect-ratio:539/960; object-fit:cover; border-radius:20px; box-shadow:0 18px 40px rgba(0,0,0,.4); }
+.about h3{ font-size:26px; font-weight:800; direction:ltr; text-align:right; }
+.about .role{ color:var(--accent); font-weight:600; margin-top:2px; }
+.about p{ color:var(--light); margin-top:10px; line-height:1.8; font-size:16px; }
+@media (max-width:720px){ .about{ grid-template-columns:1fr; text-align:center; justify-items:center; } .about h3{ text-align:center; } .about img{ width:170px; } }
+/* ---------- Responsive ---------- */
+@media (max-width:1080px){
+  .cards{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+  .demo-grid{ grid-template-columns:1fr; justify-items:center; }
+  .right{ width:100%; max-width:680px; }
+  .flow{ min-height:0; flex-direction:column; }
+  .flow svg.line{ display:none; }
+  .flow .arrow-v{ display:block; width:2px; height:34px; background:repeating-linear-gradient(to bottom, var(--accent) 0 6px, transparent 6px 12px); background-size:2px 12px; animation:vdash .8s linear infinite; opacity:.35; }
+  .flow.live .arrow-v{ opacity:1; }
+  @keyframes vdash{ to{ background-position:0 12px; } }
+  .node{ flex-direction:row; gap:10px; }
+  .node .txt{ text-align:right; }
+}
+@media (max-width:720px){
+  .nav a:not(.pill){ display:none; }
+  .mark b{ font-size:17px; }
+  .nav .pill{ height:38px; padding:0 16px; font-size:13.5px; }
+  .panel h1{ max-width:14ch; font-size:clamp(25px, 7.6vw, 36px); }
+  .sub{ font-size:14px; max-width:34ch; margin-top:8px; }
+  .panel{ padding:0 16px; }
+  .panels{ height:clamp(220px, 35vh, 270px); }
+  .eyebrow{ margin-bottom:6px; font-size:12px; }
+  .cta{ margin-top:14px; }
+  .cta .pill{ height:44px; }
+  .scene{ top:max(64px, calc(env(safe-area-inset-top, 0px) + 58px)); }
+  .cube .top .ic{ font-size:24px; }
+  .cube .top .lg{ width:32px; height:32px; border-radius:9px; margin-bottom:2px; }
+  .cube .top .lg svg{ width:18px; height:18px; }
+  .cube .top .nm{ font-size:11.5px; }
+  .cube .top .sb{ font-size:11px; }
+  .foot{ font-size:11px; }
+  .cards{ grid-template-columns:1fr; }
+  .steps li{ font-size:12px; padding:5px 10px 5px 9px; }
+  .steps li span{ display:none; }
+  .steps li.on span{ display:inline; }
+}
+@media (max-width:420px){
+  .nav .pill{ height:36px; padding:0 14px; font-size:13px; }
+  .panel h1{ font-size:clamp(24px, 7.4vw, 30px); }
+  .eyebrow{ font-size:12px; max-width:28ch; }
+  .cta .pill{ width:100%; max-width:280px; height:44px; padding:0 20px; font-size:14px; }
+  .phone{ border-radius:38px; padding:10px; }
+  .screen{ border-radius:30px; }
+}
+@media (max-height:520px) and (orientation:landscape){
+  .panels{ height:150px; margin-bottom:30px; }
+  .panel h1{ font-size:clamp(22px, 6vh, 32px); }
+  .sub{ margin-top:12px; font-size:14px; }
+  .cta{ margin-top:16px; }
+}
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
+  .msg, .typing, tr.new td{ animation:none; }
+  .flow .path.live, .flow .arrow-v{ animation:none; }
+}
+</style>
+</head>
+<body>
+
+<header class="chrome">
+  <a class="mark" href="https://nourys.netlify.app" aria-label="NOURYS">
+    <b>NOURY<span>S</span></b>
+    <small>by Marwan Nouiri</small>
+  </a>
+  <nav class="nav">
+    <a href="#demo">الديمو</a>
+    <a href="#benefits">واش تربح</a>
+    <a class="pill" href="https://wa.me/213697680910" target="_blank" rel="noopener">راسلنا في واتساب</a>
+  </nav>
+</header>
+
+<!-- ============ PART A: scroll-scrubbed hero ============ -->
+<section class="hero" id="hero">
+  <div class="sticky">
+    <div class="wf-wrap">
+      <div class="scene" role="img" aria-label="workflow: واتساب ← ذكاء اصطناعي ← جوجل شيت ← تيليغرام ← تأكيد ← واتساب"><div class="plane" id="plane"></div></div>
+    </div>
+    <i class="meter" id="meter"></i>
+
+    <main class="panels">
+      <section class="panel" data-panel>
+        <p class="eyebrow"><span dir="ltr">NOURYS</span><span>·</span><span>شات بوت الواتساب</span></p>
+        <h1>زبائنك يسقسو،<br>والبوت يجاوب.</h1>
+        <p class="sub">يرد في ثواني على السعر والتوصيل، حتى في الليل.</p>
+        <div class="cta"><a class="pill" href="#demo">شوف الديمو</a></div>
+      </section>
+      <section class="panel" data-panel>
+        <p class="eyebrow">بلا ما تكتب والو</p>
+        <h1>الطلبية تتسجل<br>وحدها.</h1>
+        <p class="sub">الاسم، الهاتف، الولاية والبلدية… كل شي يدخل لجوجل شيت مباشرة.</p>
+        <div class="cta"><a class="pill" href="#benefits">واش تربح</a></div>
+      </section>
+      <section class="panel" data-panel>
+        <p class="eyebrow">تأكيد ومتابعة</p>
+        <h1>كليك واحد،<br>والزبون يتطمّن.</h1>
+        <p class="sub">تأكد الطلبية في الشيت، والزبون يوصلو ميساج التأكيد في الواتساب أوتوماتيك.</p>
+        <div class="cta"><a class="pill" href="https://wa.me/213697680910" target="_blank" rel="noopener">راسلنا في واتساب</a></div>
+      </section>
+    </main>
+
+    <footer class="foot"><span><span dir="ltr">NOURYS by Marwan Nouiri</span> · أنظمة للمتاجر الإلكترونية في الجزائر</span></footer>
+  </div>
+</section>
+
+<!-- ============ PART B: normal scrolling content ============ -->
+<canvas id="sky" aria-hidden="true"></canvas>
+<div class="partb">
+
+  <section class="section" id="demo">
+    <div class="sec-head">
+      <span class="tag">● ديمو تفاعلي (محاكاة)</span>
+      <h2>شوف البوت يخدم، خطوة بخطوة</h2>
+      <p>من ميساج الزبون في الواتساب، حتى الطلبية في الشيت والتنبيه في التيليغرام، والتأكيد الأوتوماتيك.</p>
+    </div>
+
+    <ol class="steps" id="steps">
+      <li><b>1</b><span>الزبون يسقسي</span></li>
+      <li><b>2</b><span>البوت يجاوب</span></li>
+      <li><b>3</b><span>يسجل الطلبية</span></li>
+      <li><b>4</b><span>الشيت + التيليغرام</span></li>
+      <li><b>5</b><span>التأكيد</span></li>
+    </ol>
+
+    <div class="controls">
+      <button class="pill" id="play" type="button">▶ شغّل الديمو</button>
+      <button class="btn-ghost" id="reset" type="button">↺ عاود</button>
+    </div>
+
+    <div class="demo-grid">
+      <!-- phone (right side in RTL) -->
+      <div class="phone" aria-label="محادثة واتساب (محاكاة)">
+        <div class="screen">
+          <div class="notch"></div>
+          <div class="chat-top">
+            <div class="avatar" dir="ltr">N</div>
+            <div class="who"><b>متجر نوريس</b><small id="presence">متصل</small></div>
+            <div class="ico" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 10l4.5-3v10L15 14"/><rect x="3" y="6" width="12" height="12" rx="2"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
+            </div>
+          </div>
+          <div class="msgs" id="msgs"><span class="day">اليوم</span></div>
+          <div class="composer">
+            <div class="field" id="field"></div>
+            <div class="send" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z" transform="scale(-1,1) translate(-24,0)"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- flow (chat -> n8n -> sheet/telegram) -->
+      <div class="flow" id="flow">
+        <svg class="line" viewBox="0 0 160 70" preserveAspectRatio="none" aria-hidden="true"><path class="path" id="p1" d="M160 35 C 110 35, 60 35, 0 35"/></svg>
+        <span class="arrow-v" aria-hidden="true"></span>
+        <div class="node" id="node">
+          <svg class="gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+          <div class="txt"><b>n8n</b><small>الأتمتة</small></div>
+        </div>
+        <span class="arrow-v" aria-hidden="true"></span>
+        <svg class="line" viewBox="0 0 160 70" preserveAspectRatio="none" aria-hidden="true"><path class="path" id="p2" d="M160 35 C 110 35, 60 35, 0 35"/></svg>
+      </div>
+
+      <!-- sheet + telegram (left side in RTL) -->
+      <div class="right">
+        <div class="toast" id="toast" role="status" aria-live="polite">
+          <div class="ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 3.5 2.8 10.7c-1 .4-1 1.8.1 2.1l4.6 1.4 1.8 5.6c.3.9 1.4 1.1 2 .4l2.6-2.6 4.6 3.4c.8.6 1.9.2 2.1-.8l3-15c.2-1.1-.9-2-2-1.7zM9.4 14.2l8.6-7.6-6.8 8.8-.4 3.4-1.4-4.6z"/></svg></div>
+          <div>
+            <div class="meta"><span dir="ltr">NOURYS Orders</span> · تيليغرام · دركا</div>
+            <b>🛒 طلبية جديدة <span dir="ltr">ORD-1024</span></b>
+            <p id="toastBody"></p>
+          </div>
+        </div>
+
+        <div class="glass sheet">
+          <div class="sheet-bar">
+            <div class="ico" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></div>
+            <b>طلبيات المتجر</b>
+            <small>جدول (محاكاة)</small>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th class="idx">#</th><th>التاريخ</th><th>رقم الطلبية</th><th>الاسم</th><th>الهاتف</th><th>الولاية</th><th>البلدية</th><th>المنتج</th><th>السعر</th><th>الحالة</th></tr></thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="benefits">
+    <div class="sec-head">
+      <span class="tag">● واش تربح</span>
+      <h2>البوت يخدم، وانت تركّز على البيع</h2>
+    </div>
+    <div class="cards">
+      <article class="glass card"><div class="ic">🌙</div><h3>يجاوب 24/24</h3><p>السعر، التوصيل، والمقاسات… يرد في ثواني حتى في الليل وفي نهار الجمعة.</p></article>
+      <article class="glass card"><div class="ic">🎯</div><h3>ما تضيعش زبون</h3><p>الزبون اللي يسقسي يلقى الجواب فورا، وما يروحش لمتجر آخر.</p></article>
+      <article class="glass card"><div class="ic">📋</div><h3>الطلبيات منظمة في الشيت</h3><p>كل طلبية تدخل وحدها: الاسم، الهاتف، الولاية والبلدية، بلا ما تكتب والو.</p></article>
+      <article class="glass card"><div class="ic">✅</div><h3>تأكيد ومتابعة أوتوماتيك</h3><p>كليك واحد في الشيت، والزبون يوصلو ميساج التأكيد. أقل روتور، زبون مطمّن.</p></article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="glass final">
+      <h2>حاب هاذ السيستم في متجرك؟</h2>
+      <p>نركبهولك على الواتساب تاعك ونربطو بالشيت والتيليغرام. ابعثلنا ميساج ونحكيو.</p>
+      <a class="pill" href="https://wa.me/213697680910" target="_blank" rel="noopener">راسلنا في واتساب</a>
+      <br>
+      <a class="more" href="https://nourys.netlify.app">شوف خدماتنا كاملة ← <span dir="ltr">nourys.netlify.app</span></a>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="glass about">
+      <img src="assets/founder.jpg" alt="Marwan Nouiri" loading="lazy" width="200" height="356">
+      <div>
+        <h3>Marwan Nouiri</h3>
+        <div class="role">مؤسس <span dir="ltr">NOURYS</span></div>
+        <p>نبني أنظمة أتمتة ومواقع للمتاجر الإلكترونية في الجزائر، باش التاجر ما يضيعش طلبية وما يضيعش وقتو في الخدمة اليدوية.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="pagefoot"><span dir="ltr">© NOURYS by Marwan Nouiri</span> · ديمو للعرض فقط، كل شي محاكاة في المتصفح.</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =====================================================================
+     EDITABLE DEMO SCRIPT — texts, timings (ms) and order data
+     ===================================================================== */
+  var ORDER = {
+    id: "ORD-1024",
+    name: "أمين بن علي",
+    phone: "0555 12 34 56",
+    wilaya: "16 - الجزائر",
+    commune: "باب الزوار",
+    product: "ساعة ذكية",
+    price: "4500 دج"
+  };
+  var OLD_ROWS = [
+    ["2026-10-22", "ORD-1022", "سارة م.", "0661 22 11 09", "31 - وهران", "السانية", "ساعة ذكية", "4500 دج", "done"],
+    ["2026-10-23", "ORD-1023", "ياسين ب.", "0770 45 88 12", "25 - قسنطينة", "الخروب", "ساعة ذكية", "4500 دج", "ok"]
+  ];
+  var CHAT = [
+    { step:1, who:"me",  wait:600,  text:"السلام عليكم، شحال السعر؟" },
+    { step:2, who:"bot", wait:500,  text:"وعليكم السلام 👋 السعر 4500 دج والتوصيل لـ 69 ولاية 🚚 تحب نسجلك الطلبية؟" },
+    { step:3, who:"me",  wait:1100, text:"إيه نحب" },
+    { step:3, who:"bot", wait:400,  text:"مرحبا بيك 🙏 عطيني الاسم واللقب:" },
+    { step:3, who:"me",  wait:900,  text:ORDER.name },
+    { step:3, who:"bot", wait:400,  text:"رقم الهاتف؟ 📞" },
+    { step:3, who:"me",  wait:900,  text:ORDER.phone, ltr:true },
+    { step:3, who:"bot", wait:400,  text:"الولاية؟" },
+    { step:3, who:"me",  wait:900,  text:ORDER.wilaya },
+    { step:3, who:"bot", wait:400,  text:"والبلدية؟" },
+    { step:3, who:"me",  wait:900,  text:ORDER.commune },
+    { step:4, who:"bot", wait:400,  text:"✅ تم تسجيل طلبيتك رقم " + ORDER.id + "، راح نتصلو بيك قريب." },
+    { step:4, act:"row",   wait:150 },
+    { step:4, act:"toast", wait:700 },
+    { step:5, act:"confirm", wait:2400 },
+    { step:5, who:"bot", wait:900, auto:true, text:"🎉 طلبيتك " + ORDER.id + " تأكدت! راح توصلك خلال 24 لـ 48 ساعة. يعطيك الصحة على الثقة 🙏" }
+  ];
+  var TYPE_SPEED = 45;      // ms per character when the customer types
+  var BOT_TYPING = 900;     // base typing-indicator time for the bot (ms)
+
+  /* =====================================================================
+     PART A — n8n-style workflow drawn by scroll
+     ===================================================================== */
+  // Edit the nodes here: icon, name (n8n style), Arabic subtitle, sample output bubble.
+  // Brand logos (simple-icons paths, 24x24) used on the workflow nodes.
+  var LOGOS = {"whatsapp": ["#25D366", "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"], "openai": ["#10A37F", "M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"], "sheets": ["#0F9D58", "M11.318 12.545H7.91v-1.909h3.41v1.91zM14.728 0v6h6l-6-6zm1.363 10.636h-3.41v1.91h3.41v-1.91zm0 3.273h-3.41v1.91h3.41v-1.91zM20.727 6.5v15.864c0 .904-.732 1.636-1.636 1.636H4.909a1.636 1.636 0 0 1-1.636-1.636V1.636C3.273.732 4.005 0 4.909 0h9.318v6.5h6.5zm-3.273 2.773H6.545v7.909h10.91v-7.91zm-6.136 4.636H7.91v1.91h3.41v-1.91z"], "telegram": ["#26A5E4", "M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"], "n8n": ["#EA4B71", "M21.4737 5.6842c-1.1772 0-2.1663.8051-2.4468 1.8947h-2.8955c-1.235 0-2.289.893-2.492 2.111l-.1038.623a1.263 1.263 0 0 1-1.246 1.0555H11.289c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947s-2.1663.8051-2.4467 1.8947H4.973c-.2805-1.0896-1.2696-1.8947-2.4468-1.8947C1.1311 9.4737 0 10.6047 0 12s1.131 2.5263 2.5263 2.5263c1.1772 0 2.1663-.8051 2.4468-1.8947h1.4223c.2804 1.0896 1.2696 1.8947 2.4467 1.8947 1.1772 0 2.1663-.8051 2.4468-1.8947h1.0008a1.263 1.263 0 0 1 1.2459 1.0555l.1038.623c.203 1.218 1.257 2.111 2.492 2.111h.3692c.2804 1.0895 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263c-1.1772 0-2.1664.805-2.4468 1.8947h-.3692a1.263 1.263 0 0 1-1.246-1.0555l-.1037-.623A2.52 2.52 0 0 0 13.9607 12a2.52 2.52 0 0 0 .821-1.4794l.1038-.623a1.263 1.263 0 0 1 1.2459-1.0555h2.8955c.2805 1.0896 1.2696 1.8947 2.4468 1.8947 1.3952 0 2.5263-1.131 2.5263-2.5263s-1.131-2.5263-2.5263-2.5263m0 1.2632a1.263 1.263 0 0 1 1.2631 1.2631 1.263 1.263 0 0 1-1.2631 1.2632 1.263 1.263 0 0 1-1.2632-1.2632 1.263 1.263 0 0 1 1.2632-1.2631M2.5263 10.7368A1.263 1.263 0 0 1 3.7895 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 1.2632 12a1.263 1.263 0 0 1 1.2631-1.2632m6.3158 0A1.263 1.263 0 0 1 10.1053 12a1.263 1.263 0 0 1-1.2632 1.2632A1.263 1.263 0 0 1 7.579 12a1.263 1.263 0 0 1 1.2632-1.2632m10.1053 3.7895a1.263 1.263 0 0 1 1.2631 1.2632 1.263 1.263 0 0 1-1.2631 1.2631 1.263 1.263 0 0 1-1.2632-1.2631 1.263 1.263 0 0 1 1.2632-1.2632"]};
+  var NODES = [
+    { logo:"whatsapp", name:"WhatsApp Trigger", sub:"ميساج جديد",      out:"شحال السعر؟" },
+    { logo:"openai",   name:"AI Agent",         sub:"يجاوب بالدارجة",  out:"السعر 4500 دج 🚚" },
+    { logo:"sheets",   name:"Google Sheets",    sub:"يسجل الطلبية",    out:"ORD-1024 ✓" },
+    { logo:"telegram", name:"Telegram",         sub:"ينبّه التاجر",    out:"🛒 طلبية جديدة" },
+    { logo:"n8n",      name:"IF",               sub:"الطلبية مؤكدة؟",  out:"مؤكدة ✓" },
+    { logo:"whatsapp", name:"WhatsApp Send",    sub:"يأكد للزبون",     out:"✅ طلبيتك تأكدت" }
+  ];
+
+  var meter = document.getElementById("meter");
+  var hero = document.getElementById("hero");
+  var panels = [].slice.call(document.querySelectorAll("[data-panel]"));
+  var NS = "http://www.w3.org/2000/svg";
+
+  // Panel cues [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd] in hero progress, with
+  // dead zones between them so two panels are never readable at once.
+  var CUES = [
+    [0.00, 0.00, 0.15, 0.23],
+    [0.35, 0.43, 0.57, 0.65],
+    [0.77, 0.85, 1.10, 1.20]
+  ];
+  var DRIFT = 22;
+  // When each node lights up (hero progress). Links draw between consecutive starts.
+  var NODE_AT = [0.0, 0.14, 0.40, 0.56, 0.78, 0.94];
+
+  function clamp(v, a, b){ return v < a ? a : v > b ? b : v; }
+  function smooth(t){ return t * t * (3 - 2 * t); }
+  function ramp(p, a, b){
+    if (b <= a) return p >= b ? 1 : 0;
+    return smooth(clamp((p - a) / (b - a), 0, 1));
+  }
+  function el(tag, attrs, parent){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  var nodeEls = [], links = [], layout = "", geo = null;
+  var plane = document.getElementById("plane");
+  var scene = plane.parentNode;
+
+  function build(){
+    var mobile = window.innerWidth <= 720;
+    var key = mobile ? "m" : "d";
+    if (key === layout) return;
+    layout = key;
+    plane.innerHTML = "";
+    nodeEls = []; links = [];
+    var W, H, w, h, d, pos;
+    if (mobile){
+      W = 360; H = 470; w = 132; h = 100; d = 20;
+      pos = [[88,70],[272,70],[272,235],[88,235],[88,400],[272,400]];
+    } else {
+      W = 1240; H = 300; w = 160; h = 120; d = 30;
+      pos = []; for (var i = 0; i < NODES.length; i++) pos.push([110 + i * 204, 150]);
+    }
+    geo = { W: W, H: H, pos: pos, mobile: mobile, d: d };
+    plane.style.width = W + "px"; plane.style.height = H + "px";
+    plane.style.marginLeft = (-W / 2) + "px"; plane.style.marginTop = (-H / 2) + "px";
+    var floor = document.createElement("div"); floor.className = "floor"; plane.appendChild(floor);
+    var svg = el("svg", { "class": "wf-links", width: W, height: H, viewBox: "0 0 " + W + " " + H }, plane);
+
+    for (var j = 0; j < NODES.length - 1; j++){
+      var a = pos[j], b = pos[j + 1], dd, x1, y1, x2, y2;
+      if (Math.abs(b[0] - a[0]) > Math.abs(b[1] - a[1])){
+        var dir = b[0] > a[0] ? 1 : -1;
+        x1 = a[0] + dir * w / 2; y1 = a[1]; x2 = b[0] - dir * w / 2; y2 = b[1];
+        var mx = (x1 + x2) / 2;
+        dd = "M" + x1 + " " + y1 + " C" + mx + " " + y1 + " " + mx + " " + y2 + " " + x2 + " " + y2;
+      } else {
+        x1 = a[0]; y1 = a[1] + h / 2; x2 = b[0]; y2 = b[1] - h / 2;
+        var my = (y1 + y2) / 2;
+        dd = "M" + x1 + " " + y1 + " C" + x1 + " " + my + " " + x2 + " " + my + " " + x2 + " " + y2;
+      }
+      el("path", { d: dd, "class": "base" }, svg);
+      var glow = el("path", { d: dd, "class": "glow", pathLength: 1, "stroke-dasharray": "1 1", "stroke-dashoffset": 1 }, svg);
+      var live = el("path", { d: dd, "class": "live", pathLength: 1, "stroke-dasharray": "1 1", "stroke-dashoffset": 1 }, svg);
+      var dot = el("circle", { r: mobile ? 6 : 8, "class": "dot", opacity: 0 }, svg);
+      links.push({ live: live, glow: glow, dot: dot, len: live.getTotalLength(), last: -1 });
+    }
+
+    NODES.forEach(function(n, i){
+      var c = document.createElement("div");
+      c.className = "cube";
+      c.style.cssText = "left:" + (pos[i][0] - w / 2) + "px;top:" + (pos[i][1] - h / 2) + "px;width:" + w + "px;height:" + h + "px;--d:" + d + "px";
+      c.innerHTML =
+        '<div class="face shadow"></div>' +
+        '<div class="face side s-b"></div><div class="face side s-l"></div><div class="face side s-r"></div>' +
+        '<div class="face top"><span class="ok">✓</span><span class="ic lg" style="background:' + LOGOS[n.logo][0] + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="' + LOGOS[n.logo][1] + '"/></svg></span><span class="nm">' + n.name + '</span><span class="sb">' + n.sub + '</span></div>' +
+        (mobile ? "" : '<div class="bub">' + n.out + '</div>');
+      plane.appendChild(c);
+      nodeEls.push({ g: c, on: false, bub: c.querySelector(".bub") });
+    });
+  }
+
+  // camera: tilt, turn and follow the data as you scroll
+  function camera(p){
+    if (!geo) return;
+    var rx = geo.mobile ? 50 - p * 8 : 56 - p * 10;     // tilt back
+    var rz = geo.mobile ? -14 + p * 10 : -22 + p * 14;   // turn
+    // focus point = where the data dot is now
+    var k = Math.min(links.length, Math.max(0, 0));
+    var fx = geo.W / 2, fy = geo.H / 2;
+    for (var i = 0; i < NODE_AT.length - 1; i++){
+      if (p >= NODE_AT[i] && p <= NODE_AT[i + 1]){
+        var t = (p - NODE_AT[i]) / (NODE_AT[i + 1] - NODE_AT[i]);
+        fx = geo.pos[i][0] + (geo.pos[i + 1][0] - geo.pos[i][0]) * t;
+        fy = geo.pos[i][1] + (geo.pos[i + 1][1] - geo.pos[i][1]) * t;
+        break;
+      }
+      if (p > NODE_AT[NODE_AT.length - 1]){ fx = geo.pos[geo.pos.length - 1][0]; fy = geo.pos[geo.pos.length - 1][1]; }
+    }
+    var follow = geo.mobile ? 0.35 : 0.5;
+    var tx = (geo.W / 2 - fx) * follow, ty = (geo.H / 2 - fy) * follow;
+    var sw = scene.clientWidth, sh = scene.clientHeight;
+    var rzr = Math.abs(rz) * Math.PI / 180, rxr = rx * Math.PI / 180;
+    var projW = geo.W * Math.cos(rzr) + geo.H * Math.sin(rzr);
+    var projH = (geo.W * Math.sin(rzr) + geo.H * Math.cos(rzr)) * Math.cos(rxr) + geo.d * 2;
+    var sc = Math.min(sw * (geo.mobile ? 1.02 : 0.98) / projW, sh * 0.92 / projH, geo.mobile ? 1.05 : 1.15);
+    plane.style.transform = "scale(" + sc.toFixed(4) + ") rotateX(" + rx.toFixed(2) + "deg) rotateZ(" + rz.toFixed(2) + "deg) translate(" + tx.toFixed(1) + "px," + ty.toFixed(1) + "px)";
+    // speech bubbles always face the camera
+    var bb = "translate(-50%,-50%) translateZ(" + (geo.d + 70) + "px) rotateZ(" + (-rz).toFixed(2) + "deg) rotateX(" + (-rx).toFixed(2) + "deg) translateY(-30px)";
+    for (var n = 0; n < nodeEls.length; n++) if (nodeEls[n].bub) nodeEls[n].bub.style.transform = bb;
+  }
+
+    var progress = 0, shown = 0, dirty = true, heroOnScreen = true;
+
+  // Progress is computed from the hero section only (its track), not the whole page.
+  function readScroll(){
+    var max = hero.offsetHeight - window.innerHeight;
+    var top = hero.getBoundingClientRect().top;
+    progress = max > 0 ? clamp(-top / max, 0, 1) : 0;
+    heroOnScreen = top + hero.offsetHeight > 0;
+    partBOn = top + hero.offsetHeight < window.innerHeight + 40;
+  }
+
+  function paint(){
+    meter.style.transform = "scaleX(" + progress + ")";
+    for (var i = 0; i < panels.length; i++){
+      var c = CUES[i], pe = panels[i];
+      var enter = ramp(progress, c[0], c[1]);
+      var leave = ramp(progress, c[2], c[3]);
+      var o = enter * (1 - leave);
+      var y = (1 - enter) * DRIFT - leave * DRIFT;
+      pe.style.opacity = o;
+      pe.style.transform = "translate3d(0," + y + "px,0)";
+      pe.style.pointerEvents = o > 0.6 ? "auto" : "none";
+    }
+    // workflow: camera, light nodes, draw links, move the data dot
+    camera(shown);
+    for (var n = 0; n < nodeEls.length; n++){
+      var on = shown >= NODE_AT[n] - 0.001;
+      if (on !== nodeEls[n].on){ nodeEls[n].on = on; nodeEls[n].g.classList.toggle("on", on); }
+    }
+    for (var k = 0; k < links.length; k++){
+      var L = links[k];
+      var t = clamp((shown - NODE_AT[k]) / (NODE_AT[k + 1] - NODE_AT[k]), 0, 1);
+      if (Math.abs(t - L.last) < 0.0005) continue;
+      L.last = t;
+      L.live.setAttribute("stroke-dashoffset", 1 - t);
+      L.glow.setAttribute("stroke-dashoffset", 1 - t);
+      if (t > 0 && t < 1){
+        var pt = L.live.getPointAtLength(t * L.len);
+        L.dot.setAttribute("cx", pt.x); L.dot.setAttribute("cy", pt.y); L.dot.setAttribute("opacity", 1);
+      } else {
+        L.dot.setAttribute("opacity", 0);
+      }
+    }
+  }
+
+  function frame(){
+    var gap = progress - shown;
+    if (gap !== 0 || dirty){
+      shown = Math.abs(gap) > 0.0004 ? shown + gap * 0.22 : progress; // light easing, keeps up with the finger
+      dirty = false;
+      if (heroOnScreen) paint();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  build();
+  window.addEventListener("resize", function(){ build(); links.forEach(function(L){ L.last = -1; }); dirty = true; });
+
+  /* =====================================================================
+     PART B — live WhatsApp simulation
+     ===================================================================== */
+  var msgs = document.getElementById("msgs");
+  var field = document.getElementById("field");
+  var rows = document.getElementById("rows");
+  var toast = document.getElementById("toast");
+  var toastBody = document.getElementById("toastBody");
+  var stepsEl = [].slice.call(document.querySelectorAll("#steps li"));
+  var presence = document.getElementById("presence");
+  var nodeEl = document.getElementById("node");
+  var flowEl = document.getElementById("flow");
+  var p1 = document.getElementById("p1"), p2 = document.getElementById("p2");
+  var playBtn = document.getElementById("play"), resetBtn = document.getElementById("reset");
+  var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var runId = 0, running = false, newRow = null;
+
+  function sleep(ms, id){
+    return new Promise(function(res, rej){
+      setTimeout(function(){ id === runId ? res() : rej("stop"); }, REDUCED ? Math.min(ms, 250) : ms);
+    });
+  }
+  function esc(s){ return String(s).replace(/[&<>]/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;" }[c]; }); }
+  // Isolate Latin runs (IDs, numbers) so they never flip inside Arabic text.
+  function bidi(s){ return esc(s).replace(/([A-Za-z0-9][A-Za-z0-9\- ]*[A-Za-z0-9]|[A-Za-z0-9])/g, '<span dir="ltr">$1</span>'); }
+  function clock(){ var d = new Date(); return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
+  function scrollChat(){ msgs.scrollTop = msgs.scrollHeight; }
+
+  function setStep(n){
+    stepsEl.forEach(function(li, i){
+      li.classList.toggle("on", i === n - 1);
+      li.classList.toggle("done", i < n - 1);
+    });
+    var live1 = n >= 1 && n <= 3, live2 = n >= 4;
+    p1.classList.toggle("live", live1 || n === 5);
+    p2.classList.toggle("live", live2);
+    nodeEl.classList.toggle("live", n >= 2);
+    flowEl.classList.toggle("live", n >= 1);
+  }
+
+  function addBubble(item){
+    var b = document.createElement("div");
+    b.className = "msg " + item.who + (item.auto ? " auto" : "");
+    var lbl = item.who === "bot" ? '<span class="lbl">' + (item.auto ? "🤖 رسالة أوتوماتيك" : "🤖 بوت NOURYS".replace("NOURYS", '<span dir="ltr">NOURYS</span>')) + "</span>" : "";
+    var tick = item.who === "me" ? " ✓✓" : "";
+    b.innerHTML = lbl + (item.ltr ? '<span dir="ltr">' + esc(item.text) + "</span>" : bidi(item.text)) + '<span class="t">' + clock() + tick + "</span>";
+    msgs.appendChild(b);
+    scrollChat();
+  }
+
+  function customerTypes(text, id){
+    field.textContent = "";
+    var i = 0;
+    return new Promise(function(res, rej){
+      (function next(){
+        if (id !== runId) { rej("stop"); return; }
+        if (i >= text.length || REDUCED){ field.textContent = ""; res(); return; }
+        field.textContent += text.charAt(i++);
+        setTimeout(next, TYPE_SPEED);
+      })();
+    });
+  }
+
+  function botTypes(text, id){
+    var t = document.createElement("div");
+    t.className = "typing";
+    t.innerHTML = "<i></i><i></i><i></i>";
+    msgs.appendChild(t);
+    presence.textContent = "يكتب…";
+    scrollChat();
+    return sleep(BOT_TYPING + Math.min(text.length * 12, 900), id).then(function(){
+      t.remove(); presence.textContent = "متصل";
+    }, function(e){ t.remove(); presence.textContent = "متصل"; throw e; });
+  }
+
+  function rowHTML(r, isNew){
+    var st = r[8] === "new" ? '<span class="status st-new">جديدة</span>' :
+             r[8] === "ok"  ? '<span class="status st-ok">مؤكدة ✓</span>' :
+                              '<span class="status st-done">تم التوصيل</span>';
+    return '<td class="idx">' + r[9] + '</td><td dir="ltr">' + r[0] + '</td><td dir="ltr">' + r[1] + '</td><td>' + esc(r[2]) +
+      '</td><td dir="ltr">' + r[3] + '</td><td>' + esc(r[4]) + '</td><td>' + esc(r[5]) + '</td><td>' + esc(r[6]) +
+      '</td><td>' + esc(r[7]) + '</td><td class="status-cell">' + st + '</td>';
+  }
+
+  function today(){ var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+
+  function addRow(){
+    newRow = document.createElement("tr");
+    newRow.className = "new";
+    newRow.innerHTML = rowHTML([today(), ORDER.id, ORDER.name, ORDER.phone, ORDER.wilaya, ORDER.commune, ORDER.product, ORDER.price, "new", OLD_ROWS.length + 1], true);
+    rows.appendChild(newRow);
+  }
+
+  function showToast(){
+    toastBody.innerHTML = esc(ORDER.name) + " · " + esc(ORDER.wilaya.replace(/^\d+\s*-\s*/, "")) + " · " + esc(ORDER.price);
+    toast.classList.add("show");
+  }
+
+  function confirmClick(id){
+    if (!newRow) return Promise.resolve();
+    var cell = newRow.querySelector(".status-cell");
+    var wrap = cell.closest(".table-wrap");
+    // bring the status column into view (it is the last column, on the left in RTL)
+    try { wrap.scrollTo({ left: -wrap.scrollWidth, behavior: REDUCED ? "auto" : "smooth" }); } catch (e) { wrap.scrollLeft = -wrap.scrollWidth; }
+    return sleep(600, id).then(function(){
+      var r = document.createElement("span");
+      r.className = "ripple";
+      var rect = cell.getBoundingClientRect();
+      r.style.left = (rect.width / 2) + "px";
+      r.style.top = (rect.height / 2) + "px";
+      cell.appendChild(r);
+      return sleep(350, id);
+    }).then(function(){
+      cell.querySelector(".status").outerHTML = '<span class="status st-ok">مؤكدة ✓</span>';
+      return sleep(500, id);
+    });
+  }
+
+  function reset(){
+    runId++;
+    running = false;
+    msgs.innerHTML = '<span class="day">اليوم</span>';
+    field.textContent = "";
+    presence.textContent = "متصل";
+    rows.innerHTML = OLD_ROWS.map(function(r, i){ return "<tr>" + rowHTML(r.concat([i + 1])) + "</tr>"; }).join("");
+    newRow = null;
+    toast.classList.remove("show");
+    setStep(0);
+    playBtn.textContent = "▶ شغّل الديمو";
+  }
+
+  function play(){
+    reset();
+    var id = runId;
+    running = true;
+    playBtn.textContent = "⏳ الديمو يخدم…";
+    var chain = Promise.resolve();
+    CHAT.forEach(function(item){
+      chain = chain.then(function(){ return sleep(item.wait || 0, id); }).then(function(){
+        setStep(item.step);
+        if (item.act === "row") { addRow(); return; }
+        if (item.act === "toast") { showToast(); return; }
+        if (item.act === "confirm") { return confirmClick(id); }
+        if (item.who === "me") { return customerTypes(item.text, id).then(function(){ addBubble(item); }); }
+        return botTypes(item.text, id).then(function(){ addBubble(item); });
+      });
+    });
+    chain.then(function(){
+      stepsEl.forEach(function(li){ li.classList.remove("on"); li.classList.add("done"); });
+      running = false;
+      playBtn.textContent = "▶ شغّل مرة أخرى";
+    }).catch(function(){ /* stopped by reset */ });
+  }
+
+  playBtn.addEventListener("click", function(){ if (!running) play(); });
+  resetBtn.addEventListener("click", reset);
+  reset();
+
+  // Auto-play once when the demo scrolls into view (IntersectionObserver is fine here,
+  // the no-IO rule only applies to the hero panels).
+  if ("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      if (entries[0].isIntersecting){ io.disconnect(); if (!running) play(); }
+    }, { threshold: 0.4 });
+    io.observe(document.querySelector(".phone"));
+  }
+
+  /* =====================================================================
+     PART B background — glowing dots drifting upward
+     ===================================================================== */
+  var sky = document.getElementById("sky");
+  var ctx = sky.getContext("2d");
+  var dots = [], W = 0, H = 0, DPR = 1, partBOn = false, SPR = {};
+  // pre-render one soft glowing dot per colour (shadowBlur on every dot each frame is very slow)
+  function sprite(c){
+    var cv = document.createElement("canvas"); cv.width = cv.height = 32;
+    var g = cv.getContext("2d"), gr = g.createRadialGradient(16, 16, 0, 16, 16, 16);
+    gr.addColorStop(0, "rgba(" + c + ",1)"); gr.addColorStop(0.25, "rgba(" + c + ",.9)");
+    gr.addColorStop(0.5, "rgba(" + c + ",.25)"); gr.addColorStop(1, "rgba(" + c + ",0)");
+    g.fillStyle = gr; g.fillRect(0, 0, 32, 32); return cv;
+  }
+  SPR["63,209,198"] = sprite("63,209,198"); SPR["187,232,236"] = sprite("187,232,236");
+  function makeDots(){
+    DPR = Math.min(window.devicePixelRatio || 1, 1.5);
+    W = window.innerWidth; H = window.innerHeight;
+    sky.width = W * DPR; sky.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    var n = Math.min(260, Math.round((W * H) / 4500));
+    dots = [];
+    for (var i = 0; i < n; i++){
+      dots.push({
+        x: Math.random() * W, y: Math.random() * H,
+        r: 1 + Math.random() * 2.2,
+        v: 0.08 + Math.random() * 0.25,
+        a: Math.random() * Math.PI * 2,
+        s: 0.4 + Math.random() * 0.8,
+        tw: Math.random() * Math.PI * 2,
+        c: Math.random() < 0.7 ? "63,209,198" : "187,232,236"
+      });
+    }
+  }
+  function drawDots(t){
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalAlpha = 1;
+    for (var i = 0; i < dots.length; i++){
+      var d = dots[i];
+      if (!REDUCED){
+        d.y -= d.v;
+        d.a += 0.01;
+        if (d.y < -6){ d.y = H + 6; d.x = Math.random() * W; }
+      }
+      var x = d.x + Math.sin(d.a) * 6 * d.s;
+      var alpha = REDUCED ? 0.6 : 0.35 + 0.45 * (0.5 + 0.5 * Math.sin(t / 900 + d.tw));
+      var sz = d.r * 5;
+      ctx.globalAlpha = alpha;
+      ctx.drawImage(SPR[d.c], x - sz / 2, d.y - sz / 2, sz, sz);
+    }
+  }
+  function skyLoop(t){
+    // only spend frames when PART B is on screen
+    if (partBOn) drawDots(t);
+    if (!REDUCED) requestAnimationFrame(skyLoop);
+  }
+  makeDots();
+  if (REDUCED) drawDots(0); else requestAnimationFrame(skyLoop);
+  window.addEventListener("resize", function(){ makeDots(); if (REDUCED) drawDots(0); });
+
+  /* ---------- wiring (motion reference order) ---------- */
+  window.addEventListener("scroll", readScroll, { passive: true });
+  window.addEventListener("resize", readScroll);
+
+  readScroll();
+  shown = progress;
+  paint();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
