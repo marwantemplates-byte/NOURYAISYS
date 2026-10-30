@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>المنتجات | متجر نوريس</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800\&display=swap" rel="stylesheet">
+  <style>
+    :root{ --bg:#0f0d0b; --card:#1a1612; --line:rgba(212,175,106,.22); --gold:#d4af6a; --gold2:#f3dca4; --text:#f5efe6; --muted:#b9ad9c; }
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    body{ font-family:"Cairo",system-ui,sans-serif; background:radial-gradient(120% 70% at 50% 0%, #2a2118 0%, var(--bg) 60%); color:var(--text); min-height:100vh; padding:0 16px 32px; }
+    a{ color:inherit; text-decoration:none; }
+    .wrap{ max-width:1000px; margin:0 auto; }
+    header{ display:flex; justify-content:space-between; align-items:center; padding:20px 0; }
+    .logo{ font-weight:800; letter-spacing:.12em; color:var(--gold); }
+    .badge{ font-size:13px; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:4px 12px; }
+    .btn{ display:inline-block; padding:15px 32px; border-radius:14px; font-weight:800; font-size:17px; color:#1a1309; background:linear-gradient(135deg,var(--gold2),var(--gold)); box-shadow:0 10px 30px rgba(212,175,106,.25); }
+    footer{ text-align:center; color:var(--muted); font-size:13px; margin-top:28px; }
+    h1{ font-size:28px; margin:8px 0 20px; }
+    .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:16px; }
+    .card{ background:var(--card); border:1px solid var(--line); border-radius:20px; overflow:hidden; transition:transform .2s; }
+    .card:hover{ transform:translateY(-4px); }
+    .img{ aspect-ratio:1/1; display:grid; place-items:center; font-size:64px; font-weight:800; color:var(--gold); font-family:serif; background:radial-gradient(60% 60% at 50% 45%, rgba(212,175,106,.28), transparent 70%), linear-gradient(160deg,#241c14,#120e0b); }
+    .img img{ width:100%; height:100%; object-fit:cover; }
+    .body{ padding:14px 16px; }
+    .body h2{ font-size:18px; }
+    .body b{ color:var(--gold); font-size:18px; } .body s{ color:var(--muted); font-size:14px; margin-right:8px; }
+    #msg{ color:var(--muted); text-align:center; padding:40px 0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header><a class="logo" href="../index.html">متجر نوريس</a><div class="badge">🚚 الدفع عند الاستلام</div></header>
+    <h1>المنتجات</h1>
+    <div class="grid" id="grid"></div>
+    <div id="msg">جاري التحميل…</div>
+    <footer>© متجر نوريس</footer>
+  </div>
+  <script>
+    const db = supabase.createClient(
+      "https://wlpapvirtacrmcxcevuk.supabase.co",
+      "sb_publishable_z8EeZip-KzTc6jbDVVNfsg_YWo4fFDs",
+      { auth: { persistSession: false, autoRefreshToken: false, storageKey: "nourys-store" } }
+    );
+    const money = (n) => Number(n).toLocaleString("fr-DZ") + " دج";
+    const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+    (async () => {
+      const { data, error } = await db.from("products").select("*").eq("active", true).order("id");
+      const msg = document.getElementById("msg");
+      if (error) { msg.textContent = "ما قدرناش نجيبو المنتجات، عاود جرّب."; return; }
+      if (!data.length) { msg.textContent = "ما كاين حتى منتج دركا."; return; }
+      msg.remove();
+      for (const p of data) {
+        const a = el("a", "card"); a.href = "../product/index.html?id=" + p.id;
+        const img = el("div", "img", p.image_url ? null : p.name.trim().charAt(0));
+        if (p.image_url) { const i = el("img"); i.src = p.image_url; i.alt = p.name; i.loading = "lazy"; img.appendChild(i); }
+        const body = el("div", "body");
+        body.append(el("h2", null, p.name), el("b", null, money(p.price)));
+        if (p.old_price) body.append(el("s", null, money(p.old_price)));
+        a.append(img, body);
+        document.getElementById("grid").appendChild(a);
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>متجر نوريس</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800\&display=swap" rel="stylesheet">
+  <style>
+    :root{ --bg:#0f0d0b; --card:#1a1612; --line:rgba(212,175,106,.22); --gold:#d4af6a; --gold2:#f3dca4; --text:#f5efe6; --muted:#b9ad9c; }
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    body{ font-family:"Cairo",system-ui,sans-serif; background:radial-gradient(120% 70% at 50% 0%, #2a2118 0%, var(--bg) 60%); color:var(--text); min-height:100vh; padding:0 16px 32px; }
+    a{ color:inherit; text-decoration:none; }
+    .wrap{ max-width:1000px; margin:0 auto; }
+    header{ display:flex; justify-content:space-between; align-items:center; padding:20px 0; }
+    .logo{ font-weight:800; letter-spacing:.12em; color:var(--gold); }
+    .badge{ font-size:13px; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:4px 12px; }
+    .btn{ display:inline-block; padding:15px 32px; border-radius:14px; font-weight:800; font-size:17px; color:#1a1309; background:linear-gradient(135deg,var(--gold2),var(--gold)); box-shadow:0 10px 30px rgba(212,175,106,.25); }
+    footer{ text-align:center; color:var(--muted); font-size:13px; margin-top:28px; }
+    .hero{ text-align:center; padding:18vh 0 10vh; }
+    .hero h1{ font-size:clamp(36px,8vw,64px); font-weight:800; color:var(--gold2); }
+    .hero p{ color:var(--muted); margin:12px 0 32px; font-size:18px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header><div class="logo">متجر نوريس</div><div class="badge">🚚 الدفع عند الاستلام</div></header>
+    <section class="hero">
+      <h1>مرحبا بكم</h1>
+      <p>منتجات مختارة، توصيل لكل الولايات، وتخلّص كي تستلم.</p>
+      <a class="btn" href="collection/index.html">تصفح المنتجات</a>
+    </section>
+    <footer>© متجر نوريس</footer>
+  </div>
+</body>
+</html>

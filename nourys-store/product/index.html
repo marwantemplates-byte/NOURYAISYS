@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Oud Royal | عطر رجالي فاخر</title>
+  <meta name="description" content="Oud Royal: عطر رجالي فاخر بلمسة العود. 3500 دج، الدفع عند الاستلام.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- مكتبة supabase-js من CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+  <style>
+    :root{
+      --bg:#0f0d0b; --card:#1a1612; --line:rgba(212,175,106,.22);
+      --gold:#d4af6a; --gold2:#f3dca4; --text:#f5efe6; --muted:#b9ad9c; --ok:#3ecf8e; --err:#ff6b6b;
+    }
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    body{
+      font-family:'Cairo',system-ui,sans-serif; background:radial-gradient(120% 70% at 50% 0%, #2a2118 0%, var(--bg) 60%);
+      color:var(--text); min-height:100vh; padding:0 16px max(32px, env(safe-area-inset-bottom));
+    }
+    .wrap{ max-width:1000px; margin:0 auto; }
+    header{ display:flex; justify-content:space-between; align-items:center; padding:20px 0; }
+    .logo{ font-weight:800; letter-spacing:.12em; color:var(--gold); direction:ltr; }
+    .badge{ font-size:13px; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:4px 12px; }
+
+    .product{ display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:center; padding:12px 0 32px; }
+    .visual{
+      position:relative; aspect-ratio:1/1; border-radius:28px; overflow:hidden; border:1px solid var(--line);
+      background:radial-gradient(60% 60% at 50% 45%, rgba(212,175,106,.28), transparent 70%), linear-gradient(160deg,#241c14,#120e0b);
+      display:grid; place-items:center;
+    }
+    .visual svg{ width:62%; height:auto; filter:drop-shadow(0 24px 40px rgba(0,0,0,.6)); animation:float 5s ease-in-out infinite; }
+    @keyframes float{ 50%{ transform:translateY(-10px); } }
+    .tag{ position:absolute; top:16px; right:16px; background:var(--gold); color:#1a1309; font-weight:800; font-size:13px; padding:6px 12px; border-radius:999px; }
+
+    .info h1{ font-size:clamp(34px,6vw,52px); font-weight:800; direction:ltr; text-align:right; line-height:1.1; }
+    .info .sub{ color:var(--gold2); font-weight:600; margin-top:6px; }
+    .info p{ color:var(--muted); line-height:1.9; margin-top:14px; }
+    .notes{ display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; list-style:none; }
+    .notes li{ font-size:13px; border:1px solid var(--line); border-radius:999px; padding:5px 12px; color:var(--gold2); }
+    .price{ display:flex; align-items:baseline; gap:12px; margin-top:20px; }
+    .price b{ font-size:34px; color:var(--gold); }
+    .price s{ color:var(--muted); }
+    .perks{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:18px; font-size:13px; color:var(--muted); text-align:center; }
+    .perks div{ border:1px solid var(--line); border-radius:14px; padding:10px 6px; }
+
+    .order{ background:var(--card); border:1px solid var(--line); border-radius:24px; padding:24px; max-width:560px; margin:0 auto; }
+    .order h2{ font-size:22px; margin-bottom:4px; }
+    .order .hint{ color:var(--muted); font-size:14px; margin-bottom:18px; }
+    label{ display:block; font-weight:600; font-size:14px; margin-bottom:12px; }
+    input{
+      display:block; width:100%; margin-top:6px; padding:13px 14px; font:inherit; font-weight:400;
+      background:#120f0c; color:var(--text); border:1px solid var(--line); border-radius:12px;
+    }
+    input:focus{ outline:2px solid var(--gold); border-color:transparent; }
+    .ltr{ direction:ltr; text-align:right; }
+    .summary{ display:flex; justify-content:space-between; padding:12px 14px; border-radius:12px; background:rgba(212,175,106,.08); margin:4px 0 16px; font-size:15px; }
+    button{
+      width:100%; padding:15px; border:0; border-radius:14px; cursor:pointer; font:inherit; font-size:17px; font-weight:800;
+      color:#1a1309; background:linear-gradient(135deg,var(--gold2),var(--gold)); box-shadow:0 10px 30px rgba(212,175,106,.25);
+    }
+    button:disabled{ opacity:.6; cursor:wait; }
+    #msg{ margin-top:14px; text-align:center; font-weight:600; min-height:24px; }
+    #msg.ok{ color:var(--ok); } #msg.err{ color:var(--err); }
+    .done{ text-align:center; padding:20px 0; }
+    .done .big{ font-size:48px; }
+    .done h3{ font-size:22px; margin:8px 0; }
+    .done p{ color:var(--muted); }
+    footer{ text-align:center; color:var(--muted); font-size:13px; margin-top:28px; }
+
+    @media (max-width:760px){
+      .product{ grid-template-columns:1fr; gap:20px; }
+      .info h1{ text-align:center; } .info .sub, .info p{ text-align:center; }
+      .notes, .price{ justify-content:center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a class="logo" href="../collection/index.html" style="text-decoration:none">→ المنتجات</a>
+      <div class="badge">🚚 الدفع عند الاستلام</div>
+    </header>
+
+    <!-- المنتج -->
+    <section class="product">
+      <div class="visual" aria-hidden="true">
+        <span class="tag">الأكثر طلبًا</span>
+        <!-- صورة العطر: رسم SVG بسيط بلاصة صورة حقيقية -->
+        <img id="pImg" alt="" hidden style="width:100%;height:100%;object-fit:cover">
+        <svg id="pSvg" viewBox="0 0 200 260">
+          <defs>
+            <linearGradient id="glass" x1="0" x2="1"><stop offset="0" stop-color="#3a2a16"/><stop offset=".5" stop-color="#8a6231"/><stop offset="1" stop-color="#3a2a16"/></linearGradient>
+            <linearGradient id="cap" x1="0" x2="1"><stop offset="0" stop-color="#a77d3b"/><stop offset=".5" stop-color="#f3dca4"/><stop offset="1" stop-color="#a77d3b"/></linearGradient>
+          </defs>
+          <rect x="78" y="10" width="44" height="46" rx="6" fill="url(#cap)"/>
+          <rect x="86" y="56" width="28" height="16" fill="#6b4f2a"/>
+          <rect x="30" y="72" width="140" height="176" rx="26" fill="url(#glass)" stroke="#d4af6a" stroke-width="3"/>
+          <rect x="44" y="86" width="20" height="148" rx="10" fill="rgba(255,255,255,.12)"/>
+          <rect x="58" y="138" width="84" height="54" rx="6" fill="#120e0b" stroke="#d4af6a" stroke-width="2"/>
+          <text x="100" y="162" text-anchor="middle" fill="#f3dca4" font-size="14" font-weight="800" font-family="serif">OUD</text>
+          <text x="100" y="181" text-anchor="middle" fill="#d4af6a" font-size="10" letter-spacing="3" font-family="serif">ROYAL</text>
+        </svg>
+      </div>
+      <div class="info">
+        <h1 id="pName">Oud Royal</h1>
+        <div class="sub">عطر رجالي فاخر بلمسة العود</div>
+        <p id="pDesc">ريحة دافية وقوية تبقى معاك النهار كامل. عود أصيل مع لمسة عنبر وخشب الصندل، تعطيك حضور يتفكروه الناس. مناسب للمناسبات والخدمة وكل يوم.</p>
+        <ul class="notes"><li>🪵 عود</li><li>✨ عنبر</li><li>🌿 خشب الصندل</li><li>⏳ يدوم +12 ساعة</li></ul>
+        <div class="price"><b id="pPrice">…</b><s id="pOld"></s></div>
+        <div class="perks"><div>🚚 توصيل للولايات</div><div>💵 خلّص كي تستلم</div><div>🔁 تبديل إذا كاين مشكل</div></div>
+      </div>
+    </section>
+
+    <!-- فورم الطلب -->
+    <section class="order" id="order">
+      <div id="formBox">
+        <h2>اطلب دركا</h2>
+        <p class="hint">عمّر معلوماتك ونعيطولك نأكدو الطلبية.</p>
+        <form id="orderForm">
+          <label>الاسم واللقب
+            <input name="name" required minlength="2" autocomplete="name" placeholder="مثلا: أمين بن علي">
+          </label>
+          <label>رقم الهاتف
+            <input name="phone" required type="tel" inputmode="numeric" pattern="0[567][0-9]{8}" class="ltr" placeholder="0555123456" title="10 أرقام، يبدا بـ 05 ولا 06 ولا 07">
+          </label>
+          <label>الولاية
+            <input name="wilaya" required placeholder="مثلا: 16 - الجزائر">
+          </label>
+          <label>الكمية
+            <select name="quantity" id="qty" style="display:block;width:100%;margin-top:6px;padding:13px 14px;font:inherit;background:#120f0c;color:var(--text);border:1px solid var(--line);border-radius:12px">
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+          </label>
+          <div class="summary"><span id="sumName">Oud Royal × 1</span><b id="sumPrice">…</b></div>
+          <button type="submit" id="orderBtn">اطلب الآن</button>
+        </form>
+        <div id="msg"></div>
+      </div>
+    </section>
+
+    <footer>© Oud Royal · الدفع عند الاستلام</footer>
+  </div>
+
+  <script>
+    // الاتصال بـ Supabase (نفس المشروع ونفس الجدول)
+    const db = supabase.createClient(
+      "https://wlpapvirtacrmcxcevuk.supabase.co",
+      "sb_publishable_z8EeZip-KzTc6jbDVVNfsg_YWo4fFDs",
+      // المتجر ديما زبون (anon)، حتى لو راك داخل للوحة التحكم في نفس المتصفح
+      { auth: { persistSession: false, autoRefreshToken: false, storageKey: "nourys-store" } }
+    );
+
+    // المنتج يجي من جدول products في Supabase (تبدّلو من لوحة التحكم)
+    // تقدر تختار منتج آخر بالرابط: store.html?id=2
+    let PRODUCT = null;
+    const money = (n) => Number(n).toLocaleString("fr-DZ") + " دج";
+
+    function updateSummary() {
+      if (!PRODUCT) return;
+      const q = Number(document.getElementById("qty").value);
+      document.getElementById("sumName").textContent = PRODUCT.name + " × " + q;
+      document.getElementById("sumPrice").textContent = money(PRODUCT.price * q);
+    }
+
+    async function loadProduct() {
+      const id = new URLSearchParams(location.search).get("id");
+      let q = db.from("products").select("*").eq("active", true);
+      q = id ? q.eq("id", id) : q.order("id").limit(1);
+      const { data, error } = await q;
+      const btn = document.getElementById("orderBtn");
+      if (error || !data || !data.length) {
+        document.getElementById("pPrice").textContent = "غير متوفر حاليا";
+        btn.disabled = true; btn.textContent = "غير متوفر";
+        return;
+      }
+      PRODUCT = data[0];
+      document.title = PRODUCT.name;
+      document.getElementById("pName").textContent = PRODUCT.name;
+      if (PRODUCT.description) document.getElementById("pDesc").textContent = PRODUCT.description;
+      document.getElementById("pPrice").textContent = money(PRODUCT.price);
+      document.getElementById("pOld").textContent = PRODUCT.old_price ? money(PRODUCT.old_price) : "";
+      if (PRODUCT.image_url) {
+        const img = document.getElementById("pImg");
+        img.src = PRODUCT.image_url; img.alt = PRODUCT.name; img.hidden = false;
+        document.getElementById("pSvg").style.display = "none";
+      }
+      updateSummary();
+    }
+    document.getElementById("qty").addEventListener("change", updateSummary);
+    loadProduct();
+
+    const form = document.getElementById("orderForm");
+    const btn = document.getElementById("orderBtn");
+    const msg = document.getElementById("msg");
+    const box = document.getElementById("formBox");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const f = new FormData(form);
+      if (!PRODUCT) return;
+
+      btn.disabled = true;
+      btn.textContent = "جاري الإرسال…";
+      msg.textContent = ""; msg.className = "";
+
+      // الزبون يقدر يزيد طلبية برك (insert)، ما يقدرش يقرا الطلبيات تاع الناس
+      const { error } = await db.from("orders").insert({
+        name: f.get("name").trim(),
+        phone: f.get("phone").trim(),
+        wilaya: f.get("wilaya").trim(),
+        product_id: PRODUCT.id,                 // نبعثو رقم المنتج برك
+        quantity: Number(f.get("quantity"))     // السعر والحالة تحسبهم قاعدة البيانات وحدها
+      });
+
+      if (error) {
+        btn.disabled = false;
+        btn.textContent = "اطلب الآن";
+        msg.textContent = "صرا مشكل، عاود جرّب. (" + error.message + ")";
+        msg.className = "err";
+        return;
+      }
+
+      // نبدّلو الفورم برسالة النجاح
+      box.innerHTML =
+        '<div class="done"><div class="big">✅</div><h3>تم تسجيل طلبيتك ✅</h3>' +
+        '<p>شكرا! راح نعيطولك قريب باش نأكدو الطلبية.</p></div>';
+    });
+  </script>
+</body>
+</html>
