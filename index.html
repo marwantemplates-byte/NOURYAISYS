@@ -679,7 +679,7 @@ $('setForm').onsubmit = async e => {
   note('setMsg', 'تم حفظ التعديلات ✅', true); loadProfile();
 };
 
-setMode('login');
+setMode(new URLSearchParams(location.search).has('signup') ? 'signup' : 'login');
 greet();
 db.auth.getSession().then(({ data }) => { if (!data.session) $('auth').classList.remove('hidden'); });
 </script>
