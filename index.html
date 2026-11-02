@@ -90,29 +90,41 @@ a{color:inherit}
   .mrow{grid-template-columns:1fr 78px}.mrow .mtrack{grid-column:1/-1;grid-row:2}
 }
 
-/* story */
-.story{position:relative;height:460vh}
-.stage{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:minmax(260px,360px) 1fr;align-items:center;gap:40px;width:min(1180px,100% - 32px);margin-inline:auto}
-.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
-.steps li{padding:14px 18px;border-inline-start:2px solid var(--line);color:var(--muted);transition:color .3s,border-color .3s,background .3s}
-.steps li b{display:block;font-family:var(--display);font-size:19px;color:inherit;line-height:1.4}
-.steps li span{font-size:14px;display:block;max-height:0;overflow:hidden;opacity:0;transition:max-height .35s ease,opacity .35s}
-.steps li.on{border-color:var(--acc);color:var(--ink);background:linear-gradient(to left,rgba(63,209,198,.08),transparent)}
-.steps li.on span{max-height:80px;opacity:1;color:var(--muted)}
-.steps .num{font-family:var(--display);font-size:13px;color:var(--acc)}
-.story-title{font-family:var(--display);font-weight:800;font-size:clamp(26px,3vw,38px);line-height:1.3;margin:0 0 22px}
-.scene{width:100%;max-height:82vh}
-.scene svg{width:100%;height:auto;display:block;overflow:visible}
-.scene text{font-family:var(--body)}
-@media (max-width:900px){
-  .story{height:420vh}
-  .stage{grid-template-columns:1fr;align-content:center;gap:14px}
-  .story-title{display:none}
-  .steps{order:2}
-  .steps li{display:none;border:0;padding:4px 0;background:none!important;text-align:center}
-  .steps li.on{display:block}
-  .steps li.on span{max-height:none}
-}
+
+/* hero video */
+.hero{position:relative;min-height:min(92vh,860px);display:flex;align-items:center;padding:110px 0 80px;overflow:hidden;margin-top:-70px}
+.hero-media{position:absolute;inset:0;z-index:0}
+.hero-media video{width:100%;height:100%;object-fit:cover;object-position:62% 50%;display:block}
+.hero-media:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,47,53,.82) 0%,rgba(4,47,53,.45) 38%,rgba(4,47,53,.55) 70%,var(--bg) 100%),radial-gradient(70% 60% at 50% 45%,rgba(4,47,53,.15),rgba(4,47,53,.6))}
+.hero-copy{position:relative;z-index:1}
+.hero h1{text-shadow:0 4px 30px rgba(0,0,0,.35)}
+.hero p{color:var(--light)}
+.showcase{position:relative;padding:10px 0 40px}
+.showcase .mock-stage{margin-top:0}
+.mtrack em{transition:width 1.2s cubic-bezier(.2,.8,.2,1) .2s}
+@media (max-width:720px){.hero{min-height:88vh;padding-top:100px}.hero-media video{object-position:58% 50%}}
+
+/* reach / globe */
+.reach-grid{display:grid;grid-template-columns:1fr minmax(320px,520px);gap:56px;align-items:center}
+.reach-copy h2{max-width:16ch}
+.reach-card{margin-top:30px;max-width:380px;background:rgba(5,55,62,.75);border:1px solid var(--line2);border-radius:16px;padding:16px 18px;transition:opacity .25s,transform .25s}
+.reach-card.swap{opacity:0;transform:translateY(8px)}
+.rc-head{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.rc-head b{color:var(--ink);font-size:15px}
+.rc-head span:last-child{margin-inline-start:auto;direction:ltr}
+.rc-dot{width:9px;height:9px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 4px rgba(63,209,198,.18)}
+.rc-msg{margin-top:10px;background:var(--wa);color:#0B2A1E;border-radius:12px 12px 12px 4px;padding:9px 13px;font-size:14.5px}
+.rc-foot{margin-top:8px;font-size:12.5px;color:var(--acc)}
+.reach-stats{display:flex;gap:34px;margin:26px 0 0}
+.reach-stats div{display:flex;flex-direction:column-reverse}
+.reach-stats dd{margin:0;font-family:var(--display);font-weight:900;font-size:34px;line-height:1.1}
+.reach-stats dt{font-size:13px;color:var(--muted)}
+.sample-note{font-size:12px;color:var(--muted);opacity:.75;margin:18px 0 0}
+.globe-box{position:relative;aspect-ratio:1;width:100%;max-width:520px;margin-inline:auto}
+.globe-box:before{content:"";position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,rgba(63,209,198,.18),transparent 65%);filter:blur(20px)}
+#globe{position:relative;width:100%;height:100%;opacity:0;transition:opacity 1s}
+#globe.on{opacity:1}
+@media (max-width:860px){.reach-grid{grid-template-columns:1fr;gap:20px}.globe-box{max-width:360px;order:-1}}
 
 /* features */
 .sec{padding:110px 0}
@@ -158,8 +170,9 @@ footer a:hover{color:var(--ink)}
   <div class="wrap">
     <a class="logo" href="#top" aria-label="NOURYS"><img src="mark.png" alt="" width="32" height="32"><b>NOURY<span>S</span></b></a>
     <nav class="links" aria-label="أقسام الصفحة">
-      <a href="#story">كيف يعمل</a>
+      <a href="#showcase">اللوحة</a>
       <a href="#features">المزايا</a>
+      <a href="#reach">التغطية</a>
       <a href="#start">ابدأ الآن</a>
     </nav>
     <div class="nav-cta">
@@ -171,143 +184,42 @@ footer a:hover{color:var(--ink)}
 
 <main id="top">
   <section class="hero">
-    <div class="wrap">
+    <div class="hero-media" aria-hidden="true">
+      <video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="hero-poster.jpg"><source src="hero.mp4" type="video/mp4"></video>
+    </div>
+    <div class="wrap hero-copy">
       <h1>تابع كل طلب حتى باب عميلك</h1>
       <p>NOURYS يرسل لعملائك رسائل واتساب في كل مرحلة من مراحل الطلب، ويجمع طلبات متجرك في لوحة واحدة، فيبقى العميل في انتظار طلبه ويقل المرتجع.</p>
       <div class="ctas">
         <a class="btn p" href="https://nourys-app.vercel.app/?signup=1">ابدأ تجربتك المجانية</a>
-        <a class="btn g" href="#story">شاهد كيف يعمل</a>
+        <a class="btn g" href="#showcase">شاهد اللوحة</a>
       </div>
       <small>بدون بطاقة دفع. التفعيل خلال دقائق.</small>
+    </div>
+  </section>
 
+  <section class="showcase" id="showcase">
+    <div class="wrap">
       <div class="mock-stage" aria-hidden="true">
         <div class="mock" id="mock">
           <div class="mock-top"><i></i><i></i><i></i><u>nourys-app.vercel.app</u></div>
           <div class="mock-body">
             <div class="mock-main">
               <div class="mock-stats">
-                <div><strong>48</strong><span>طلبات اليوم</span></div>
-                <div><strong>31</strong><span>قيد التوصيل</span></div>
-                <div><strong>3</strong><span>المرتجعات</span></div>
-                <div class="acc"><strong>91%</strong><span>نسبة التوصيل</span></div>
+                <div><strong data-to="48">0</strong><span>طلبات اليوم</span></div>
+                <div><strong data-to="31">0</strong><span>قيد التوصيل</span></div>
+                <div><strong data-to="3">0</strong><span>المرتجعات</span></div>
+                <div class="acc"><strong data-to="92" data-suffix="%">0%</strong><span>نسبة التوصيل</span></div>
               </div>
               <div class="mock-rows">
-                <div class="mrow"><div><div class="n">محمد بن علي</div><div class="s">سطيف، العلمة</div></div><div class="mtrack"><em style="width:60%"></em><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i></i></div><div class="mbtn">تم التسليم</div></div>
+                <div class="mrow"><div><div class="n">محمد بن علي</div><div class="s">سطيف، العلمة</div></div><div class="mtrack"><em data-w="60%" style="width:0"></em><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i></i></div><div class="mbtn">تم التسليم</div></div>
                 <div class="mrow"><div><div class="n">أمينة ق.</div><div class="s">وهران</div></div><div class="mtrack"><em style="width:0"></em><i class="d"></i><i></i><i></i><i></i><i></i></div><div class="mbtn">تأكيد الطلب</div></div>
-                <div class="mrow"><div><div class="n">كريم س.</div><div class="s">الجزائر، باب الزوار</div></div><div class="mtrack"><em style="width:40%"></em><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i></div><div class="mbtn">سُلّم للمندوب</div></div>
+                <div class="mrow"><div><div class="n">كريم س.</div><div class="s">الجزائر، باب الزوار</div></div><div class="mtrack"><em data-w="40%" style="width:0"></em><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i></div><div class="mbtn">سُلّم للمندوب</div></div>
               </div>
             </div>
             <div class="mock-side"><img src="logo.png" alt=""><b class="on">الطلبات</b><b>طلب جديد</b><b>الإعدادات</b></div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- scroll story -->
-  <section class="story" id="story" aria-label="رحلة الطلب">
-    <div class="stage">
-      <div>
-        <h2 class="story-title">رحلة طلب واحد، من لوحتك إلى باب العميل</h2>
-        <ol class="steps" id="steps">
-          <li class="on"><span class="num" style="display:inline;opacity:1;max-height:none">1</span><b>تؤكد الطلب بضغطة واحدة</b><span>من لوحة NOURYS، دون مكالمات ولا جداول.</span></li>
-          <li><span class="num" style="display:inline;opacity:1;max-height:none">2</span><b>يتلقى العميل رسالة فورًا</b><span>رسالة واتساب باسم متجرك تؤكد له أن طلبه في الطريق.</span></li>
-          <li><span class="num" style="display:inline;opacity:1;max-height:none">3</span><b>ينطلق الطلب مع شركة التوصيل</b><span>ومع كل مرحلة يصل العميلَ تحديث جديد.</span></li>
-          <li><span class="num" style="display:inline;opacity:1;max-height:none">4</span><b>يُسلَّم الطلب ويقل المرتجع</b><span>العميل ينتظر المندوب، وأنت ترى النتيجة في لوحتك.</span></li>
-        </ol>
-      </div>
-
-      <div class="scene">
-        <svg viewBox="0 0 1000 640" direction="rtl" role="img" aria-label="الطلب ينتقل من لوحة التحكم إلى شاحنة التوصيل ثم إلى منزل العميل">
-          <defs>
-            <linearGradient id="gWin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A5560"/><stop offset="1" stop-color="#06434C"/></linearGradient>
-            <linearGradient id="gTruck" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3FD1C6"/><stop offset="1" stop-color="#1AA9A0"/></linearGradient>
-            <linearGradient id="gBox" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E7C08A"/><stop offset="1" stop-color="#C99A5B"/></linearGradient>
-            <filter id="soft" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity=".35"/></filter>
-          </defs>
-
-          <!-- road -->
-          <g id="road">
-            <rect x="0" y="560" width="1000" height="56" rx="10" fill="#03262B"/>
-            <g id="dash" stroke="#1B7480" stroke-width="4" stroke-dasharray="26 22"><line x1="-60" y1="588" x2="1060" y2="588"/></g>
-          </g>
-
-          <!-- house (customer) -->
-          <g id="house" transform="translate(40 405)">
-            <rect x="10" y="62" width="150" height="100" rx="6" fill="#0A5560" stroke="#1B7480" stroke-width="2"/>
-            <path d="M0 70 L85 0 L170 70 Z" fill="#0C6873" stroke="#1B7480" stroke-width="2" stroke-linejoin="round"/>
-            <rect x="72" y="100" width="34" height="62" rx="4" fill="#042F35" stroke="#1B7480" stroke-width="2"/>
-            <rect x="26" y="88" width="32" height="28" rx="4" fill="#BBE8EC" opacity=".55"/>
-            <rect x="120" y="88" width="28" height="28" rx="4" fill="#BBE8EC" opacity=".55"/>
-            <g id="doneBadge" opacity="0" transform="translate(130 -6)">
-              <circle r="24" fill="#5BE3A0"/><path d="M-10 0 l7 7 l13 -14" fill="none" stroke="#04302F" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-            </g>
-          </g>
-
-          <!-- customer phone -->
-          <g id="phone" transform="translate(28 30)" filter="url(#soft)">
-            <rect width="200" height="350" rx="26" fill="#0B1F22" stroke="#1B7480" stroke-width="2"/>
-            <rect x="10" y="12" width="180" height="326" rx="18" fill="#E7DED3"/>
-            <rect x="10" y="12" width="180" height="44" rx="18" fill="#0C6873"/>
-            <rect x="10" y="38" width="180" height="18" fill="#0C6873"/>
-            <circle cx="164" cy="34" r="12" fill="#BBE8EC"/>
-            <text x="144" y="39" text-anchor="start" font-size="13" font-weight="600" fill="#fff">متجرك</text>
-            <g id="b1" opacity="0"><rect x="22" y="70" width="156" height="50" rx="10" fill="#fff"/><text x="168" y="92" text-anchor="start" font-size="11.5" fill="#0B2A1E">مرحبًا محمد، تم تأكيد</text><text x="168" y="110" text-anchor="start" font-size="11.5" fill="#0B2A1E">طلبك بنجاح ✅</text></g>
-            <g id="b2" opacity="0"><rect x="22" y="130" width="156" height="50" rx="10" fill="#fff"/><text x="168" y="152" text-anchor="start" font-size="11.5" fill="#0B2A1E">طلبك الآن مع شركة</text><text x="168" y="170" text-anchor="start" font-size="11.5" fill="#0B2A1E">التوصيل 🚚</text></g>
-            <g id="b3" opacity="0"><rect x="22" y="190" width="156" height="50" rx="10" fill="#fff"/><text x="168" y="212" text-anchor="start" font-size="11.5" fill="#0B2A1E">المندوب في طريقه إليك</text><text x="168" y="230" text-anchor="start" font-size="11.5" fill="#0B2A1E">اليوم 📍</text></g>
-            <g id="b4" opacity="0"><rect x="22" y="250" width="156" height="50" rx="10" fill="#DCF8C6"/><text x="168" y="272" text-anchor="start" font-size="11.5" fill="#0B2A1E">تم تسليم طلبك.</text><text x="168" y="290" text-anchor="start" font-size="11.5" fill="#0B2A1E">شكرًا لثقتك 🌟</text></g>
-          </g>
-
-          <!-- dashboard window -->
-          <g id="win" filter="url(#soft)">
-            <rect x="420" y="40" width="540" height="300" rx="18" fill="url(#gWin)" stroke="#1B7480" stroke-width="2"/>
-            <circle cx="446" cy="66" r="6" fill="#1B7480"/><circle cx="466" cy="66" r="6" fill="#1B7480"/><circle cx="486" cy="66" r="6" fill="#1B7480"/>
-            <text x="936" y="72" text-anchor="start" font-size="16" font-weight="700" fill="#E9FBFA">الطلبات</text>
-            <line x1="420" y1="92" x2="960" y2="92" stroke="#11606B" stroke-width="2"/>
-            <!-- other rows -->
-            <g opacity=".55">
-              <rect x="444" y="232" width="492" height="40" rx="10" fill="#053B42"/>
-              <text x="920" y="257" text-anchor="start" font-size="13" fill="#93C6CB">أمينة ق. — وهران</text>
-              <rect x="444" y="282" width="492" height="40" rx="10" fill="#053B42"/>
-              <text x="920" y="307" text-anchor="start" font-size="13" fill="#93C6CB">كريم س. — الجزائر</text>
-            </g>
-            <!-- active row -->
-            <g id="row">
-              <rect x="444" y="110" width="492" height="106" rx="12" fill="#042F35" stroke="#3FD1C6" stroke-opacity=".5" stroke-width="1.5"/>
-              <text x="916" y="142" text-anchor="start" font-size="17" font-weight="700" fill="#E9FBFA">محمد بن علي</text>
-              <text x="916" y="166" text-anchor="start" font-size="13" fill="#93C6CB">سطيف، العلمة · ساعة يد · 3500 دج</text>
-              <g id="pill"><rect x="782" y="180" width="134" height="26" rx="13" fill="#0A5560"/><text id="pillTxt" x="849" y="198" text-anchor="middle" font-size="13" font-weight="600" fill="#BBE8EC">جديد</text></g>
-              <g id="cbtn"><rect id="cbtnBg" x="468" y="128" width="150" height="44" rx="10" fill="#3FD1C6"/><text x="543" y="156" text-anchor="middle" font-size="15" font-weight="700" fill="#03302E">تأكيد الطلب</text></g>
-              <circle id="ripple" cx="543" cy="150" r="10" fill="none" stroke="#E9FBFA" stroke-width="3" opacity="0"/>
-            </g>
-          </g>
-
-          <!-- parcel -->
-          <g id="parcel" opacity="0">
-            <rect x="-26" y="-22" width="52" height="44" rx="5" fill="url(#gBox)"/>
-            <rect x="-5" y="-22" width="10" height="44" fill="#A8793F" opacity=".6"/>
-            <rect x="-26" y="-6" width="52" height="7" fill="#A8793F" opacity=".35"/>
-          </g>
-
-          <!-- truck -->
-          <g id="truck" transform="translate(760 470)">
-            <g id="truckBody">
-              <rect x="0" y="0" width="150" height="86" rx="10" fill="url(#gTruck)"/>
-              <rect x="0" y="0" width="150" height="86" rx="10" fill="none" stroke="#BBE8EC" stroke-opacity=".5" stroke-width="2"/>
-              <text x="75" y="52" text-anchor="middle" font-family="Cairo" font-size="19" font-weight="900" fill="#03302E" style="direction:ltr" letter-spacing="1.5">NOURYS</text>
-              <path d="M-58 86 V36 Q-58 24 -46 22 L-12 18 Q-4 18 0 26 V86 Z" fill="#E9FBFA"/>
-              <path d="M-50 40 Q-50 32 -42 31 L-14 28 V52 H-50 Z" fill="#0C6873"/>
-              <rect x="-62" y="74" width="10" height="8" rx="2" fill="#F5C86A"/>
-            </g>
-            <g class="wheel" transform="translate(-28 92)"><circle r="17" fill="#0B1F22"/><circle r="7" fill="#93C6CB"/><rect x="-1.5" y="-15" width="3" height="10" fill="#93C6CB"/></g>
-            <g class="wheel" transform="translate(110 92)"><circle r="17" fill="#0B1F22"/><circle r="7" fill="#93C6CB"/><rect x="-1.5" y="-15" width="3" height="10" fill="#93C6CB"/></g>
-          </g>
-
-          <!-- finger -->
-          <g id="finger" opacity="0">
-            <path d="M0 0 C-4 -6 -14 -6 -14 4 L-14 46 C-24 38 -38 40 -36 52 C-34 60 -18 76 -8 92 C0 104 12 110 30 110 L48 110 C66 110 76 96 76 80 L76 46 C76 36 62 34 58 42 C58 32 44 30 40 40 C40 30 26 28 22 38 L22 4 C22 -6 4 -8 0 0 Z" transform="translate(-4 -2) scale(.82)" fill="#F2D2B6" stroke="#5A3A26" stroke-width="2.4" stroke-linejoin="round"/>
-          </g>
-        </svg>
       </div>
     </div>
   </section>
@@ -341,6 +253,28 @@ footer a:hover{color:var(--ink)}
           <p>عدد الطلبات، وما سُلّم، وما رجع. تعرف أين تخسر قبل أن تدفع على الإعلان التالي.</p>
         </article>
       </div>
+    </div>
+  </section>
+
+
+  <!-- reach: globe -->
+  <section class="sec reach" id="reach">
+    <div class="wrap reach-grid">
+      <div class="reach-copy">
+        <h2>رسائلك تصل إلى عملائك في كل الولايات</h2>
+        <p class="lead">من العاصمة إلى تمنراست، يتلقى كل عميل تحديثات طلبه عبر واتساب باسم متجرك، أينما كان.</p>
+        <div class="reach-card" id="reachCard" aria-live="polite">
+          <div class="rc-head"><span class="rc-dot"></span><b id="rcCity">وهران</b><span id="rcTime">10:02</span></div>
+          <div class="rc-msg" id="rcMsg">مرحبًا أمينة، تم تأكيد طلبك ✅</div>
+          <div class="rc-foot" id="rcStatus">تم التأكيد</div>
+        </div>
+        <dl class="reach-stats">
+          <div><dt>ولاية مغطاة</dt><dd>58</dd></div>
+          <div><dt>مراحل متابعة لكل طلب</dt><dd>4</dd></div>
+        </dl>
+        <p class="sample-note">الرسائل المعروضة أمثلة توضيحية لطريقة عمل المتابعة.</p>
+      </div>
+      <div class="globe-box" aria-hidden="true"><canvas id="globe"></canvas></div>
     </div>
   </section>
 
@@ -392,81 +326,98 @@ footer a:hover{color:var(--ink)}
   addEventListener('resize',init);document.addEventListener('visibilitychange',function(){if(!document.hidden&&!still)draw();});init();draw();
 })();
 
-/* scroll-driven scenes: one rAF per scroll, transforms + opacity only */
+/* nav, hero tilt, count-up */
 (function(){
   var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var $ = function(id){ return document.getElementById(id); };
-  var nav=$('nav'), mock=$('mock'), story=$('story'), steps=[].slice.call(document.querySelectorAll('#steps li'));
-  var finger=$('finger'), ripple=$('ripple'), cbtn=$('cbtn'), cbtnBg=$('cbtnBg'), pillTxt=$('pillTxt'), pill=$('pill').firstElementChild,
-      parcel=$('parcel'), truck=$('truck'), truckBody=$('truckBody'), wheels=[].slice.call(document.querySelectorAll('.wheel')),
-      dash=$('dash'), win=$('win'), done=$('doneBadge'), b=[1,2,3,4].map(function(i){return $('b'+i);});
-  var wheelPos=[[-28,92],[110,92]];
-
+  var nav=document.getElementById('nav'), mock=document.getElementById('mock'), show=document.getElementById('showcase');
   function clamp(v){ return v<0?0:v>1?1:v; }
-  function seg(p,a,b){ return clamp((p-a)/(b-a)); }
-  function ease(t){ return t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
-  function lerp(a,b,t){ return a+(b-a)*t; }
-
-  function scene(p){
-    /* 1 — finger comes in and taps "confirm" */
-    var fIn = ease(seg(p,.02,.12)), tap = seg(p,.12,.17), fOut = ease(seg(p,.19,.26));
-    var fx = lerp(700,560,fIn), fy = lerp(330,158,fIn) + Math.sin(tap*Math.PI)*8 + fOut*120;
-    finger.setAttribute('transform','translate('+fx+' '+fy+')');
-    finger.setAttribute('opacity', (fIn>0 ? 1 : 0) * (1-fOut));
-    cbtn.setAttribute('transform', tap>0&&tap<1 ? 'translate(543 150) scale('+(1-Math.sin(tap*Math.PI)*.06)+') translate(-543 -150)' : '');
-    ripple.setAttribute('opacity', tap>0&&tap<1 ? (1-tap)*.9 : 0);
-    ripple.setAttribute('r', 10+tap*60);
-    var confirmed = p >= .145;
-    pillTxt.textContent = confirmed ? 'مؤكَّد' : 'جديد';
-    pill.setAttribute('fill', confirmed ? '#3FD1C6' : '#0A5560');
-    pillTxt.setAttribute('fill', confirmed ? '#03302E' : '#BBE8EC');
-    cbtnBg.setAttribute('fill', confirmed ? '#1B7480' : '#3FD1C6');
-
-    /* 2 — WhatsApp messages appear on the customer's phone */
-    var shows=[seg(p,.17,.22), seg(p,.47,.52), seg(p,.66,.71), seg(p,.9,.95)];
-    b.forEach(function(g,i){ g.setAttribute('opacity', shows[i]); g.setAttribute('transform','translate(0 '+((1-shows[i])*10)+')'); });
-
-    /* 3 — order becomes a parcel and drops into the truck */
-    var fly = ease(seg(p,.26,.42));
-    var px = lerp(700,840,fly), py = lerp(165,500,fly) - Math.sin(fly*Math.PI)*120;
-    parcel.setAttribute('opacity', fly>0 && fly<1 ? 1 : 0);
-    parcel.setAttribute('transform','translate('+px+' '+py+') rotate('+(fly*-18)+') scale('+lerp(1,.8,fly)+')');
-    win.setAttribute('opacity', 1 - seg(p,.4,.55)*.55);
-
-    /* 4 — truck drives to the customer's house */
-    var drive = ease(seg(p,.44,.88)), dx = lerp(0,-540,drive);
-    truck.setAttribute('transform','translate('+(760+dx)+' 470)');
-    var bounce = drive>0&&drive<1 ? Math.sin(p*900)*1.2 : 0;
-    truckBody.setAttribute('transform','translate(0 '+bounce+')');
-    wheels.forEach(function(w,i){ w.setAttribute('transform','translate('+wheelPos[i][0]+' '+wheelPos[i][1]+') rotate('+(dx*-1.9)+')'); });
-    dash.setAttribute('transform','translate('+(dx*.35 % 48)+' 0)');
-
-    var arrive = seg(p,.88,.95);
-    done.setAttribute('opacity', arrive);
-    done.setAttribute('transform','translate(130 -6) scale('+(.6+.4*ease(arrive))+')');
-
-    /* side copy */
-    var active = p < .2 ? 0 : p < .44 ? 1 : p < .86 ? 2 : 3;
-    steps.forEach(function(li,i){ li.classList.toggle('on', i===active); });
-  }
-
   var ticking=false;
   function update(){
     ticking=false;
-    var y = scrollY;
-    nav.classList.toggle('solid', y > 20);
+    nav.classList.toggle('solid', scrollY > 20);
     if (!still) {
-      var t = clamp(y / (innerHeight*.7));
-      mock.style.transform = 'rotateX('+lerp(22,0,t)+'deg) scale('+lerp(.94,1,t)+')';
+      var r = show.getBoundingClientRect();
+      var t = clamp((innerHeight - r.top) / (innerHeight*.8));
+      mock.style.transform = 'rotateX('+(22-22*t)+'deg) scale('+(.94+.06*t)+')';
     }
-    var r = story.getBoundingClientRect();
-    var p = still ? 1 : clamp(-r.top / (r.height - innerHeight));
-    scene(p);
   }
   addEventListener('scroll', function(){ if(!ticking){ ticking=true; requestAnimationFrame(update); } }, {passive:true});
-  addEventListener('resize', update);
   update();
+
+  var video=document.getElementById('heroVideo');
+  if (still && video) { video.removeAttribute('autoplay'); video.pause(); }
+
+  var nums=[].slice.call(mock.querySelectorAll('[data-to]')), bars=[].slice.call(mock.querySelectorAll('[data-w]')), done=false;
+  function countUp(){
+    if (done) return; done=true;
+    bars.forEach(function(b){ b.style.width=b.dataset.w; });
+    var t0=performance.now(), D=1600;
+    function step(now){
+      var t=Math.min(1,(now-t0)/D), e=1-Math.pow(1-t,3);
+      nums.forEach(function(n){ n.textContent=Math.round(+n.dataset.to*e)+(n.dataset.suffix||''); });
+      if(t<1) requestAnimationFrame(step);
+    }
+    if (still) { nums.forEach(function(n){ n.textContent=n.dataset.to+(n.dataset.suffix||''); }); return; }
+    requestAnimationFrame(step);
+  }
+  new IntersectionObserver(function(es,o){ es.forEach(function(e){ if(e.isIntersecting){ countUp(); o.disconnect(); } }); },{threshold:.45}).observe(mock);
 })();
+
+/* reach card: cycles sample follow-up messages */
+(function(){
+  var samples=[
+    {c:'وهران',t:'10:02',m:'مرحبًا أمينة، تم تأكيد طلبك ✅',s:'تم التأكيد'},
+    {c:'سطيف',t:'11:40',m:'طلبك الآن مع شركة التوصيل 🚚',s:'تم الشحن'},
+    {c:'قسنطينة',t:'09:15',m:'المندوب في طريقه إليك اليوم 📍',s:'مع المندوب'},
+    {c:'ورقلة',t:'16:20',m:'تم تسليم طلبك. شكرًا لثقتك 🌟',s:'تم التسليم'},
+    {c:'الجزائر',t:'13:05',m:'مرحبًا كريم، تم تأكيد طلبك ✅',s:'تم التأكيد'},
+    {c:'تلمسان',t:'15:48',m:'طلبك الآن مع شركة التوصيل 🚚',s:'تم الشحن'},
+    {c:'بجاية',t:'10:30',m:'المندوب في طريقه إليك اليوم 📍',s:'مع المندوب'},
+    {c:'بسكرة',t:'17:12',m:'تم تسليم طلبك. شكرًا لثقتك 🌟',s:'تم التسليم'}
+  ];
+  var card=document.getElementById('reachCard'), i=0;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  setInterval(function(){
+    if (document.hidden) return;
+    card.classList.add('swap');
+    setTimeout(function(){
+      i=(i+1)%samples.length; var x=samples[i];
+      document.getElementById('rcCity').textContent=x.c; document.getElementById('rcTime').textContent=x.t;
+      document.getElementById('rcMsg').textContent=x.m; document.getElementById('rcStatus').textContent=x.s;
+      card.classList.remove('swap');
+    },260);
+  },3200);
+})();
+</script>
+<script type="module">
+/* globe centred on Algeria (cobe, WebGL); loads only when the section is near */
+const box = document.getElementById('globe');
+const io = new IntersectionObserver(async (es) => {
+  if (!es.some(e => e.isIntersecting)) return;
+  io.disconnect();
+  try {
+    const { default: createGlobe } = await import('https://cdn.jsdelivr.net/npm/cobe@0.6.5/+esm');
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const cities = [[36.75,3.06],[35.70,-0.63],[36.19,5.41],[36.36,6.61],[31.95,5.33],[34.88,-1.32],[36.75,5.08],[34.85,5.73],[22.79,5.52],[36.47,2.83],[35.55,6.17],[33.80,2.88],[27.67,-8.15],[32.49,3.67],[35.40,1.32],[36.90,7.76]];
+    const base = Math.PI*1.5 - 3*Math.PI/180;
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    let phi = base, t = 0, size = box.offsetWidth;
+    const globe = createGlobe(box, {
+      devicePixelRatio: dpr, width: size*dpr, height: size*dpr,
+      phi, theta: 0.42, dark: 1, diffuse: 1.15, mapSamples: 16000, mapBrightness: 5.5,
+      baseColor: [0.05, 0.28, 0.31], markerColor: [0.25, 0.82, 0.78], glowColor: [0.09, 0.42, 0.45],
+      markers: cities.map(([a,b], k) => ({ location: [a,b], size: k===0 ? 0.08 : 0.045 })),
+      onRender: (state) => {
+        if (!still) { t += 0.006; phi = base + Math.sin(t)*0.55; }
+        state.phi = phi; state.width = size*dpr; state.height = size*dpr;
+      }
+    });
+    addEventListener('resize', () => { size = box.offsetWidth; });
+    requestAnimationFrame(() => box.classList.add('on'));
+  } catch (e) { box.parentElement.style.display = 'none'; }
+}, { rootMargin: '200px' });
+io.observe(box);
+
 </script>
 </body>
 </html>
