@@ -92,7 +92,13 @@ a{color:inherit}
 
 
 /* hero video */
-.hero{position:relative;min-height:min(92vh,860px);display:flex;align-items:center;padding:110px 0 80px;overflow:hidden;margin-top:-70px}
+.hero{position:relative;height:260vh;margin-top:-70px}
+.hero-stick{position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden;padding-top:40px}
+.hero-copy{will-change:opacity,transform}
+.hero-fade{position:absolute;inset:0;z-index:0;background:var(--bg);opacity:0;pointer-events:none}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:1;width:24px;height:38px;border:2px solid rgba(187,232,236,.6);border-radius:14px}
+.scroll-hint span{position:absolute;top:7px;left:50%;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:var(--light);animation:hint 1.6s ease-in-out infinite}
+@keyframes hint{0%{opacity:0;transform:translateY(0)}40%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
 .hero-media{position:absolute;inset:0;z-index:0}
 .hero-media video{width:100%;height:100%;object-fit:cover;object-position:62% 50%;display:block}
 .hero-media:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,47,53,.82) 0%,rgba(4,47,53,.45) 38%,rgba(4,47,53,.55) 70%,var(--bg) 100%),radial-gradient(70% 60% at 50% 45%,rgba(4,47,53,.15),rgba(4,47,53,.6))}
@@ -102,7 +108,7 @@ a{color:inherit}
 .showcase{position:relative;padding:10px 0 40px}
 .showcase .mock-stage{margin-top:0}
 .mtrack em{transition:width 1.2s cubic-bezier(.2,.8,.2,1) .2s}
-@media (max-width:720px){.hero{min-height:88vh;padding-top:100px}.hero-media video{object-position:58% 50%}}
+@media (max-width:720px){.hero{height:220vh}.hero-media video{object-position:58% 50%}}
 
 /* reach / globe */
 .reach-grid{display:grid;grid-template-columns:1fr minmax(320px,520px);gap:56px;align-items:center}
@@ -183,11 +189,12 @@ footer a:hover{color:var(--ink)}
 </header>
 
 <main id="top">
-  <section class="hero">
+  <section class="hero" id="hero">
+   <div class="hero-stick">
     <div class="hero-media" aria-hidden="true">
-      <video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="hero-poster.jpg"><source src="hero.mp4" type="video/mp4"></video>
+      <video id="heroVideo" muted playsinline preload="auto" poster="hero-poster.jpg"><source src="hero-scrub.mp4" type="video/mp4"><source src="hero-scrub.webm" type="video/webm"></video>
     </div>
-    <div class="wrap hero-copy">
+    <div class="wrap hero-copy" id="heroCopy">
       <h1>تابع كل طلب حتى باب عميلك</h1>
       <p>NOURYS يرسل لعملائك رسائل واتساب في كل مرحلة من مراحل الطلب، ويجمع طلبات متجرك في لوحة واحدة، فيبقى العميل في انتظار طلبه ويقل المرتجع.</p>
       <div class="ctas">
@@ -196,6 +203,9 @@ footer a:hover{color:var(--ink)}
       </div>
       <small>بدون بطاقة دفع. التفعيل خلال دقائق.</small>
     </div>
+    <div class="hero-fade" id="heroFade" aria-hidden="true"></div>
+    <div class="scroll-hint" id="scrollHint" aria-hidden="true"><span></span></div>
+   </div>
   </section>
 
   <section class="showcase" id="showcase">
@@ -344,8 +354,32 @@ footer a:hover{color:var(--ink)}
   addEventListener('scroll', function(){ if(!ticking){ ticking=true; requestAnimationFrame(update); } }, {passive:true});
   update();
 
-  var video=document.getElementById('heroVideo');
-  if (still && video) { video.removeAttribute('autoplay'); video.pause(); }
+  /* hero video follows the scroll: frame = scroll position */
+  var video=document.getElementById('heroVideo'), hero=document.getElementById('hero'), copy=document.getElementById('heroCopy'), hint=document.getElementById('scrollHint');
+  var want=0, seeking=false;
+  function heroP(){ var r=hero.getBoundingClientRect(); return clamp(-r.top/(r.height-innerHeight)); }
+  function seek(){
+    if (!video.duration || seeking) return;
+    var t=Math.min(video.duration-0.05, want*video.duration);
+    if (Math.abs(video.currentTime-t) < 0.02) return;
+    seeking=true; video.currentTime=t;
+  }
+  video.addEventListener('seeked', function(){ seeking=false; seek(); });
+  video.addEventListener('loadedmetadata', seek);
+  /* iOS needs one play() before seeking paints frames */
+  var unlocked=false;
+  function unlock(){ if(unlocked) return; unlocked=true; var pr=video.play(); if(pr&&pr.then) pr.then(function(){ video.pause(); seek(); }).catch(function(){}); }
+  addEventListener('touchstart', unlock, {once:true, passive:true});
+  addEventListener('scroll', unlock, {once:true, passive:true});
+  function heroUpdate(){
+    var p=heroP(); want=p; seek();
+    var f=clamp(1-p*2.2);
+    copy.style.opacity=f; copy.style.transform='translateY('+(-40*(1-f))+'px)';
+    copy.style.pointerEvents = f<.2 ? 'none' : '';
+    hint.style.opacity=clamp(1-p*6);
+    var k=clamp((p-.72)/.28); document.getElementById('heroFade').style.opacity=(k*k*(3-2*k)*.92).toFixed(3);
+  }
+  if (!still) { addEventListener('scroll', function(){ requestAnimationFrame(heroUpdate); }, {passive:true}); heroUpdate(); }
 
   var nums=[].slice.call(mock.querySelectorAll('[data-to]')), bars=[].slice.call(mock.querySelectorAll('[data-w]')), done=false;
   function countUp(){
