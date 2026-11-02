@@ -27,6 +27,24 @@ button{cursor:pointer}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .logo{font-family:var(--display);font-weight:900;font-size:22px;letter-spacing:.06em;direction:ltr;display:inline-flex;align-items:center;gap:8px;color:var(--ink);text-decoration:none}
 .logo i{width:26px;height:26px;border-radius:8px;background:conic-gradient(from 210deg,var(--acc),#1AA9A0,var(--light),var(--acc));display:inline-block;box-shadow:0 0 18px rgba(63,209,198,.45)}
+.logo img{display:block;filter:drop-shadow(0 0 10px rgba(63,209,198,.35))}
+.side-logo{display:block;padding:4px 8px 0}
+.side-logo img{display:block;width:150px;height:auto;margin:0 auto}
+.steps{margin:18px 0 2px}
+.steps-bar{height:4px;border-radius:4px;background:var(--line);overflow:hidden}
+.steps-bar span{display:block;height:100%;width:50%;background:var(--acc);transition:width .3s ease}
+.steps-txt{font-size:12.5px;color:var(--muted);margin-top:8px}
+.opts{border:0;padding:0;margin:16px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opts legend{font-size:14px;font-weight:600;margin-bottom:8px;padding:0}
+.opts label{position:relative;cursor:pointer}
+.opts input{position:absolute;opacity:0;inset:0}
+.opts span{display:block;text-align:center;border:1px solid var(--line);border-radius:10px;padding:10px 8px;font-size:14px;color:var(--light);background:rgba(3,40,45,.7);transition:border-color .15s,background .15s}
+.opts input:checked+span{border-color:var(--acc);background:rgba(63,209,198,.12);color:var(--ink)}
+.opts input:focus-visible+span{outline:2px solid var(--acc);outline-offset:2px}
+.agree{display:flex;gap:10px;align-items:flex-start;margin-top:18px;font-size:13px;color:var(--muted);cursor:pointer}
+.agree input{margin-top:3px;accent-color:var(--acc);width:16px;height:16px;flex:none}
+.hint{font-size:12px;color:var(--muted);margin-top:6px}
+.back{display:block;margin:12px auto 0;border:0;background:none;color:var(--muted);font-size:13.5px;text-decoration:underline;text-underline-offset:3px}
 .logo b{font-weight:900}.logo span{color:var(--acc)}
 
 /* buttons & fields */
@@ -211,49 +229,91 @@ dialog::backdrop{background:rgba(2,24,27,.6);backdrop-filter:blur(3px)}
 <!-- ============ AUTH ============ -->
 <main id="auth" class="auth hidden">
   <section class="auth-story">
-    <a class="logo" href="#" aria-label="NOURYS"><i></i><b>NOURY<span>S</span></b></a>
+    <a class="logo" href="#" aria-label="NOURYS"><img src="mark.png" alt="" width="34" height="34"><b>NOURY<span>S</span></b></a>
     <div>
-      <h1>كل طلبية توصل لصاحبها</h1>
-      <p>NOURYS يتابع زبائنك على الواتساب من التأكيد حتى التوصيل، وإنت تشوف كل طلبياتك في بلاصة وحدة.</p>
+      <h1>كل طلب يصل إلى صاحبه</h1>
+      <p>يتابع NOURYS عملاءك عبر واتساب من تأكيد الطلب حتى التسليم، وتدير أنت جميع طلباتك من مكان واحد.</p>
     </div>
     <div class="journey" aria-hidden="true">
-      <div class="journey-label"><b><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .3-3.4-.7a11.6 11.6 0 0 1-4.5-4c-.4-.5-1-1.6-1-2.8 0-1.3.7-1.9.9-2.1.3-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.2.5.1.6 0l.9-1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.3.1.2.1.8-.1 1.4Z"/></svg></b>هكا يوصل الزبون تاعك</div>
-      <div class="bubble">مرحبا محمد، طلبيتك من متجرك تأكدت ✅<small>10:02</small></div>
-      <div class="bubble">طلبيتك خرجت مع شركة التوصيل 🚚<small>14:30</small></div>
-      <div class="bubble">الليفرور جاي عندك اليوم، خلّي التيليفون مشعول 📍<small>09:15</small></div>
+      <div class="journey-label"><b><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .3-3.4-.7a11.6 11.6 0 0 1-4.5-4c-.4-.5-1-1.6-1-2.8 0-1.3.7-1.9.9-2.1.3-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.2.5.1.6 0l.9-1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.3.1.2.1.8-.1 1.4Z"/></svg></b>هكذا تصل الرسائل إلى عميلك</div>
+      <div class="bubble">مرحبًا محمد، تم تأكيد طلبك ✅<small>10:02</small></div>
+      <div class="bubble">طلبك الآن مع شركة التوصيل 🚚<small>14:30</small></div>
+      <div class="bubble">المندوب في طريقه إليك اليوم، يُرجى إبقاء هاتفك متاحًا 📍<small>09:15</small></div>
     </div>
   </section>
 
   <section class="auth-side">
     <div class="auth-card">
-      <h2 id="authTitle">مرحبا بيك من جديد</h2>
-      <div class="sub" id="authSub">ادخل لحسابك باش تشوف طلبياتك.</div>
+      <h2 id="authTitle">مرحبًا بعودتك</h2>
+      <div class="sub" id="authSub">سجّل الدخول لمتابعة طلباتك.</div>
       <div class="seg" role="group" aria-label="نوع الدخول">
-        <button type="button" id="tabLogin" aria-pressed="true">دخول</button>
-        <button type="button" id="tabSignup" aria-pressed="false">حساب جديد</button>
+        <button type="button" id="tabLogin" aria-pressed="true">تسجيل الدخول</button>
+        <button type="button" id="tabSignup" aria-pressed="false">إنشاء حساب</button>
       </div>
       <form id="authForm" novalidate>
-        <div class="field hidden" id="storeField">
-          <label for="storeName">اسم المتجر</label>
-          <input class="input" id="storeName" autocomplete="organization" placeholder="مثلا: GRIFA SHOP">
+        <div class="steps hidden" id="steps" aria-live="polite">
+          <div class="steps-bar"><span id="stepsFill"></span></div>
+          <div class="steps-txt" id="stepsTxt">الخطوة 1 من 2: بيانات الحساب</div>
         </div>
+
+        <!-- sign-up step 2: about the store -->
+        <div id="step2" class="hidden">
+          <fieldset class="opts">
+            <legend>كم طلبًا يستقبل متجرك يوميًا تقريبًا؟</legend>
+            <label><input type="radio" name="daily" value="lt10"><span>أقل من 10</span></label>
+            <label><input type="radio" name="daily" value="10-30"><span>10 إلى 30</span></label>
+            <label><input type="radio" name="daily" value="30-100"><span>30 إلى 100</span></label>
+            <label><input type="radio" name="daily" value="gt100"><span>أكثر من 100</span></label>
+          </fieldset>
+          <fieldset class="opts">
+            <legend>أين تستقبل طلباتك حاليًا؟</legend>
+            <label><input type="radio" name="channel" value="shopify"><span>Shopify</span></label>
+            <label><input type="radio" name="channel" value="woocommerce"><span>WooCommerce</span></label>
+            <label><input type="radio" name="channel" value="landing"><span>صفحة هبوط</span></label>
+            <label><input type="radio" name="channel" value="social"><span>فيسبوك وإنستغرام فقط</span></label>
+          </fieldset>
+          <label class="agree"><input type="checkbox" id="agree"><span>أوافق على شروط الاستخدام وسياسة الخصوصية الخاصة بـ NOURYS.</span></label>
+        </div>
+
+        <!-- sign-up step 1 extras -->
+        <div id="step1extra" class="hidden">
+          <div class="field">
+            <label for="storeName">اسم المتجر</label>
+            <input class="input" id="storeName" autocomplete="organization" placeholder="مثال: GRIFA SHOP">
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label for="ownerName">الاسم الكامل</label>
+              <input class="input" id="ownerName" autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="ownerPhone">رقم الهاتف</label>
+              <input class="input" id="ownerPhone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="05xxxxxxxx">
+            </div>
+          </div>
+        </div>
+
+        <div id="creds">
         <div class="field">
-          <label for="email">الإيميل</label>
+          <label for="email">البريد الإلكتروني</label>
           <input class="input" id="email" type="email" required autocomplete="email" dir="ltr" placeholder="you@store.com">
         </div>
         <div class="field">
-          <label for="password">كلمة السر</label>
+          <label for="password">كلمة المرور</label>
           <div class="pw">
             <input class="input" id="password" type="password" required minlength="8" autocomplete="current-password" dir="ltr">
-            <button type="button" id="pwToggle" aria-label="بيّن كلمة السر">بيّن</button>
+            <button type="button" id="pwToggle" aria-label="إظهار كلمة المرور">إظهار</button>
           </div>
+          <div class="hint hidden" id="pwHint">8 أحرف على الأقل.</div>
         </div>
-        <button class="btn" id="authBtn">دخول</button>
+        </div>
+        <button class="btn" id="authBtn">تسجيل الدخول</button>
+        <button class="back hidden" type="button" id="backBtn">رجوع إلى الخطوة السابقة</button>
         <div id="authMsg" class="note" role="status"></div>
       </form>
       <div class="trust">
         <svg width="16" height="16"><use href="#i-lock"/></svg>
-        <span>بيانات متجرك محمية: كل حساب يشوف غير الطلبيات تاعو، وما نشاركو حتى معلومة تاع زبائنك.</span>
+        <span>بيانات متجرك محمية: لا يطّلع أي حساب إلا على طلباته، ولا نشارك بيانات عملائك مع أي طرف.</span>
       </div>
     </div>
   </section>
@@ -262,20 +322,20 @@ dialog::backdrop{background:rgba(2,24,27,.6);backdrop-filter:blur(3px)}
 <!-- ============ APP ============ -->
 <div id="app" class="app hidden">
   <aside class="side">
-    <a class="logo" href="#"><i></i><b>NOURY<span>S</span></b></a>
+    <a class="side-logo" href="#" aria-label="NOURYS"><img src="logo.png" alt="NOURYS — Automation, Business, Growth" width="150"></a>
     <nav class="nav" aria-label="القائمة">
-      <button data-v="orders" aria-current="page"><svg width="20" height="20"><use href="#i-box"/></svg>الطلبيات</button>
-      <button data-new><svg width="20" height="20"><use href="#i-plus"/></svg>طلبية جديدة</button>
+      <button data-v="orders" aria-current="page"><svg width="20" height="20"><use href="#i-box"/></svg>الطلبات</button>
+      <button data-new><svg width="20" height="20"><use href="#i-plus"/></svg>طلب جديد</button>
       <button data-v="settings"><svg width="20" height="20"><use href="#i-gear"/></svg>الإعدادات</button>
     </nav>
     <div class="side-foot">
       <div class="who"><div class="avatar" id="avatar">N</div><div><div class="n" id="whoName">متجري</div><div class="e" id="whoEmail"></div></div></div>
-      <button class="btn quiet sm" data-logout><svg width="15" height="15" style="vertical-align:-3px;margin-inline-end:6px"><use href="#i-out"/></svg>خروج</button>
+      <button class="btn quiet sm" data-logout><svg width="15" height="15" style="vertical-align:-3px;margin-inline-end:6px"><use href="#i-out"/></svg>تسجيل الخروج</button>
     </div>
   </aside>
 
   <header class="mobile-top">
-    <a class="logo" href="#" style="font-size:19px"><i style="width:22px;height:22px"></i><b>NOURY<span>S</span></b></a>
+    <a class="logo" href="#" style="font-size:19px" aria-label="NOURYS"><img src="mark.png" alt="" width="28" height="28"><b>NOURY<span>S</span></b></a>
     <button class="btn quiet sm" data-logout>خروج</button>
   </header>
 
@@ -284,43 +344,43 @@ dialog::backdrop{background:rgba(2,24,27,.6);backdrop-filter:blur(3px)}
     <section id="v-orders">
       <div class="topline">
         <div><h1 id="hello">صباح الخير</h1><div class="date" id="today"></div></div>
-        <button class="btn top-new" data-new style="display:inline-flex;align-items:center;gap:6px"><svg width="18" height="18"><use href="#i-plus"/></svg>طلبية جديدة</button>
+        <button class="btn top-new" data-new style="display:inline-flex;align-items:center;gap:6px"><svg width="18" height="18"><use href="#i-plus"/></svg>طلب جديد</button>
       </div>
       <div class="strip">
-        <div><div class="v" id="stToday">0</div><div class="k">طلبيات اليوم</div></div>
-        <div><div class="v" id="stActive">0</div><div class="k">في الطريق</div></div>
-        <div><div class="v" id="stReturned">0</div><div class="k">رجعت روتور</div></div>
+        <div><div class="v" id="stToday">0</div><div class="k">طلبات اليوم</div></div>
+        <div><div class="v" id="stActive">0</div><div class="k">قيد التوصيل</div></div>
+        <div><div class="v" id="stReturned">0</div><div class="k">المرتجعات</div></div>
         <div class="rate"><div class="v" id="stRate">—</div><div class="k">نسبة التوصيل</div></div>
       </div>
       <div class="filters">
-        <div class="chips" id="chips" role="group" aria-label="فلتر بالحالة"></div>
-        <label class="search"><svg width="16" height="16"><use href="#i-search"/></svg><input class="input" id="search" placeholder="ابحث بالاسم ولا الهاتف" aria-label="بحث"></label>
+        <div class="chips" id="chips" role="group" aria-label="تصفية حسب الحالة"></div>
+        <label class="search"><svg width="16" height="16"><use href="#i-search"/></svg><input class="input" id="search" placeholder="ابحث بالاسم أو رقم الهاتف" aria-label="بحث"></label>
       </div>
       <div class="orders" id="orderList"></div>
     </section>
 
     <!-- settings -->
     <section id="v-settings" class="hidden">
-      <div class="topline"><div><h1>الإعدادات</h1><div class="date">معلومات متجرك وطريقة الربط.</div></div></div>
+      <div class="topline"><div><h1>الإعدادات</h1><div class="date">معلومات متجرك وإعدادات الربط.</div></div></div>
       <div class="cols">
         <form class="panel" id="setForm">
           <h2>المتجر</h2>
-          <p class="lead">الاسم هذا يبان للزبائن في رسائل الواتساب.</p>
+          <p class="lead">يظهر هذا الاسم لعملائك في رسائل واتساب.</p>
           <div class="field"><label for="sStore">اسم المتجر</label><input class="input" id="sStore"></div>
           <div class="row2">
             <div class="field"><label for="sPhone">هاتف المتجر</label><input class="input" id="sPhone" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx"></div>
-            <div class="field"><label for="sWa">رقم الواتساب</label><input class="input" id="sWa" dir="ltr" inputmode="tel" placeholder="2135xxxxxxxx"></div>
+            <div class="field"><label for="sWa">رقم واتساب</label><input class="input" id="sWa" dir="ltr" inputmode="tel" placeholder="2135xxxxxxxx"></div>
           </div>
           <button class="btn" style="margin-top:18px">حفظ التعديلات</button>
           <div id="setMsg" class="note" role="status"></div>
         </form>
         <div class="panel">
           <h2>ربط المتجر</h2>
-          <p class="lead">بهذا المفتاح تجي طلبيات متجرك (Shopify، WooCommerce ولا صفحة الهبوط) وحدها للوحة. ما تعطيه لحتى واحد.</p>
+          <p class="lead">يتيح هذا المفتاح استقبال طلبات متجرك (Shopify أو WooCommerce أو صفحة الهبوط) تلقائيًا في لوحة التحكم. لا تشاركه مع أي شخص.</p>
           <div class="keybox" id="keybox">
             <code id="apiKey">••••••••••••••••••••••••••••••••</code>
-            <button class="btn quiet sm" id="keyShow" type="button">بيّن</button>
-            <button class="btn sm" id="keyCopy" type="button">انسخ</button>
+            <button class="btn quiet sm" id="keyShow" type="button">إظهار</button>
+            <button class="btn sm" id="keyCopy" type="button">نسخ</button>
           </div>
           <div class="plan"><span>الاشتراك</span><b id="plan">تجربة</b></div>
         </div>
@@ -329,8 +389,8 @@ dialog::backdrop{background:rgba(2,24,27,.6);backdrop-filter:blur(3px)}
   </main>
 
   <nav class="tabbar" aria-label="القائمة">
-    <button data-v="orders" aria-current="page"><svg width="22" height="22"><use href="#i-box"/></svg>الطلبيات</button>
-    <button data-new class="plus" aria-label="طلبية جديدة"><span><svg width="22" height="22"><use href="#i-plus"/></svg></span></button>
+    <button data-v="orders" aria-current="page"><svg width="22" height="22"><use href="#i-box"/></svg>الطلبات</button>
+    <button data-new class="plus" aria-label="طلب جديد"><span><svg width="22" height="22"><use href="#i-plus"/></svg></span></button>
     <button data-v="settings"><svg width="22" height="22"><use href="#i-gear"/></svg>الإعدادات</button>
   </nav>
 </div>
@@ -338,9 +398,9 @@ dialog::backdrop{background:rgba(2,24,27,.6);backdrop-filter:blur(3px)}
 <!-- new order sheet -->
 <dialog id="newDlg" aria-labelledby="newTitle">
   <form class="sheet" id="addForm" method="dialog">
-    <div class="sheet-head"><h2 id="newTitle">طلبية جديدة</h2><button class="x" type="button" id="closeNew" aria-label="سكّر">×</button></div>
-    <div class="field"><label for="aName">اسم الزبون</label><input class="input" id="aName" required></div>
-    <div class="field"><label for="aPhone">الهاتف</label><input class="input" id="aPhone" required inputmode="tel" dir="ltr" placeholder="05xxxxxxxx"></div>
+    <div class="sheet-head"><h2 id="newTitle">طلب جديد</h2><button class="x" type="button" id="closeNew" aria-label="إغلاق">×</button></div>
+    <div class="field"><label for="aName">اسم العميل</label><input class="input" id="aName" required></div>
+    <div class="field"><label for="aPhone">رقم الهاتف</label><input class="input" id="aPhone" required inputmode="tel" dir="ltr" placeholder="05xxxxxxxx"></div>
     <div class="row2">
       <div class="field"><label for="aWilaya">الولاية</label><input class="input" id="aWilaya" list="wilayas"></div>
       <div class="field"><label for="aCommune">البلدية</label><input class="input" id="aCommune"></div>
@@ -348,10 +408,10 @@ dialog::backdrop{background:rgba(2,24,27,.6);backdrop-filter:blur(3px)}
     <div class="field"><label for="aProduct">المنتج</label><input class="input" id="aProduct"></div>
     <div class="row2">
       <div class="field"><label for="aQty">الكمية</label><input class="input" id="aQty" type="number" min="1" value="1"></div>
-      <div class="field"><label for="aPrice">الثمن الكامل (دج)</label><input class="input" id="aPrice" type="number" min="0" step="any"></div>
+      <div class="field"><label for="aPrice">المبلغ الإجمالي (دج)</label><input class="input" id="aPrice" type="number" min="0" step="any"></div>
     </div>
     <div class="field"><label for="aNotes">ملاحظة</label><textarea class="input" id="aNotes" rows="2"></textarea></div>
-    <button class="btn" type="submit" id="addBtn">سجّل الطلبية</button>
+    <button class="btn" type="submit" id="addBtn">حفظ الطلب</button>
     <div id="addMsg" class="note" role="status"></div>
   </form>
 </dialog>
@@ -385,8 +445,8 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 const FLOW = ['new','confirmed','shipped','out_for_delivery','delivered'];
-const LABEL = { new:'جديدة', confirmed:'مؤكدة', shipped:'خرجت', out_for_delivery:'عند الليفرور', delivered:'وصلت', returned:'روتور', cancelled:'ملغاة' };
-const NEXT_ACTION = { new:'أكّد الطلبية', confirmed:'خرجت للتوصيل', shipped:'عند الليفرور', out_for_delivery:'وصلت للزبون' };
+const LABEL = { new:'جديد', confirmed:'مؤكَّد', shipped:'تم الشحن', out_for_delivery:'مع المندوب', delivered:'تم التسليم', returned:'مرتجع', cancelled:'ملغى' };
+const NEXT_ACTION = { new:'تأكيد الطلب', confirmed:'تم الشحن', shipped:'سُلّم للمندوب', out_for_delivery:'تم التسليم' };
 const WILAYAS = ['أدرار','الشلف','الأغواط','أم البواقي','باتنة','بجاية','بسكرة','بشار','البليدة','البويرة','تمنراست','تبسة','تلمسان','تيارت','تيزي وزو','الجزائر','الجلفة','جيجل','سطيف','سعيدة','سكيكدة','سيدي بلعباس','عنابة','قالمة','قسنطينة','المدية','مستغانم','المسيلة','معسكر','ورقلة','وهران','البيض','إليزي','برج بوعريريج','بومرداس','الطارف','تندوف','تيسمسيلت','الوادي','خنشلة','سوق أهراس','تيبازة','ميلة','عين الدفلى','النعامة','عين تموشنت','غرداية','غليزان','تيميمون','برج باجي مختار','أولاد جلال','بني عباس','عين صالح','عين قزام','تقرت','جانت','المغير','المنيعة'];
 
 const $ = id => document.getElementById(id);
@@ -407,45 +467,73 @@ function toast(t){ const d = h('div', { class:'toast', role:'status', text:t });
 WILAYAS.forEach((w,i) => $('wilayas').append(h('option', { value: w, label: String(i+1).padStart(2,'0') })));
 
 /* ---------- auth ---------- */
+let step = 1;
 function setMode(m){
-  mode = m;
+  mode = m; step = 1;
   $('tabLogin').setAttribute('aria-pressed', m === 'login');
   $('tabSignup').setAttribute('aria-pressed', m === 'signup');
-  $('storeField').classList.toggle('hidden', m !== 'signup');
-  $('authTitle').textContent = m === 'login' ? 'مرحبا بيك من جديد' : 'افتح حساب متجرك';
-  $('authSub').textContent = m === 'login' ? 'ادخل لحسابك باش تشوف طلبياتك.' : 'التجربة مجانية، وما تحتاج حتى بطاقة دفع.';
-  $('authBtn').textContent = m === 'login' ? 'دخول' : 'افتح الحساب';
+  $('authTitle').textContent = m === 'login' ? 'مرحبًا بعودتك' : 'أنشئ حساب متجرك';
+  $('authSub').textContent = m === 'login' ? 'سجّل الدخول لمتابعة طلباتك.' : 'جرّب المنصة مجانًا، دون الحاجة إلى بطاقة دفع.';
   $('password').autocomplete = m === 'login' ? 'current-password' : 'new-password';
+  $('pwHint').classList.toggle('hidden', m === 'login');
+  showStep();
   note('authMsg', '');
+}
+function showStep(){
+  const su = mode === 'signup';
+  $('steps').classList.toggle('hidden', !su);
+  $('step1extra').classList.toggle('hidden', !su || step !== 1);
+  $('creds').classList.toggle('hidden', su && step !== 1);
+  $('step2').classList.toggle('hidden', !su || step !== 2);
+  $('backBtn').classList.toggle('hidden', !su || step !== 2);
+  $('stepsFill').style.width = step === 1 ? '50%' : '100%';
+  $('stepsTxt').textContent = step === 1 ? 'الخطوة 1 من 2: بيانات الحساب' : 'الخطوة 2 من 2: معلومات عن متجرك';
+  $('authBtn').textContent = !su ? 'تسجيل الدخول' : step === 1 ? 'متابعة' : 'إنشاء الحساب';
 }
 $('tabLogin').onclick = () => setMode('login');
 $('tabSignup').onclick = () => setMode('signup');
-$('pwToggle').onclick = () => { const p = $('password'); const s = p.type === 'password'; p.type = s ? 'text' : 'password'; $('pwToggle').textContent = s ? 'خبّي' : 'بيّن'; };
+$('backBtn').onclick = () => { step = 1; showStep(); note('authMsg', ''); };
+$('pwToggle').onclick = () => { const p = $('password'); const s = p.type === 'password'; p.type = s ? 'text' : 'password'; $('pwToggle').textContent = s ? 'إخفاء' : 'إظهار'; };
+const picked = n => document.querySelector('input[name="' + n + '"]:checked')?.value || '';
 
 $('authForm').onsubmit = async e => {
   e.preventDefault();
   const email = $('email').value.trim(), password = $('password').value;
-  if (!email || !/\S+@\S+\.\S+/.test(email)) return note('authMsg', 'اكتب إيميل صحيح.');
-  if (password.length < 8) return note('authMsg', 'كلمة السر لازم تكون 8 حروف على الأقل.');
-  if (mode === 'signup' && !$('storeName').value.trim()) return note('authMsg', 'اكتب اسم المتجر.');
+  if (mode === 'signup' && step === 1) {
+    if (!$('storeName').value.trim()) return note('authMsg', 'أدخل اسم المتجر.');
+    if (!$('ownerName').value.trim()) return note('authMsg', 'أدخل اسمك الكامل.');
+    if (!/^[+0-9 ]{9,15}$/.test($('ownerPhone').value.trim())) return note('authMsg', 'أدخل رقم هاتف صحيحًا.');
+  }
+  if (step === 1) {
+    if (!/\S+@\S+\.\S+/.test(email)) return note('authMsg', 'أدخل بريدًا إلكترونيًا صحيحًا.');
+    if (password.length < 8) return note('authMsg', 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.');
+  }
+  if (mode === 'signup' && step === 1) { step = 2; note('authMsg', ''); return showStep(); }
+  if (mode === 'signup' && step === 2) {
+    if (!picked('daily')) return note('authMsg', 'اختر عدد الطلبات اليومية التقريبي.');
+    if (!picked('channel')) return note('authMsg', 'اختر المكان الذي تستقبل فيه طلباتك.');
+    if (!$('agree').checked) return note('authMsg', 'يجب الموافقة على الشروط وسياسة الخصوصية للمتابعة.');
+  }
   $('authBtn').disabled = true;
   try {
     if (mode === 'signup') {
-      const { data, error } = await db.auth.signUp({ email, password,
-        options: { data: { store_name: $('storeName').value.trim() }, emailRedirectTo: location.origin + location.pathname } });
+      const { data, error } = await db.auth.signUp({ email, password, options: {
+        data: { store_name: $('storeName').value.trim(), owner_name: $('ownerName').value.trim(), phone: $('ownerPhone').value.trim(), daily_orders: picked('daily'), sales_channel: picked('channel') },
+        emailRedirectTo: location.origin + location.pathname } });
       if (error) throw error;
-      if (!data.session) { setMode('login'); note('authMsg', 'تم ✅ بعثنالك إيميل، أكّد منو الحساب ومن بعد ادخل.', true); }
+      if (!data.session) { setMode('login'); note('authMsg', 'تم إنشاء الحساب. أرسلنا رسالة تأكيد إلى بريدك الإلكتروني، فعّل حسابك ثم سجّل الدخول.', true); }
     } else {
       const { error } = await db.auth.signInWithPassword({ email, password });
       if (error) throw error;
     }
   } catch (err) {
     const t = String(err.message || err);
+    if (mode === 'signup' && /already registered/i.test(t)) { step = 1; showStep(); }
     note('authMsg',
-      /Invalid login/i.test(t) ? 'الإيميل ولا كلمة السر غالطين.' :
-      /not confirmed/i.test(t) ? 'أكّد الإيميل تاعك قبل ما تدخل.' :
-      /already registered/i.test(t) ? 'هذا الإيميل عندو حساب. ادخل بيه.' :
-      /rate limit/i.test(t) ? 'محاولات بزاف. عاود بعد دقايق.' : 'ما نجحتش العملية: ' + t);
+      /Invalid login/i.test(t) ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة.' :
+      /not confirmed/i.test(t) ? 'يُرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول.' :
+      /already registered/i.test(t) ? 'هذا البريد مسجّل مسبقًا. سجّل الدخول به.' :
+      /rate limit/i.test(t) ? 'محاولات كثيرة. أعد المحاولة بعد بضع دقائق.' : 'تعذّرت العملية: ' + t);
   } finally { $('authBtn').disabled = false; }
 };
 document.querySelectorAll('[data-logout]').forEach(b => b.onclick = () => db.auth.signOut());
@@ -471,7 +559,7 @@ $('newDlg').addEventListener('click', e => { if (e.target === $('newDlg')) $('ne
 /* ---------- header ---------- */
 function greet(){
   const hr = new Date().getHours();
-  const g = hr < 12 ? 'صباح الخير' : hr < 18 ? 'نهارك مبروك' : 'مساء الخير';
+  const g = hr < 12 ? 'صباح الخير' : hr < 18 ? 'طاب يومك' : 'مساء الخير';
   $('hello').textContent = g + (profile?.store_name ? '، ' + profile.store_name : '');
   $('today').textContent = new Date().toLocaleDateString('ar-DZ', { weekday:'long', day:'numeric', month:'long' });
 }
@@ -479,7 +567,7 @@ function greet(){
 /* ---------- orders ---------- */
 async function loadOrders(){
   const { data, error } = await db.from('orders').select('*').order('created_at', { ascending:false }).limit(500);
-  if (error) { $('orderList').replaceChildren(h('div', { class:'empty' }, h('h3', { text:'ما قدرناش نجيبو الطلبيات' }), h('p', { text: error.message }), h('button', { class:'btn quiet', onclick: loadOrders, text:'عاود' }))); return; }
+  if (error) { $('orderList').replaceChildren(h('div', { class:'empty' }, h('h3', { text:'تعذّر تحميل الطلبات' }), h('p', { text: error.message }), h('button', { class:'btn quiet', onclick: loadOrders, text:'إعادة المحاولة' }))); return; }
   orders = data; render();
 }
 $('search').oninput = renderList;
@@ -502,10 +590,10 @@ function renderList(){
   const q = $('search').value.trim().toLowerCase();
   const list = orders.filter(o => (!filter || o.status === filter) && (!q || (o.customer_name||'').toLowerCase().includes(q) || (o.customer_phone||'').includes(q)));
   if (!orders.length) return $('orderList').replaceChildren(h('div', { class:'empty' },
-    h('h3', { text:'مازال ما وصلتك حتى طلبية' }),
-    h('p', { text:'سجّل أول طلبية باليد، ولا اربط متجرك من الإعدادات باش يجيو وحدهم.' }),
-    h('button', { class:'btn', text:'سجّل أول طلبية', onclick: () => $('newDlg').showModal() })));
-  if (!list.length) return $('orderList').replaceChildren(h('div', { class:'empty' }, h('h3', { text:'ما كاين حتى طلبية هنا' }), h('p', { text:'بدّل الفلتر ولا كلمة البحث.' })));
+    h('h3', { text:'لا توجد طلبات بعد' }),
+    h('p', { text:'أضف أول طلب يدويًا، أو اربط متجرك من الإعدادات لتصلك الطلبات تلقائيًا.' }),
+    h('button', { class:'btn', text:'إضافة أول طلب', onclick: () => $('newDlg').showModal() })));
+  if (!list.length) return $('orderList').replaceChildren(h('div', { class:'empty' }, h('h3', { text:'لا توجد طلبات مطابقة' }), h('p', { text:'غيّر التصفية أو كلمة البحث.' })));
   $('orderList').replaceChildren(...list.map(orderRow));
 }
 
@@ -516,7 +604,7 @@ function track(o){
   const bar = h('span', { class:'bar' }); bar.style.width = (idx * 20) + '%'; t.append(bar);
   FLOW.forEach((s,i) => {
     const cls = i < idx ? 'done' : i === idx ? 'now' : '';
-    t.append(h('div', { class:'step ' + cls }, h('i'), h('span', { text: (o.status === 'returned' && i === idx) ? 'روتور' : LABEL[s] })));
+    t.append(h('div', { class:'step ' + cls }, h('i'), h('span', { text: (o.status === 'returned' && i === idx) ? 'مرتجع' : LABEL[s] })));
   });
   return t;
 }
@@ -524,14 +612,14 @@ function track(o){
 async function setStatus(o, status){
   const prev = o.status; o.status = status; render();
   const { error } = await db.from('orders').update({ status }).eq('id', o.id);
-  if (error) { o.status = prev; render(); toast('ما تبدلتش الحالة'); return; }
-  toast('الطلبية #' + o.id + ': ' + LABEL[status]);
+  if (error) { o.status = prev; render(); toast('تعذّر تحديث الحالة'); return; }
+  toast('الطلب #' + o.id + ': ' + LABEL[status]);
 }
 
 function orderRow(o){
   const where = [o.wilaya, o.commune].filter(Boolean).join('، ');
   const price = o.total_price != null ? Number(o.total_price).toLocaleString('fr-DZ') + ' دج' : '';
-  const more = h('select', { class:'more', 'aria-label':'بدّل الحالة', onchange: e => setStatus(o, e.target.value) });
+  const more = h('select', { class:'more', 'aria-label':'تغيير الحالة', onchange: e => setStatus(o, e.target.value) });
   more.append(h('option', { value: o.status, text:'حالة أخرى', selected:'' }));
   Object.keys(LABEL).filter(k => k !== o.status).forEach(k => more.append(h('option', { value:k, text: LABEL[k] })));
   const next = NEXT_ACTION[o.status];
@@ -557,7 +645,7 @@ function orderRow(o){
 $('addForm').onsubmit = async e => {
   e.preventDefault();
   const name = $('aName').value.trim(), phone = $('aPhone').value.trim();
-  if (!name || !phone) return note('addMsg', 'اسم الزبون والهاتف لازمين.');
+  if (!name || !phone) return note('addMsg', 'اسم العميل ورقم الهاتف مطلوبان.');
   $('addBtn').disabled = true;
   const { error } = await db.from('orders').insert({
     merchant_id: user.id, customer_name: name, customer_phone: phone,
@@ -566,8 +654,8 @@ $('addForm').onsubmit = async e => {
     total_price: $('aPrice').value === '' ? null : Number($('aPrice').value), notes: $('aNotes').value.trim() || null
   });
   $('addBtn').disabled = false;
-  if (error) return note('addMsg', 'ما تسجلتش: ' + error.message);
-  e.target.reset(); $('aQty').value = 1; $('newDlg').close(); toast('تسجلت الطلبية ✅'); loadOrders();
+  if (error) return note('addMsg', 'تعذّر حفظ الطلب: ' + error.message);
+  e.target.reset(); $('aQty').value = 1; $('newDlg').close(); toast('تم حفظ الطلب ✅'); loadOrders();
 };
 
 /* ---------- settings ---------- */
@@ -581,13 +669,13 @@ async function loadProfile(){
   $('plan').textContent = { trial:'تجربة مجانية', active:'مفعّل', paused:'موقوف' }[profile.plan] || '—';
   greet();
 }
-$('keyShow').onclick = () => { const b = $('keybox'); b.classList.toggle('show'); $('keyShow').textContent = b.classList.contains('show') ? 'خبّي' : 'بيّن'; };
-$('keyCopy').onclick = async () => { try { await navigator.clipboard.writeText(profile.api_key); toast('تنسخ المفتاح'); } catch { toast('ما قدرناش ننسخو، بيّنو وانسخو باليد'); } };
+$('keyShow').onclick = () => { const b = $('keybox'); b.classList.toggle('show'); $('keyShow').textContent = b.classList.contains('show') ? 'إخفاء' : 'إظهار'; };
+$('keyCopy').onclick = async () => { try { await navigator.clipboard.writeText(profile.api_key); toast('تم نسخ المفتاح'); } catch { toast('تعذّر النسخ، أظهر المفتاح وانسخه يدويًا'); } };
 $('setForm').onsubmit = async e => {
   e.preventDefault();
   const { error } = await db.from('merchants').update({ store_name: $('sStore').value.trim(), phone: $('sPhone').value.trim(), whatsapp: $('sWa').value.trim() }).eq('id', user.id);
-  if (error) return note('setMsg', 'ما تحفظوش: ' + error.message);
-  note('setMsg', 'تحفظو التعديلات ✅', true); loadProfile();
+  if (error) return note('setMsg', 'تعذّر الحفظ: ' + error.message);
+  note('setMsg', 'تم حفظ التعديلات ✅', true); loadProfile();
 };
 
 setMode('login');
