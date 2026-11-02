@@ -100,7 +100,8 @@ a{color:inherit}
 .scroll-hint span{position:absolute;top:7px;left:50%;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:var(--light);animation:hint 1.6s ease-in-out infinite}
 @keyframes hint{0%{opacity:0;transform:translateY(0)}40%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
 .hero-media{position:absolute;inset:0;z-index:0}
-.hero-media video{width:100%;height:100%;object-fit:cover;object-position:62% 50%;display:block}
+.hero-media{background:#042F35 url(frames/f001.webp) 62% 50%/cover no-repeat}
+#heroCanvas{width:100%;height:100%;display:block}
 .hero-media:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,47,53,.82) 0%,rgba(4,47,53,.45) 38%,rgba(4,47,53,.55) 70%,var(--bg) 100%),radial-gradient(70% 60% at 50% 45%,rgba(4,47,53,.15),rgba(4,47,53,.6))}
 .hero-copy{position:relative;z-index:1}
 .hero h1{text-shadow:0 4px 30px rgba(0,0,0,.35)}
@@ -108,7 +109,7 @@ a{color:inherit}
 .showcase{position:relative;padding:10px 0 40px}
 .showcase .mock-stage{margin-top:0}
 .mtrack em{transition:width 1.2s cubic-bezier(.2,.8,.2,1) .2s}
-@media (max-width:720px){.hero{height:220vh}.hero-media video{object-position:58% 50%}}
+@media (max-width:720px){.hero{height:220vh}.hero-media{background-position:58% 50%}}
 
 /* reach / globe */
 .reach-grid{display:grid;grid-template-columns:1fr minmax(320px,520px);gap:56px;align-items:center}
@@ -192,7 +193,7 @@ footer a:hover{color:var(--ink)}
   <section class="hero" id="hero">
    <div class="hero-stick">
     <div class="hero-media" aria-hidden="true">
-      <video id="heroVideo" muted playsinline preload="auto" poster="hero-poster.jpg"><source src="hero-scrub.mp4" type="video/mp4"><source src="hero-scrub.webm" type="video/webm"></video>
+      <canvas id="heroCanvas"></canvas>
     </div>
     <div class="wrap hero-copy" id="heroCopy">
       <h1>تابع كل طلب حتى باب عميلك</h1>
@@ -326,12 +327,13 @@ footer a:hover{color:var(--ink)}
   var c=document.getElementById('stars'),x=c.getContext('2d'),W,H,D=Math.min(window.devicePixelRatio||1,2),P=[];
   var cols=['63,209,198','187,232,236'];
   var still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var SPR={};cols.forEach(function(c){var o=document.createElement('canvas');o.width=o.height=40;var g=o.getContext('2d'),gr=g.createRadialGradient(20,20,0,20,20,20);gr.addColorStop(0,'rgba('+c+',1)');gr.addColorStop(.2,'rgba('+c+',.9)');gr.addColorStop(.45,'rgba('+c+',.25)');gr.addColorStop(1,'rgba('+c+',0)');g.fillStyle=gr;g.fillRect(0,0,40,40);SPR[c]=o;});
   function size(){W=innerWidth;H=innerHeight;c.width=W*D;c.height=H*D;x.setTransform(D,0,0,D,0,0);}
   function mk(y){return{x:Math.random()*W,y:y==null?Math.random()*H:H+10,r:Math.random()*1.7+.7,v:Math.random()*0.3+0.1,a:Math.random()*0.4+0.3,w:Math.random()*6.28,c:cols[Math.random()<0.7?0:1]};}
   function init(){size();var n=Math.min(160,Math.round(W*H/7000));P=[];for(var i=0;i<n;i++)P.push(mk());}
   function draw(){x.clearRect(0,0,W,H);
     for(var i=0;i<P.length;i++){var p=P[i];if(!still){p.y-=p.v;p.w+=0.02;p.x+=Math.sin(p.w)*0.1;if(p.y<-10)P[i]=p=mk(1);}
-      x.beginPath();x.arc(p.x,p.y,p.r,0,6.283);x.fillStyle='rgba('+p.c+','+(p.a*(0.75+0.25*Math.sin(p.w*2)))+')';x.shadowColor='rgba('+p.c+',.9)';x.shadowBlur=p.r*4;x.fill();}
+      x.globalAlpha=p.a*(0.75+0.25*Math.sin(p.w*2));var sp=SPR[p.c],z=p.r*5;x.drawImage(sp,p.x-z,p.y-z,z*2,z*2);}x.globalAlpha=1;
     if(!still&&!document.hidden)requestAnimationFrame(draw);}
   addEventListener('resize',init);document.addEventListener('visibilitychange',function(){if(!document.hidden&&!still)draw();});init();draw();
 })();
@@ -354,32 +356,43 @@ footer a:hover{color:var(--ink)}
   addEventListener('scroll', function(){ if(!ticking){ ticking=true; requestAnimationFrame(update); } }, {passive:true});
   update();
 
-  /* hero video follows the scroll: frame = scroll position */
-  var video=document.getElementById('heroVideo'), hero=document.getElementById('hero'), copy=document.getElementById('heroCopy'), hint=document.getElementById('scrollHint');
-  var want=0, seeking=false;
-  function heroP(){ var r=hero.getBoundingClientRect(); return clamp(-r.top/(r.height-innerHeight)); }
-  function seek(){
-    if (!video.duration || seeking) return;
-    var t=Math.min(video.duration-0.05, want*video.duration);
-    if (Math.abs(video.currentTime-t) < 0.02) return;
-    seeking=true; video.currentTime=t;
+  /* hero: image sequence drawn on a canvas, frame = scroll position (no video seeking, no lag) */
+  var hero=document.getElementById('hero'), copy=document.getElementById('heroCopy'), hint=document.getElementById('scrollHint'), fade=document.getElementById('heroFade');
+  var cv=document.getElementById('heroCanvas'), cx=cv.getContext('2d'), N=96, imgs=new Array(N), cur=0, target=0, last=-1, running=false;
+  function src(i){ return 'frames/f'+String(i+1).padStart(3,'0')+'.webp'; }
+  function load(i){ if(imgs[i]) return; var im=new Image(); im.decoding='async'; im.src=src(i); im.onload=function(){ im.ok=true; if(i===Math.round(cur)) last=-1, paint(); }; imgs[i]=im; }
+  load(0); /* first frame now, then the rest in order once the page is ready */
+  function loadAll(){ for(var i=1;i<N;i++) load(i); }
+  if (document.readyState==='complete') setTimeout(loadAll,50); else addEventListener('load', function(){ setTimeout(loadAll,50); });
+  var cw=0, ch=0, dpr=Math.min(devicePixelRatio||1,2);
+  function resize(){ cw=cv.clientWidth; ch=cv.clientHeight; cv.width=Math.round(cw*dpr); cv.height=Math.round(ch*dpr); last=-1; paint(); }
+  function nearest(i){ for(var d=0; d<N; d++){ var a=imgs[i-d], b=imgs[i+d]; if(a&&a.ok) return a; if(b&&b.ok) return b; } return null; }
+  function paint(){
+    var i=Math.round(cur); if(i===last) return;
+    var im=nearest(i); if(!im) return; last=i;
+    var iw=im.naturalWidth, ih=im.naturalHeight, sc=Math.max(cv.width/iw, cv.height/ih), dw=iw*sc, dh=ih*sc;
+    var fx = innerWidth<720 ? .58 : .62;
+    cx.drawImage(im, (cv.width-dw)*fx, (cv.height-dh)*.5, dw, dh);
   }
-  video.addEventListener('seeked', function(){ seeking=false; seek(); });
-  video.addEventListener('loadedmetadata', seek);
-  /* iOS needs one play() before seeking paints frames */
-  var unlocked=false;
-  function unlock(){ if(unlocked) return; unlocked=true; var pr=video.play(); if(pr&&pr.then) pr.then(function(){ video.pause(); seek(); }).catch(function(){}); }
-  addEventListener('touchstart', unlock, {once:true, passive:true});
-  addEventListener('scroll', unlock, {once:true, passive:true});
+  function heroP(){ var r=hero.getBoundingClientRect(); return clamp(-r.top/(r.height-innerHeight)); }
+  function loop(){
+    cur += (target-cur)*0.35;
+    if (Math.abs(target-cur) < 0.01) cur=target;
+    paint();
+    if (cur!==target) requestAnimationFrame(loop); else running=false;
+  }
   function heroUpdate(){
-    var p=heroP(); want=p; seek();
+    var p=heroP(); target=p*(N-1);
+    if(!running){ running=true; requestAnimationFrame(loop); }
     var f=clamp(1-p*2.2);
-    copy.style.opacity=f; copy.style.transform='translateY('+(-40*(1-f))+'px)';
+    copy.style.opacity=f; copy.style.transform='translate3d(0,'+(-40*(1-f))+'px,0)';
     copy.style.pointerEvents = f<.2 ? 'none' : '';
     hint.style.opacity=clamp(1-p*6);
-    var k=clamp((p-.72)/.28); document.getElementById('heroFade').style.opacity=(k*k*(3-2*k)*.92).toFixed(3);
+    var k=clamp((p-.72)/.28); fade.style.opacity=(k*k*(3-2*k)*.92).toFixed(3);
   }
-  if (!still) { addEventListener('scroll', function(){ requestAnimationFrame(heroUpdate); }, {passive:true}); heroUpdate(); }
+  addEventListener('resize', resize); resize();
+  var hTick=false;
+  if (!still) { addEventListener('scroll', function(){ if(!hTick){ hTick=true; requestAnimationFrame(function(){ hTick=false; heroUpdate(); }); } }, {passive:true}); heroUpdate(); }
 
   var nums=[].slice.call(mock.querySelectorAll('[data-to]')), bars=[].slice.call(mock.querySelectorAll('[data-w]')), done=false;
   function countUp(){
