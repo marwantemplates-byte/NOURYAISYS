@@ -109,7 +109,17 @@ a{color:inherit}
 .showcase{position:relative;padding:10px 0 40px}
 .showcase .mock-stage{margin-top:0}
 .mtrack em{transition:width 1.2s cubic-bezier(.2,.8,.2,1) .2s}
-@media (max-width:720px){.hero{height:220vh}.hero-media{background-position:58% 50%}}
+@media (max-width:720px){
+  .hero{height:230vh}
+  .hero-stick{flex-direction:column;justify-content:center;gap:26px;padding-top:64px}
+  .hero-copy{order:1}
+  .hero h1{font-size:32px}
+  .hero p{font-size:15.5px;margin-top:12px}
+  .hero .ctas{margin-top:20px}
+  .hero-media{position:relative;inset:auto;order:2;width:100%;aspect-ratio:3/2;flex:none;background-position:50% 50%}
+  .hero-media:after{background:linear-gradient(180deg,var(--bg) 0%,rgba(4,47,53,0) 14%,rgba(4,47,53,0) 86%,var(--bg) 100%)}
+  .scroll-hint{bottom:18px}
+}
 
 /* reach / globe */
 .reach-grid{display:grid;grid-template-columns:1fr minmax(320px,520px);gap:56px;align-items:center}
@@ -371,7 +381,7 @@ footer a:hover{color:var(--ink)}
     var i=Math.round(cur); if(i===last) return;
     var im=nearest(i); if(!im) return; last=i;
     var iw=im.naturalWidth, ih=im.naturalHeight, sc=Math.max(cv.width/iw, cv.height/ih), dw=iw*sc, dh=ih*sc;
-    var fx = innerWidth<720 ? .58 : .62;
+    var fx = innerWidth<720 ? .5 : .62;
     cx.drawImage(im, (cv.width-dw)*fx, (cv.height-dh)*.5, dw, dh);
   }
   function heroP(){ var r=hero.getBoundingClientRect(); return clamp(-r.top/(r.height-innerHeight)); }
@@ -384,7 +394,7 @@ footer a:hover{color:var(--ink)}
   function heroUpdate(){
     var p=heroP(); target=p*(N-1);
     if(!running){ running=true; requestAnimationFrame(loop); }
-    var f=clamp(1-p*2.2);
+    var f= innerWidth<720 ? 1 : clamp(1-p*2.2);
     copy.style.opacity=f; copy.style.transform='translate3d(0,'+(-40*(1-f))+'px,0)';
     copy.style.pointerEvents = f<.2 ? 'none' : '';
     hint.style.opacity=clamp(1-p*6);
