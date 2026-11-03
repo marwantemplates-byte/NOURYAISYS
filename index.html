@@ -55,7 +55,7 @@ a{color:inherit}
 .hero .ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px}
 .hero small{display:block;color:var(--muted);font-size:13px;margin-top:14px}
 .mock-stage{perspective:1600px;margin:60px auto 0;width:min(980px,100%)}
-.mock{transform:rotateX(22deg) scale(.94);transform-origin:50% 0;transition:transform .1s linear;background:rgba(5,55,62,.92);border:1px solid var(--line2);border-radius:18px;box-shadow:0 50px 120px rgba(0,0,0,.45),0 0 0 1px rgba(63,209,198,.06) inset;overflow:hidden;text-align:right}
+.mock{transform:rotateX(26deg) scale(.93);transform-origin:50% 50%;will-change:transform;background:rgba(5,55,62,.92);border:1px solid var(--line2);border-radius:18px;box-shadow:0 50px 120px rgba(0,0,0,.45),0 0 0 1px rgba(63,209,198,.06) inset;overflow:hidden;text-align:right}
 .mock-top{display:flex;align-items:center;gap:7px;padding:12px 16px;border-bottom:1px solid var(--line);direction:ltr}
 .mock-top i{width:10px;height:10px;border-radius:50%;background:var(--line2)}
 .mock-top u{text-decoration:none;margin-inline-start:12px;font-size:12px;color:var(--muted);background:rgba(3,40,45,.8);padding:3px 12px;border-radius:6px}
@@ -124,16 +124,16 @@ a{color:inherit}
 
 /* founder */
 .founder-sec{padding-bottom:40px}
-.founder{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:48px;align-items:center;border:1px solid var(--line);border-radius:24px;padding:32px;background:linear-gradient(160deg,rgba(12,104,115,.45),rgba(5,55,62,.55))}
+.founder{display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:32px;align-items:center;border:1px solid var(--line);border-radius:24px;padding:32px;background:linear-gradient(160deg,rgba(12,104,115,.45),rgba(5,55,62,.55))}
 .founder-photo{position:relative}
 .founder-photo:before{content:"";position:absolute;inset:-10px;border-radius:24px;background:radial-gradient(circle at 50% 40%,rgba(63,209,198,.35),transparent 70%);filter:blur(18px);z-index:0}
-.founder-photo img{position:relative;z-index:1;display:block;width:100%;height:auto;aspect-ratio:388/695;object-fit:cover;border-radius:18px;border:1px solid var(--line2);box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.founder-photo img{position:relative;z-index:1;display:block;width:100%;height:auto;aspect-ratio:575/1024;filter:drop-shadow(0 24px 40px rgba(0,0,0,.35))}
 .founder-role{color:var(--acc);font-weight:600;font-size:15px}
 .founder-copy h2{direction:ltr;text-align:right;font-family:var(--display);font-weight:900;font-size:clamp(30px,3.6vw,44px);margin:6px 0 0;letter-spacing:.01em}
 .founder-title{font-family:var(--display);font-weight:700;font-size:19px;color:var(--light);margin:6px 0 16px}
 .founder-copy p{color:var(--muted);max-width:52ch;margin:0 0 12px}
 .founder-links{margin-top:22px}
-@media (max-width:820px){.founder{grid-template-columns:1fr;gap:26px;padding:22px;text-align:center}.founder-photo{max-width:240px;margin:0 auto}.founder-copy h2{text-align:center}.founder-copy p{margin-inline:auto}}
+@media (max-width:820px){.founder{grid-template-columns:1fr;gap:26px;padding:22px;text-align:center}.founder-photo{max-width:300px;margin:0 auto}.founder-copy h2{text-align:center}.founder-copy p{margin-inline:auto}}
 
 /* reach / globe */
 .reach-grid{display:grid;grid-template-columns:1fr minmax(320px,520px);gap:56px;align-items:center}
@@ -298,7 +298,7 @@ footer a:hover{color:var(--ink)}
   <section class="sec founder-sec" id="founder">
     <div class="wrap">
       <div class="founder">
-        <div class="founder-photo"><img src="founder-photo.jpg" alt="مروان نويري، مؤسس NOURYS" width="388" height="695" loading="lazy"></div>
+        <div class="founder-photo"><img src="founder-photo.webp" alt="مروان نويري، مؤسس NOURYS" width="575" height="1024" loading="lazy"></div>
         <div class="founder-copy">
           <div class="founder-role">مؤسس NOURYS</div>
           <h2>Marwan Nouiri</h2>
@@ -393,9 +393,11 @@ footer a:hover{color:var(--ink)}
     ticking=false;
     nav.classList.toggle('solid', scrollY > 20);
     if (!still) {
-      var r = show.getBoundingClientRect();
-      var t = clamp((innerHeight - r.top) / (innerHeight*.8));
-      mock.style.transform = 'rotateX('+(22-22*t)+'deg) scale('+(.94+.06*t)+')';
+      var r = mock.getBoundingClientRect();
+      var d = ((r.top + r.height/2) - innerHeight/2) / (innerHeight/2);
+      d = d < -1.2 ? -1.2 : d > 1.2 ? 1.2 : d;
+      var ad = d < 0 ? -d : d;
+      mock.style.transform = 'rotateX('+(d*26).toFixed(2)+'deg) rotateY('+(-d*9).toFixed(2)+'deg) scale('+(1-ad*.07).toFixed(3)+')';
     }
   }
   addEventListener('scroll', function(){ if(!ticking){ ticking=true; requestAnimationFrame(update); } }, {passive:true});
