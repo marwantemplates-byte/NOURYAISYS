@@ -189,6 +189,8 @@ button{cursor:pointer}
 .keybox code{flex:1;font-size:12.5px;direction:ltr;text-align:left;word-break:break-all;color:var(--light);filter:blur(4px);transition:filter .2s}
 .keybox.show code{filter:none}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.hookbox{margin-top:18px}
+.hookbox label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
 .plan{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
 .plan b{color:var(--acc);font-weight:600}
 
@@ -402,6 +404,12 @@ dialog::backdrop{background:rgba(2,24,27,.6);backdrop-filter:blur(3px)}
             <code id="apiKey">••••••••••••••••••••••••••••••••</code>
             <button class="btn quiet sm" id="keyShow" type="button">إظهار</button>
             <button class="btn sm" id="keyCopy" type="button">نسخ</button>
+          </div>
+          <div class="hookbox">
+            <label>رابط استقبال الطلبات (Webhook)</label>
+            <div class="keybox show"><code id="hookUrl">…</code><button class="btn quiet sm" id="hookCopy" type="button">نسخ</button></div>
+            <p class="lead" style="margin-top:8px">ضع هذا الرابط في إعدادات Webhooks في متجرك (حدث «إنشاء طلب»)، أو في نموذج صفحة الهبوط.</p>
+            <button class="btn sm" id="testOrder" type="button" style="margin-top:6px">إرسال طلب تجريبي</button>
           </div>
           <div class="plan"><span>الاشتراك</span><b id="plan">تجربة</b></div>
         </div>
@@ -691,10 +699,25 @@ async function loadProfile(){
   $('whoName').textContent = name; $('whoEmail').textContent = user.email; $('avatar').textContent = name.trim().charAt(0).toUpperCase();
   $('sStore').value = profile.store_name || ''; $('sPhone').value = profile.phone || ''; $('sWa').value = profile.whatsapp || '';
   $('apiKey').textContent = profile.api_key || '';
+  $('hookUrl').textContent = hookLink();
   $('plan').textContent = { trial:'تجربة مجانية', active:'مفعّل', paused:'موقوف' }[profile.plan] || '—';
   greet();
 }
 $('keyShow').onclick = () => { const b = $('keybox'); b.classList.toggle('show'); $('keyShow').textContent = b.classList.contains('show') ? 'إخفاء' : 'إظهار'; };
+const HOOK = 'https://nourys.app.n8n.cloud/webhook/nourys-order';
+const hookLink = () => HOOK + '?key=' + (profile?.api_key || '');
+$('hookCopy').onclick = async () => { try { await navigator.clipboard.writeText(hookLink()); toast('تم نسخ الرابط'); } catch { toast('تعذّر النسخ، انسخ الرابط يدويًا'); } };
+$('testOrder').onclick = async () => {
+  const b = $('testOrder'); b.disabled = true;
+  try {
+    const r = await fetch(hookLink(), { method:'POST', headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ customer_name:'عميل تجريبي', customer_phone:'0555000000', wilaya:'الجزائر', commune:'باب الزوار', product:'منتج تجريبي', quantity:1, total_price:2500, notes:'طلب تجريبي من NOURYS' }) });
+    const j = await r.json().catch(() => ({}));
+    if (r.ok && j.ok) { toast('وصل الطلب التجريبي ✅'); loadOrders(); show('orders'); }
+    else toast('لم يصل الطلب: ' + (j.error || r.status));
+  } catch { toast('تعذّر الاتصال بخادم الطلبات'); }
+  b.disabled = false;
+};
 $('keyCopy').onclick = async () => { try { await navigator.clipboard.writeText(profile.api_key); toast('تم نسخ المفتاح'); } catch { toast('تعذّر النسخ، أظهر المفتاح وانسخه يدويًا'); } };
 $('setForm').onsubmit = async e => {
   e.preventDefault();
