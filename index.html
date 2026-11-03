@@ -193,6 +193,11 @@ button{cursor:pointer}
 .keybox code{flex:1;font-size:12.5px;direction:ltr;text-align:left;word-break:break-all;color:var(--light);filter:blur(4px);transition:filter .2s}
 .keybox.show code{filter:none}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.carrier-list{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.carrier-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:rgba(3,40,45,.6)}
+.carrier-row b{font-weight:600}
+.carrier-row small{color:var(--muted);font-size:12.5px}
+.carrier-row .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block;margin-inline-end:8px}
 .hookbox{margin-top:18px}
 .hookbox label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
 .plan{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
@@ -422,6 +427,25 @@ dialog::backdrop{background:rgba(2,24,27,.6);backdrop-filter:blur(3px)}
           </div>
           <div class="plan"><span>الاشتراك</span><b id="plan">تجربة</b></div>
         </div>
+        <form class="panel" id="carrierForm" style="grid-column:1/-1">
+          <h2>ربط شركة التوصيل</h2>
+          <p class="lead">أدخل مفاتيح API من حسابك لدى شركة التوصيل، لتتحدث حالة الطرود في لوحتك تلقائيًا. تُحفظ المفاتيح بشكل آمن ولا تُعرض مرة أخرى بعد الحفظ.</p>
+          <div id="carrierList" class="carrier-list"></div>
+          <div class="row2">
+            <div class="field"><label for="cCarrier">شركة التوصيل</label>
+              <select class="input" id="cCarrier">
+                <option value="yalidine">Yalidine</option>
+                <option value="zr_express">ZR Express</option>
+                <option value="ecotrack_dhd">DHD (Ecotrack)</option>
+              </select>
+            </div>
+            <div class="field" id="cIdField"><label for="cId" id="cIdLabel">API ID</label><input class="input" id="cId" dir="ltr" autocomplete="off"></div>
+          </div>
+          <div class="field"><label for="cToken" id="cTokenLabel">API Token</label><input class="input" id="cToken" type="password" dir="ltr" autocomplete="off"></div>
+          <p class="lead" id="cHelp" style="margin-top:8px"></p>
+          <button class="btn" style="margin-top:12px">حفظ الربط</button>
+          <div id="carrierMsg" class="note" role="status"></div>
+        </form>
       </div>
     </section>
   </main>
@@ -709,6 +733,7 @@ async function loadProfile(){
   $('sStore').value = profile.store_name || ''; $('sPhone').value = profile.phone || ''; $('sWa').value = profile.whatsapp || '';
   $('apiKey').textContent = profile.api_key || '';
   $('hookUrl').textContent = hookLink();
+  loadCarriers();
   $('plan').textContent = { trial:'تجربة مجانية', active:'مفعّل', paused:'موقوف' }[profile.plan] || '—';
   greet();
 }
@@ -733,6 +758,45 @@ $('setForm').onsubmit = async e => {
   const { error } = await db.from('merchants').update({ store_name: $('sStore').value.trim(), phone: $('sPhone').value.trim(), whatsapp: $('sWa').value.trim() }).eq('id', user.id);
   if (error) return note('setMsg', 'تعذّر الحفظ: ' + error.message);
   note('setMsg', 'تم حفظ التعديلات ✅', true); loadProfile();
+};
+
+
+/* ---------- delivery company ---------- */
+const CARRIERS = {
+  yalidine:     { name:'Yalidine',       id:'API ID', token:'API Token', help:'تجد API ID و API Token في حسابك لدى Yalidine. إذا لم تجدهما، اطلب من Yalidine تفعيل API لحسابك.' },
+  zr_express:   { name:'ZR Express',     id:'Tenant', token:'API Key',   help:'تجد Tenant و API Key في حسابك لدى ZR Express. إذا لم تجدهما، اطلبهما من خدمة العملاء.' },
+  ecotrack_dhd: { name:'DHD (Ecotrack)', id:null,     token:'Token',     help:'تجد Token في حسابك لدى DHD على منصة Ecotrack. إذا لم تجده، اطلبه من خدمة العملاء.' }
+};
+function carrierForm(){
+  const c = CARRIERS[$('cCarrier').value];
+  $('cIdField').classList.toggle('hidden', !c.id);
+  if (c.id) $('cIdLabel').textContent = c.id;
+  $('cTokenLabel').textContent = c.token;
+  $('cHelp').textContent = c.help;
+}
+$('cCarrier').onchange = carrierForm; carrierForm();
+async function loadCarriers(){
+  const { data, error } = await db.from('carrier_connections').select('carrier, active, last_check_at, last_status, created_at');
+  if (error) { $('carrierList').replaceChildren(); return; }
+  $('carrierList').replaceChildren(...data.map(r => h('div', { class:'carrier-row' },
+    h('div', {}, h('span', { class:'dot' }), h('b', { text: CARRIERS[r.carrier]?.name || r.carrier }),
+      h('div', {}, h('small', { text: r.last_status ? 'آخر مزامنة: ' + r.last_status : 'تم الربط في ' + new Date(r.created_at).toLocaleDateString('ar-DZ') }))),
+    h('button', { class:'btn quiet sm', type:'button', text:'إلغاء الربط', onclick: async () => {
+      const { error } = await db.from('carrier_connections').delete().eq('merchant_id', user.id).eq('carrier', r.carrier);
+      if (error) return toast('تعذّر إلغاء الربط'); toast('تم إلغاء الربط'); loadCarriers();
+    } })
+  )));
+}
+$('carrierForm').onsubmit = async e => {
+  e.preventDefault();
+  const key = $('cCarrier').value, c = CARRIERS[key];
+  const id = $('cId').value.trim(), token = $('cToken').value.trim();
+  if (c.id && !id) return note('carrierMsg', 'أدخل ' + c.id + '.');
+  if (token.length < 8) return note('carrierMsg', 'أدخل ' + c.token + ' كاملًا.');
+  const { error } = await db.from('carrier_connections').upsert({ merchant_id: user.id, carrier: key, api_id: c.id ? id : null, api_token: token, active: true }, { onConflict: 'merchant_id,carrier', returning: 'minimal' });
+  if (error) return note('carrierMsg', 'تعذّر الحفظ: ' + error.message);
+  $('cId').value = ''; $('cToken').value = '';
+  note('carrierMsg', 'تم حفظ ربط ' + c.name + ' ✅', true); loadCarriers();
 };
 
 setMode(new URLSearchParams(location.search).has('signup') ? 'signup' : 'login');
