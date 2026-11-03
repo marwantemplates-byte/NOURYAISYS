@@ -127,7 +127,7 @@ a{color:inherit}
 .founder{display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:32px;align-items:center;border:1px solid var(--line);border-radius:24px;padding:32px;background:linear-gradient(160deg,rgba(12,104,115,.45),rgba(5,55,62,.55))}
 .founder-photo{position:relative}
 .founder-photo:before{content:"";position:absolute;inset:-10px;border-radius:24px;background:radial-gradient(circle at 50% 40%,rgba(63,209,198,.35),transparent 70%);filter:blur(18px);z-index:0}
-.founder-photo img{position:relative;z-index:1;display:block;width:100%;height:auto;aspect-ratio:575/1024;filter:drop-shadow(0 24px 40px rgba(0,0,0,.35))}
+.founder-photo img{position:relative;z-index:1;display:block;width:100%;height:auto;aspect-ratio:1150/2048;border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
 .founder-role{color:var(--acc);font-weight:600;font-size:15px}
 .founder-copy h2{direction:ltr;text-align:right;font-family:var(--display);font-weight:900;font-size:clamp(30px,3.6vw,44px);margin:6px 0 0;letter-spacing:.01em}
 .founder-title{font-family:var(--display);font-weight:700;font-size:19px;color:var(--light);margin:6px 0 16px}
@@ -298,7 +298,7 @@ footer a:hover{color:var(--ink)}
   <section class="sec founder-sec" id="founder">
     <div class="wrap">
       <div class="founder">
-        <div class="founder-photo"><img src="founder-photo.webp" alt="مروان نويري، مؤسس NOURYS" width="575" height="1024" loading="lazy"></div>
+        <div class="founder-photo"><img src="founder-photo.jpg" alt="مروان نويري، مؤسس NOURYS" width="1150" height="2048" loading="lazy" decoding="async"></div>
         <div class="founder-copy">
           <div class="founder-role">مؤسس NOURYS</div>
           <h2>Marwan Nouiri</h2>
