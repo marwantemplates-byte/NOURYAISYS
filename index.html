@@ -43,6 +43,9 @@ button{cursor:pointer}
 .opts input:focus-visible+span{outline:2px solid var(--acc);outline-offset:2px}
 .agree{display:flex;gap:10px;align-items:flex-start;margin-top:18px;font-size:13px;color:var(--muted);cursor:pointer}
 .agree a{color:var(--acc)}
+.legal{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:16px;font-size:13px}
+.legal a{color:var(--muted);text-decoration:none}
+.legal a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 .agree input{margin-top:3px;accent-color:var(--acc);width:16px;height:16px;flex:none}
 .hint{font-size:12px;color:var(--muted);margin-top:6px}
 .switch{text-align:center;margin:18px 0 0;font-size:14px;color:var(--muted)}
@@ -337,6 +340,11 @@ dialog::backdrop{background:rgba(2,24,27,.6);backdrop-filter:blur(3px)}
         <svg width="16" height="16"><use href="#i-lock"/></svg>
         <span>بيانات متجرك محمية: لا يطّلع أي حساب إلا على طلباته، ولا نشارك بيانات عملائك مع أي طرف.</span>
       </div>
+      <nav class="legal" aria-label="الوثائق القانونية">
+        <a href="https://nourys-home.vercel.app/privacy.html" target="_blank" rel="noopener">سياسة الخصوصية</a>
+        <a href="https://nourys-home.vercel.app/terms.html" target="_blank" rel="noopener">شروط الاستخدام</a>
+        <a href="https://nourys-home.vercel.app/data-deletion.html" target="_blank" rel="noopener">حذف البيانات</a>
+      </nav>
     </div>
   </section>
 </main>
