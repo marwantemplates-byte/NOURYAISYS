@@ -153,6 +153,9 @@
       { auth: { persistSession: false, autoRefreshToken: false, storageKey: "nourys-store" } }
     );
 
+    // رابط الـ Webhook تاع n8n: كل طلبية تتبعثلو
+    const WEBHOOK_URL = "https://nourys1.app.n8n.cloud/webhook-test/41edf38b-b797-4f52-b2c8-2d5558693f94";
+
     // المنتج يجي من جدول products في Supabase (تبدّلو من لوحة التحكم)
     // تقدر تختار منتج آخر بالرابط: store.html?id=2
     let PRODUCT = null;
@@ -222,6 +225,28 @@
         msg.className = "err";
         return;
       }
+
+      // نبعثو الطلبية تاني لـ n8n (Webhook)
+      try {
+        const q = Number(f.get("quantity"));
+        await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          keepalive: true,
+          body: JSON.stringify({
+            source: "متجر نوريس",
+            name: f.get("name").trim(),
+            phone: f.get("phone").trim(),
+            wilaya: f.get("wilaya").trim(),
+            product: PRODUCT.name,
+            product_id: PRODUCT.id,
+            quantity: q,
+            price: PRODUCT.price,
+            total_price: PRODUCT.price * q,
+            created_at: new Date().toISOString()
+          })
+        });
+      } catch (err) { console.warn("webhook:", err); }
 
       // نبدّلو الفورم برسالة النجاح
       box.innerHTML =
