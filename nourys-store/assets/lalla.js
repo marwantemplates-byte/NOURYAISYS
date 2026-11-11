@@ -17,6 +17,8 @@
   };
 
   const CATEGORIES = [
+    { key: "manteaux", fr: "Manteaux", ar: "معاطف وترانش" },
+    { key: "pulls",    fr: "Pulls",    ar: "كنزات وكارديغان" },
     { key: "sacs",     fr: "Sacs",     ar: "حقائب ومحافظ" },
     { key: "bijoux",   fr: "Bijoux",   ar: "مجوهرات" },
     { key: "montres",  fr: "Montres",  ar: "ساعات" },

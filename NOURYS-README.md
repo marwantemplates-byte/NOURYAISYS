@@ -63,6 +63,7 @@
 - ملفات SQL (تتنفذ بالترتيب في Supabase ← SQL Editor، مشروع `wlpapvirtacrmcxcevuk`):
   1. `nourys-store/supabase/01_lalla_columns.sql`: يزيد أعمدة `commune`، `delivery_type`، `color`، `size` في `orders`، و `category`، `images`، `colors`، `sizes`، `is_new`، `is_bestseller` في `products`.
   2. `nourys-store/supabase/seed_products.sql`: 16 منتج.
+  3. `nourys-store/supabase/seed_clothing.sql`: 10 ملابس شتوية (معاطف، ترانش، كنزات، كارديغان) بالمقاسات والألوان.
 - الطلبية تتسجل في `orders` ومن بعد تتبعث لـ n8n (`WEBHOOK_URL` في `product/index.html`) مع `commune` و `delivery_type` (`Domicile` ولا `Bureau`).
 - مجلد `supabase/` ما يترفعش لـ Vercel (`.vercelignore`).
 

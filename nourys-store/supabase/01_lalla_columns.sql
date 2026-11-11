@@ -22,7 +22,7 @@ end $$;
 grant insert (commune, delivery_type, color, size) on public.orders to anon, authenticated;
 
 -- 2) Products: category, extra photos, variants, and home-page flags
-alter table public.products add column if not exists category      text;     -- sacs | bijoux | montres | lunettes | foulards
+alter table public.products add column if not exists category      text;     -- manteaux | pulls | sacs | bijoux | montres | lunettes | foulards
 alter table public.products add column if not exists images        text[];   -- extra photos (image_url stays the main one)
 alter table public.products add column if not exists colors        text[];   -- optional colour choices shown in the order form
 alter table public.products add column if not exists sizes         text[];   -- optional size choices (rings, etc.)
