@@ -2,34 +2,193 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>متجر نوريس</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800\&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>LALLA | إكسسوارات نسائية فاخرة</title>
+  <meta name="description" content="LALLA: حقائب، مجوهرات، ساعات، نظارات وأوشحة نسائية. الدفع عند الاستلام والتوصيل إلى 58 ولاية.">
+  <meta name="theme-color" content="#4B1E3A">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234B1E3A'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,serif' font-size='38' font-style='italic' fill='%23E9CFA0'%3EL%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/lalla.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
   <style>
-    :root{ --bg:#0f0d0b; --card:#1a1612; --line:rgba(212,175,106,.22); --gold:#d4af6a; --gold2:#f3dca4; --text:#f5efe6; --muted:#b9ad9c; }
-    *{ box-sizing:border-box; margin:0; padding:0; }
-    body{ font-family:"Cairo",system-ui,sans-serif; background:radial-gradient(120% 70% at 50% 0%, #2a2118 0%, var(--bg) 60%); color:var(--text); min-height:100vh; padding:0 16px 32px; }
-    a{ color:inherit; text-decoration:none; }
-    .wrap{ max-width:1000px; margin:0 auto; }
-    header{ display:flex; justify-content:space-between; align-items:center; padding:20px 0; }
-    .logo{ font-weight:800; letter-spacing:.12em; color:var(--gold); }
-    .badge{ font-size:13px; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:4px 12px; }
-    .btn{ display:inline-block; padding:15px 32px; border-radius:14px; font-weight:800; font-size:17px; color:#1a1309; background:linear-gradient(135deg,var(--gold2),var(--gold)); box-shadow:0 10px 30px rgba(212,175,106,.25); }
-    footer{ text-align:center; color:var(--muted); font-size:13px; margin-top:28px; }
-    .hero{ text-align:center; padding:18vh 0 10vh; }
-    .hero h1{ font-size:clamp(36px,8vw,64px); font-weight:800; color:var(--gold2); }
-    .hero p{ color:var(--muted); margin:12px 0 32px; font-size:18px; }
+    /* hero: split editorial block, monogram arch on the photo side */
+    .hero{display:grid;gap:28px;padding-block:28px 40px}
+    .hero-copy{display:grid;gap:18px;align-content:center}
+    .hero h1{font-size:clamp(40px,9vw,76px);font-weight:600;line-height:1.08}
+    .hero h1 .fr{display:block;font-size:.5em;color:var(--gold-ink);margin-top:10px;font-weight:500;direction:ltr}
+    .hero p{color:var(--muted);font-size:17px;max-width:36ch}
+    .hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
+    .arch{position:relative;aspect-ratio:4/5;border-radius:999px 999px var(--r-lg) var(--r-lg);overflow:hidden;background:var(--blush);box-shadow:var(--shadow)}
+    .arch img{width:100%;height:100%;object-fit:cover}
+    .arch .stamp{position:absolute;bottom:18px;inset-inline-end:18px;width:92px;height:92px;border-radius:50%;background:var(--paper);display:grid;place-items:center;text-align:center;font-size:11px;line-height:1.3;color:var(--plum);box-shadow:var(--shadow)}
+    .arch .stamp b{display:block;font-family:var(--serif);font-size:24px;font-style:italic;color:var(--gold-ink)}
+    @media (min-width:900px){.hero{grid-template-columns:1.05fr .95fr;gap:64px;padding-block:56px 72px}.arch{max-height:640px}}
+
+    /* category tiles */
+    .cats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .cat{position:relative;display:grid;align-content:end;gap:4px;min-height:150px;padding:16px;border-radius:var(--r);text-decoration:none;background:var(--nude);overflow:hidden;transition:transform .25s var(--ease),background .25s}
+    .cat:hover{transform:translateY(-3px);background:var(--blush)}
+    .cat svg{position:absolute;top:14px;inset-inline-end:14px;width:44px;height:44px;color:var(--gold)}
+    .cat .fr{font-size:26px;color:var(--plum);direction:ltr;text-align:right}
+    .cat small{color:var(--muted);font-size:13px}
+    .cat:first-child{grid-column:1/-1;min-height:180px;background:var(--plum)}
+    .cat:first-child .fr{color:#F7EDE6}.cat:first-child small{color:#E3CFC6}.cat:first-child svg{color:#D9BC8A}
+    @media (min-width:900px){.cats{grid-template-columns:repeat(5,1fr)}.cat,.cat:first-child{grid-column:auto;min-height:220px}}
+
+    /* rows */
+    .row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(160px,46%);gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;scrollbar-width:thin}
+    .row > *{scroll-snap-align:start}
+    @media (min-width:760px){.row{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));overflow:visible}}
+
+    /* story */
+    .story{display:grid;gap:28px;background:var(--nude);border-radius:var(--r-lg);padding:32px 20px;align-items:center}
+    .story h2{font-size:clamp(28px,4vw,42px)}
+    .story p{color:var(--muted);margin-top:14px;max-width:52ch}
+    .story .sig{font-family:var(--serif);font-style:italic;font-size:24px;color:var(--gold-ink);margin-top:18px;direction:ltr;text-align:right}
+    .story ul{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+    .story li{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:baseline;border-top:1px solid var(--line);padding-top:14px}
+    .story li b{font-family:var(--serif);font-size:30px;color:var(--plum);line-height:1;direction:ltr}
+    .story li span{color:var(--ink)}
+    @media (min-width:900px){.story{grid-template-columns:1.2fr 1fr;padding:56px}}
+
+    /* gallery */
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .gallery a{position:relative;aspect-ratio:1;overflow:hidden;border-radius:6px;background:var(--nude)}
+    .gallery img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+    .gallery a:hover img{transform:scale(1.06)}
+    @media (min-width:900px){.gallery{grid-template-columns:repeat(6,1fr);gap:10px}}
+    .handle{font-family:var(--serif);font-style:italic;color:var(--gold-ink);direction:ltr;font-size:18px}
   </style>
 </head>
-<body>
-  <div class="wrap">
-    <header><div class="logo">متجر نوريس</div><div class="badge">🚚 الدفع عند الاستلام</div></header>
-    <section class="hero">
-      <h1>مرحبا بكم</h1>
-      <p>منتجات مختارة، توصيل لكل الولايات، وتخلّص كي تستلم.</p>
-      <a class="btn" href="collection/index.html">تصفح المنتجات</a>
+<body data-root=".">
+  <div id="site-header"></div>
+
+  <main id="main">
+    <section class="wrap hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <span class="eyebrow">Maison d'accessoires · Algérie</span>
+        <h1 id="hero-title">لمستكِ الأخيرة،<br>تصنع الإطلالة كلّها <span class="fr">L'élégance, au détail près.</span></h1>
+        <p>حقائب، مجوهرات، ساعات ونظارات مختارة بذوق، لكل يوم ولكل مناسبة. اطلبي من دارك وادفعي عند الاستلام.</p>
+        <div class="ctas">
+          <a class="btn btn-plum" href="collection/index.html">اكتشفي المجموعة
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></a>
+          <a class="btn btn-line" href="#new">وصل حديثًا</a>
+        </div>
+      </div>
+      <div class="arch" id="heroArch">
+        <div class="stamp" aria-hidden="true"><div><b>58</b>ولاية<br>نوصل لها</div></div>
+      </div>
     </section>
-    <footer>© متجر نوريس</footer>
-  </div>
+
+    <section class="wrap" aria-label="خدماتنا">
+      <div class="trust" id="trust"></div>
+    </section>
+
+    <section class="wrap sec" aria-labelledby="cats-title">
+      <div class="sec-head"><div><span class="eyebrow">Les collections</span><h2 id="cats-title">تسوّقي حسب الفئة</h2></div></div>
+      <div class="cats" id="cats"></div>
+    </section>
+
+    <section class="wrap sec" id="new" aria-labelledby="new-title" style="padding-top:0">
+      <div class="sec-head"><div><span class="eyebrow">Nouveautés</span><h2 id="new-title">وصل حديثًا</h2></div><a class="more" href="collection/index.html">عرض الكل</a></div>
+      <div class="row" id="rowNew"></div>
+    </section>
+
+    <section class="wrap sec" aria-labelledby="best-title" style="padding-top:0">
+      <div class="sec-head"><div><span class="eyebrow">Best-sellers</span><h2 id="best-title">الأكثر طلبًا</h2></div><a class="more" href="collection/index.html?sort=best">عرض الكل</a></div>
+      <div class="row" id="rowBest"></div>
+    </section>
+
+    <section class="wrap" aria-labelledby="story-title">
+      <div class="story">
+        <div>
+          <span class="eyebrow">Notre histoire</span>
+          <h2 id="story-title">«لالة» هي كل امرأة تعرف ما تريد</h2>
+          <p>بدأت LALLA من فكرة بسيطة: أن تجد المرأة الجزائرية إكسسوارات بجودة وتفاصيل البيوت الكبيرة، بسعر معقول، وتصلها إلى باب دارها. نختار كل قطعة بأيدينا، نفحصها قبل الإرسال، ونغلّفها كهدية.</p>
+          <p class="sig">— Lalla</p>
+        </div>
+        <ul>
+          <li><b>01</b><span>نختار القطع بأنفسنا ونفحص كل واحدة قبل الشحن.</span></li>
+          <li><b>02</b><span>نتصل بكِ لتأكيد الطلب قبل إرساله.</span></li>
+          <li><b>03</b><span>تفتحين الطرد، تتأكدين، ثم تدفعين.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="wrap sec" aria-labelledby="gal-title">
+      <div class="sec-head"><div><span class="eyebrow">#LallaStyle</span><h2 id="gal-title">إطلالات LALLA</h2></div><span class="handle" id="igHandle"></span></div>
+      <div class="gallery" id="gallery"></div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="assets/lalla.js"></script>
+  <script>
+    (function () {
+      const { el, card, skeletons, loadProducts, photo, placeholder, CATEGORIES, icons, BRAND } = LALLA;
+
+      // trust bar
+      const trust = [
+        [icons.cash, "Paiement à la livraison", "الدفع عند الاستلام"],
+        [icons.truck, "Livraison 58 wilayas", "للمنزل أو لمكتب التوصيل"],
+        [icons.swap, "Échange possible", "تبديل القطعة إذا كان فيها مشكل"]
+      ];
+      document.getElementById("trust").innerHTML = trust.map(([i, fr, ar]) =>
+        "<div>" + i + '<span><b class="fr ltr">' + fr + "</b><small>" + ar + "</small></span></div>").join("");
+
+      // category tiles (line drawings, no photos needed)
+      const art = {
+        sacs: '<path d="M10 20h28l-3 22H13L10 20Z"/><path d="M17 20v-4a7 7 0 0 1 14 0v4"/>',
+        bijoux: '<path d="M8 10c4 14 28 14 32 0"/><path d="M24 26l4 5-4 6-4-6z"/>',
+        montres: '<circle cx="24" cy="24" r="10"/><path d="M19 14l1-8h8l1 8M19 34l1 8h8l1-8M24 19v5l3 2"/>',
+        lunettes: '<circle cx="14" cy="26" r="7"/><circle cx="34" cy="26" r="7"/><path d="M21 25c2-2 4-2 6 0M7 24 4 16M41 24l3-8"/>',
+        foulards: '<path d="M8 10h32l-6 10 6 10H24l-6 12-4-12H8l6-10z"/>'
+      };
+      const cats = document.getElementById("cats");
+      for (const c of CATEGORIES) {
+        const a = el("a", "cat"); a.href = "collection/index.html?cat=" + c.key;
+        a.innerHTML = '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + art[c.key] + "</svg>";
+        const fr = el("span", "fr", c.fr); fr.setAttribute("lang", "fr");
+        a.append(fr, el("small", null, c.ar));
+        cats.appendChild(a);
+      }
+
+      if (BRAND.instagram) document.getElementById("igHandle").textContent = "@" + BRAND.instagram;
+
+      const rowNew = document.getElementById("rowNew"), rowBest = document.getElementById("rowBest"), gal = document.getElementById("gallery");
+      rowNew.appendChild(skeletons(4)); rowBest.appendChild(skeletons(4));
+      const arch = document.getElementById("heroArch");
+
+      loadProducts().then((all) => {
+        const news = all.filter((p) => p.is_new);
+        const best = all.filter((p) => p.is_bestseller);
+        const fill = (box, list) => { box.innerHTML = ""; list.slice(0, 8).forEach((p) => box.appendChild(card(p))); };
+        fill(rowNew, news.length ? news : all);
+        fill(rowBest, best.length ? best : all.filter((p) => p.old_price).concat(all.filter((p) => !p.old_price)));
+        if (!all.length) { rowNew.innerHTML = rowBest.innerHTML = '<p class="msg-box">المجموعة الجديدة في الطريق.</p>'; }
+
+        // hero photo: first bag, else first product with a photo
+        const heroP = all.find((p) => p.category === "sacs" && LALLA.imagesOf(p)[0]) || all.find((p) => LALLA.imagesOf(p)[0]);
+        arch.insertBefore(heroP ? photo(LALLA.imagesOf(heroP)[0], heroP.name, heroP, true) : placeholder(), arch.firstChild);
+
+        // gallery from product photos
+        all.filter((p) => LALLA.imagesOf(p)[0]).slice(0, 6).forEach((p) => {
+          const a = el("a"); a.href = "product/index.html?id=" + encodeURIComponent(p.id);
+          a.setAttribute("aria-label", p.name);
+          a.appendChild(photo(LALLA.imagesOf(p)[0], "", p));
+          gal.appendChild(a);
+        });
+        if (!gal.children.length) document.getElementById("gal-title").closest("section").hidden = true;
+      }).catch(() => {
+        const m = '<p class="msg-box">ما قدرناش نجيبو المنتجات. حدّثي الصفحة بعد لحظة.</p>';
+        rowNew.innerHTML = m; rowBest.innerHTML = "";
+        arch.insertBefore(placeholder(), arch.firstChild);
+        document.getElementById("gal-title").closest("section").hidden = true;
+      });
+    })();
+  </script>
 </body>
 </html>

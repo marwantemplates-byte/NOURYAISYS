@@ -56,6 +56,16 @@
 
 ---
 
+## 3.1 متجر LALLA (فرع `main`، مجلد `nourys-store/`)
+
+متجر إكسسوارات نسائية باسم **LALLA**: الرئيسية، المجموعة، صفحة المنتج + فورم الطلب، ولوحة التحكم.
+- الستايل والكود المشترك: `nourys-store/assets/lalla.css` و `lalla.js` (فيه معلومات التواصل `BRAND` للتعبئة).
+- ملفات SQL (تتنفذ بالترتيب في Supabase ← SQL Editor، مشروع `wlpapvirtacrmcxcevuk`):
+  1. `nourys-store/supabase/01_lalla_columns.sql`: يزيد أعمدة `commune`، `delivery_type`، `color`، `size` في `orders`، و `category`، `images`، `colors`، `sizes`، `is_new`، `is_bestseller` في `products`.
+  2. `nourys-store/supabase/seed_products.sql`: 16 منتج.
+- الطلبية تتسجل في `orders` ومن بعد تتبعث لـ n8n (`WEBHOOK_URL` في `product/index.html`) مع `commune` و `delivery_type` (`Domicile` ولا `Bureau`).
+- مجلد `supabase/` ما يترفعش لـ Vercel (`.vercelignore`).
+
 ## 4. Supabase: قاعدة البيانات
 
 ملفات SQL في فرع `nourys-app` تحت `supabase/`، وتتنفذ بالترتيب في Supabase ← SQL Editor:
