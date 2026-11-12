@@ -3,12 +3,19 @@ import HeroScene from "./HeroScene";
 
 export default function Hero() {
   return (
-    <section
-      id="top"
-      aria-labelledby="hero-title"
-      className="relative isolate flex h-svh min-h-[560px] items-end overflow-hidden bg-olive text-white"
-    >
-      <HeroScene />
+    <>
+      {/* Curtain reveal: the background is pinned (sticky) and takes no space in the flow
+          (negative margin = its own height). The next section slides up over it. */}
+      <div className="hero-bg sticky top-0 z-0 bg-olive">
+        <HeroScene coverTargetId="top" />
+      </div>
+
+      {/* In-flow hero content: text and buttons scroll normally */}
+      <section
+        id="top"
+        aria-labelledby="hero-title"
+        className="hero-h relative z-10 flex items-end text-white"
+      >
 
       <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-28 sm:px-8 sm:pb-32 md:pb-36">
         <div className="max-w-3xl">
@@ -63,6 +70,7 @@ export default function Hero() {
           <span className="scroll-dot h-2 w-1 rounded-full bg-gold-light" />
         </span>
       </a>
-    </section>
+      </section>
+    </>
   );
 }

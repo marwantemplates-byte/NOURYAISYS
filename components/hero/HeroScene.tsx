@@ -25,8 +25,13 @@ const { props: mobile } = getImageProps({
 /**
  * Hero background: plain image (always rendered, fallback) +
  * WebGL wind layer + Canvas 2D leaves, driven by ONE requestAnimationFrame loop.
+ *
+ * The hero background is pinned (sticky) and the next section slides over it,
+ * so the background itself is always "in the viewport". To know when it is fully
+ * covered we observe `coverTargetId` (the in-flow hero section): once that has
+ * scrolled out, the curtain covers the whole background → pause + hide layers.
  */
-export default function HeroScene() {
+export default function HeroScene({ coverTargetId }: { coverTargetId?: string }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const glRef = useRef<HTMLCanvasElement>(null);
@@ -121,14 +126,18 @@ export default function HeroScene() {
       }
     };
 
+    const coverTarget = (coverTargetId && document.getElementById(coverTargetId)) || root;
     const io = new IntersectionObserver(
       ([entry]) => {
         inView = entry.isIntersecting;
+        // Fully covered: hide the layers too so the browser can skip compositing them.
+        // The 120px top margin re-shows them before the curtain uncovers anything.
+        root.style.visibility = inView ? "" : "hidden";
         sync();
       },
-      { threshold: 0 },
+      { threshold: 0, rootMargin: "120px 0px 0px 0px" },
     );
-    io.observe(root);
+    io.observe(coverTarget);
     document.addEventListener("visibilitychange", sync);
     sync();
 
@@ -141,8 +150,9 @@ export default function HeroScene() {
       img.removeEventListener("load", onImage);
       glCanvas.removeEventListener("webglcontextlost", onLost);
       wind?.destroy();
+      root.style.visibility = "";
     };
-  }, [motionOk]);
+  }, [motionOk, coverTargetId]);
 
   return (
     <div ref={rootRef} className="absolute inset-0 overflow-hidden" aria-hidden="true">

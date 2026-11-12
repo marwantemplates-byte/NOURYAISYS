@@ -19,11 +19,14 @@ export default function HomePage() {
       <Header />
       <main id="main">
         <Hero />
-        <About />
-        <HowItWorks />
-        <Stats />
-        <Events />
-        <CallToAction />
+        {/* The "curtain": solid ivory sheet with rounded top that slides over the pinned hero */}
+        <div className="curtain relative z-20 rounded-t-[28px] bg-ivory md:rounded-t-[40px]">
+          <About />
+          <HowItWorks />
+          <Stats />
+          <Events />
+          <CallToAction />
+        </div>
       </main>
       <Footer />
     </>

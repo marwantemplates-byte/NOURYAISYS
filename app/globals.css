@@ -52,6 +52,27 @@ h3 {
   border-radius: 6px;
 }
 
+/* ---------- Hero curtain reveal ---------- */
+/* In-flow hero content: the visible viewport height (svh = with browser bars shown) */
+.hero-h {
+  height: 100vh;
+  height: 100svh;
+  min-height: 560px;
+}
+/* Pinned background: the LARGEST viewport (lvh) so it never shows a gap when the
+   iOS/Android URL bar collapses, and it never resizes while scrolling.
+   Negative margin = its own height, so it takes no room in the page flow. */
+.hero-bg {
+  height: 100vh;
+  height: 100lvh;
+  min-height: 560px;
+  margin-bottom: calc(-1 * max(100vh, 560px));
+  margin-bottom: calc(-1 * max(100lvh, 560px));
+}
+.curtain {
+  box-shadow: 0 -18px 40px -14px rgba(12, 26, 18, 0.45);
+}
+
 /* Hero text: fade in once on load */
 @keyframes hero-fade {
   from {
