@@ -15,8 +15,6 @@ npm run build   # بناء الإنتاج
 ## ضبط الـ Hero
 | الثابت | الملف | الدور |
 |---|---|---|
-| `WIND_STRENGTH` | `components/hero/windShader.ts` | قوة تمايل الأشجار (افتراضي `0.004`) |
-| `WIND_SPEED` | `components/hero/windShader.ts` | سرعة الريح (افتراضي `1.0`) |
 | `LEAF_COUNT_DESKTOP` | `components/hero/leaves.ts` | عدد الأوراق على الكمبيوتر (40) |
 | `LEAF_COUNT_MOBILE` | `components/hero/leaves.ts` | عدد الأوراق على الهاتف، أقل من 768px (18) |
 

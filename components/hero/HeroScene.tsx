@@ -2,7 +2,6 @@
 
 import { getImageProps } from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { createWindRenderer } from "./windShader";
 import { createLeafField } from "./leaves";
 
 const MAX_DPR = 2;
@@ -23,21 +22,17 @@ const { props: mobile } = getImageProps({
 });
 
 /**
- * Hero background: plain image (always rendered, fallback) +
- * WebGL wind layer + Canvas 2D leaves, driven by ONE requestAnimationFrame loop.
+ * Hero background: static image + Canvas 2D leaves (one requestAnimationFrame loop).
  *
  * The hero background is pinned (sticky) and the next section slides over it,
  * so the background itself is always "in the viewport". To know when it is fully
  * covered we observe `coverTargetId` (the in-flow hero section): once that has
- * scrolled out, the curtain covers the whole background → pause + hide layers.
+ * scrolled out, the curtain covers the whole background → pause the leaves + hide the layer.
  */
 export default function HeroScene({ coverTargetId }: { coverTargetId?: string }) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const glRef = useRef<HTMLCanvasElement>(null);
   const leafRef = useRef<HTMLCanvasElement>(null);
   const [motionOk, setMotionOk] = useState(false);
-  const [glReady, setGlReady] = useState(false);
 
   // prefers-reduced-motion → static image only
   useEffect(() => {
@@ -49,44 +44,18 @@ export default function HeroScene({ coverTargetId }: { coverTargetId?: string })
   }, []);
 
   useEffect(() => {
-    if (!motionOk) {
-      setGlReady(false);
-      return;
-    }
+    if (!motionOk) return; // reduced motion: static image only
     const root = rootRef.current;
-    const img = imgRef.current;
-    const glCanvas = glRef.current;
     const leafCanvas = leafRef.current;
-    if (!root || !img || !glCanvas || !leafCanvas) return;
+    if (!root || !leafCanvas) return;
 
-    const wind = createWindRenderer(glCanvas); // null → plain image stays visible
     const leaves = createLeafField(leafCanvas);
-
-    const onImage = () => {
-      if (!wind || !img.naturalWidth) return;
-      try {
-        wind.setImage(img);
-        setGlReady(true);
-      } catch {
-        setGlReady(false);
-      }
-    };
-    if (img.complete) onImage();
-    img.addEventListener("load", onImage);
-
-    const onLost = (e: Event) => {
-      e.preventDefault();
-      setGlReady(false);
-    };
-    glCanvas.addEventListener("webglcontextlost", onLost);
+    if (!leaves) return;
 
     const resize = () => {
       const rect = root.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
-      glCanvas.width = Math.round(rect.width * dpr);
-      glCanvas.height = Math.round(rect.height * dpr);
-      wind?.resize(glCanvas.width, glCanvas.height);
-      leaves?.resize(rect.width, rect.height, dpr);
+      leaves.resize(rect.width, rect.height, dpr);
     };
     resize();
     const ro = new ResizeObserver(resize);
@@ -107,11 +76,8 @@ export default function HeroScene({ coverTargetId }: { coverTargetId?: string })
       const dt = Math.min((now - last) / 1000, 0.05);
       last = now;
       time += dt;
-      wind?.render(time);
-      if (leaves) {
-        leaves.update(dt, time);
-        leaves.draw();
-      }
+      leaves.update(dt, time);
+      leaves.draw();
     };
 
     const sync = () => {
@@ -147,9 +113,6 @@ export default function HeroScene({ coverTargetId }: { coverTargetId?: string })
       io.disconnect();
       ro.disconnect();
       document.removeEventListener("visibilitychange", sync);
-      img.removeEventListener("load", onImage);
-      glCanvas.removeEventListener("webglcontextlost", onLost);
-      wind?.destroy();
       root.style.visibility = "";
     };
   }, [motionOk, coverTargetId]);
@@ -160,18 +123,10 @@ export default function HeroScene({ coverTargetId }: { coverTargetId?: string })
         <source media="(max-width: 767px)" srcSet={mobile.srcSet} sizes="100vw" />
         <img
           {...desktop}
-          ref={imgRef}
           alt=""
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
       </picture>
-      {motionOk && (
-        <canvas
-          ref={glRef}
-          className="absolute inset-0 h-full w-full transition-opacity duration-700"
-          style={{ opacity: glReady ? 1 : 0 }}
-        />
-      )}
       {/* Dark gradient: stronger at the bottom so the text reads well */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/15 to-[#0c1a12]/90" />
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#0c1a12]/70 to-transparent" />
