@@ -7,6 +7,8 @@
 export const LEAF_COUNT_DESKTOP = 40;
 /** Number of leaves on screens < 768px wide. */
 export const LEAF_COUNT_MOBILE = 18;
+/** Number of leaves on low-end devices (weak CPU / little memory / slow network). */
+export const LEAF_COUNT_LOW_END = 8;
 
 const GREENS = ["#4F7D3A", "#2E6B4A", "#6E9440", "#86A84B", "#3F6B33"];
 const GOLDS = ["#C9A24B", "#D8B45E", "#B88A35", "#E0C27A"];
@@ -100,7 +102,7 @@ export type LeafField = {
   draw: () => void;
 };
 
-export function createLeafField(canvas: HTMLCanvasElement): LeafField | null {
+export function createLeafField(canvas: HTMLCanvasElement, maxCount = Infinity): LeafField | null {
   const ctx = canvas.getContext("2d");
   if (!ctx) return null;
 
@@ -156,7 +158,7 @@ export function createLeafField(canvas: HTMLCanvasElement): LeafField | null {
       dpr = ratio;
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
-      const n = w < 768 ? LEAF_COUNT_MOBILE : LEAF_COUNT_DESKTOP;
+      const n = Math.min(maxCount, w < 768 ? LEAF_COUNT_MOBILE : LEAF_COUNT_DESKTOP);
       if (n !== count) {
         count = n;
         build(n);
