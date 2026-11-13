@@ -24,6 +24,8 @@ npm run build   # بناء الإنتاج
 - `data/site.ts`: معلومات التواصل وأرقام الإحصائيات.
 
 ## Supabase — الإعداد (مرة واحدة)
+> **الطريقة الأسهل:** الصق `supabase/ALL_IN_ONE.sql` كاملًا في SQL Editor → Run (يجمع كل الملفات 001 + 004 + 005 + 006، وآمن لإعادة التنفيذ).
+
 1. **قاعدة البيانات:** Supabase → **SQL Editor** → New query → الصق محتوى `supabase/001_schema.sql` → **Run**.
    (الملف آمن لإعادة التنفيذ بعد أي تعديل.)
 2. **ملف المشروع PDF:** نفّذ `supabase/004_project_pdf.sql` (المخزن الخاص بملفات PDF لطلبة ليسانس 3 و ماستر 2).
@@ -52,3 +54,11 @@ npm run build   # بناء الإنتاج
 - رابط Google Meet ما يتقراش من الجدول: يجي غير من `get_meeting_link()` بعد تأكيد الحضور.
 - تأكيد/إلغاء الحضور عبر `rsvp_item()` / `cancel_rsvp()` (تحترم العدد الأقصى، والإلغاء ممنوع بعد ما يسجّل المدير الحضور).
 - `attended` و `student_notes` و `email_campaigns`: للمدير برك.
+
+## الإيميل الجماعي (Brevo)
+في Vercel → Settings → Environment Variables (Production):
+- `BREVO_API_KEY` (سري)
+- `BREVO_SENDER_EMAIL` (إيميل مُتحقّق منه في Brevo → Senders)
+- `BREVO_SENDER_NAME` (اختياري)
+من غيرها، صفحة `/admin/emails` تعرض زر «نسخ كل الإيميلات» للإرسال من Gmail (Bcc).
+لتبديل المزوّد: عدّل دالة `sendEmail()` في `lib/email.ts` فقط.
