@@ -17,6 +17,11 @@ export default async function StudentLayout({ children }: { children: ReactNode 
             <span className="hidden sm:inline">حاضنة الأعمال</span>
           </Link>
           <nav aria-label="قائمة الطالب" className="flex items-center gap-1">
+            {profile?.role === "admin" && (
+              <Link href="/admin" className="inline-flex min-h-11 items-center rounded-lg bg-olive px-3 font-bold text-white hover:bg-emerald">
+                لوحة التحكم
+              </Link>
+            )}
             <Link href="/app" className="inline-flex min-h-11 items-center rounded-lg px-3 font-medium text-ink hover:bg-olive/5">
               الدورات
             </Link>

@@ -7,7 +7,8 @@ import { Alert, Field, Input, SubmitButton } from "@/components/ui/form";
 import { arabicError } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/client";
 
-export default function LoginForm({ next, notice }: { next: string; notice?: string }) {
+/** `next` = page to return to (from ?next=). Without it: admins → /admin, students → /app. */
+export default function LoginForm({ next, notice }: { next: string | null; notice?: string }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -30,14 +31,14 @@ export default function LoginForm({ next, notice }: { next: string; notice?: str
       return;
     }
     // Blocked accounts can't use the platform
-    const { data: profile } = await supabase.from("profiles").select("status").eq("id", data.user.id).maybeSingle();
+    const { data: profile } = await supabase.from("profiles").select("status,role").eq("id", data.user.id).maybeSingle();
     if (profile?.status === "blocked") {
       await supabase.auth.signOut();
       setLoading(false);
       setError("حسابك موقوف. تواصل مع إدارة الحاضنة.");
       return;
     }
-    router.replace(next);
+    router.replace(next ?? (profile?.role === "admin" ? "/admin" : "/app"));
     router.refresh();
   };
 

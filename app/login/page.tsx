@@ -17,7 +17,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const notice = typeof sp.error === "string" ? NOTICES[sp.error] : typeof sp.notice === "string" ? NOTICES[sp.notice] : undefined;
   return (
     <AuthShell title="تسجيل الدخول" subtitle="مرحبًا بعودتك إلى حاضنة الأعمال">
-      <LoginForm next={safeNext(sp.next)} notice={notice} />
+      <LoginForm next={sp.next ? safeNext(sp.next) : null} notice={notice} />
     </AuthShell>
   );
 }

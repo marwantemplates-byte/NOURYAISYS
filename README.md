@@ -36,7 +36,11 @@ npm run build   # بناء الإنتاج
      `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&next=/app`
    - **Reset password:** بدّل الرابط بـ
      `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/reset-password`
-5. **حساب مدير:** سجّل حساب عادي من `/register`، أكّد الإيميل، ومن بعد نفّذ `supabase/002_make_admin.sql` (بدّل الإيميل فيه).
+5. **حساب مدير (بلا فورم التسجيل):**
+   - نفّذ `supabase/005_admin_emails.sql` (فيه إيميل المدير؛ تقدر تزيد إيميلات أخرى).
+   - Supabase → **Authentication → Users → Add user → Create new user**: الإيميل + كلمة السر + ✅ **Auto Confirm User**.
+   - المدير يدخل من `/login` ويروح مباشرة لـ `/admin`.
+   - (طريقة بديلة: `supabase/002_make_admin.sql` لحساب موجود من قبل.)
 
 ### المتغيرات
 - `NEXT_PUBLIC_SUPABASE_URL` و `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (قيم علنية، شوف `.env.example`).
