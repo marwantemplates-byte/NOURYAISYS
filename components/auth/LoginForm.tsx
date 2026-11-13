@@ -7,7 +7,7 @@ import { Alert, Field, Input, SubmitButton } from "@/components/ui/form";
 import { arabicError } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/client";
 
-/** Students' login. Admin accounts are refused here (the admin has /admin/login). */
+/** Login: admins go to /admin, students to /app (the admin also has /admin/login). */
 export default function LoginForm({ next, notice }: { next: string | null; notice?: string }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -38,13 +38,8 @@ export default function LoginForm({ next, notice }: { next: string | null; notic
       setError("حسابك موقوف. تواصل مع إدارة الحاضنة.");
       return;
     }
-    if (profile?.role === "admin") {
-      await supabase.auth.signOut();
-      setLoading(false);
-      setError("هذا الحساب خاص بالإدارة ولا يمكن استعماله في فضاء الطلبة.");
-      return;
-    }
-    router.replace(next ?? "/app");
+    // Admins → dashboard, students → their area (or the page they came from)
+    router.replace(profile?.role === "admin" ? "/admin" : (next ?? "/app"));
     router.refresh();
   };
 
