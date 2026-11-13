@@ -6,7 +6,8 @@ import { useRef, useState } from "react";
 import ProjectFields from "@/components/auth/ProjectFields";
 import { Alert, Field, Input, SubmitButton } from "@/components/ui/form";
 import { arabicError } from "@/lib/errors";
-import { EMAIL_RE, PHONE_RE, type ProfileFields, validateProject } from "@/lib/profile-options";
+import { EMAIL_RE, PHONE_RE, checkPdf, needsPdf, type ProfileFields, validateProject } from "@/lib/profile-options";
+import { uploadProjectPdf } from "@/lib/project-file";
 import { createClient } from "@/lib/supabase/client";
 
 type Account = { email: string; password: string; password2: string };
@@ -35,6 +36,8 @@ export default function RegisterForm() {
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
   const [sentTo, setSentTo] = useState("");
+  const [pdf, setPdf] = useState<File | null>(null);
+  const [pdfWarning, setPdfWarning] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   const setP = <K extends keyof ProfileFields>(k: K, v: ProfileFields[K]) => setProfile((p) => ({ ...p, [k]: v }));
@@ -58,6 +61,10 @@ export default function RegisterForm() {
     e.preventDefault();
     setFormError("");
     const err = validateProject(profile) as Record<string, string>;
+    if (needsPdf(profile.level)) {
+      const pdfErr = pdf ? checkPdf(pdf) : "ارفع ملف المشروع بصيغة PDF.";
+      if (pdfErr) err.project_pdf = pdfErr;
+    }
     setErrors(err);
     if (Object.keys(err).length) return;
 
@@ -74,11 +81,19 @@ export default function RegisterForm() {
         emailRedirectTo: `${window.location.origin}/auth/confirm?next=/app`,
       },
     });
-    setLoading(false);
     if (error) {
+      setLoading(false);
       setFormError(arabicError(error.message));
       return;
     }
+
+    // Project PDF (ليسانس 3 / ماستر 2): upload right after the account is created
+    if (needsPdf(profile.level) && pdf && data.user) {
+      const { path } = await uploadProjectPdf(supabase, data.user.id, pdf);
+      const attached = path ? (await supabase.rpc("attach_signup_file", { p_user: data.user.id, p_path: path })).data : null;
+      if (attached !== "ok") setPdfWarning(true);
+    }
+    setLoading(false);
     if (data.session) {
       // Email confirmation disabled in Supabase → already signed in
       router.replace("/app");
@@ -99,6 +114,9 @@ export default function RegisterForm() {
           أرسلنا رسالة تأكيد إلى <strong dir="ltr">{sentTo}</strong>. افتحها واضغط على رابط التأكيد لتفعيل حسابك.
         </p>
         <p className="text-sm text-ink/60">لم تصلك الرسالة؟ تفقّد مجلد الرسائل غير المرغوب فيها (Spam).</p>
+        {pdfWarning && (
+          <Alert kind="info">لم نتمكّن من رفع ملف المشروع. بعد تأكيد حسابك، ارفعه من صفحة «ملفي».</Alert>
+        )}
         <Link href="/login" className="inline-flex min-h-11 items-center font-bold text-emerald underline underline-offset-4">
           الذهاب إلى تسجيل الدخول
         </Link>
@@ -154,7 +172,19 @@ export default function RegisterForm() {
         </form>
       ) : (
         <form onSubmit={submit} noValidate className="space-y-5">
-          <ProjectFields values={profile} errors={errors} onChange={setP} />
+          <ProjectFields
+            values={profile}
+            errors={errors}
+            onChange={setP}
+            pdf={{
+              file: pdf,
+              error: errors.project_pdf,
+              onChange: (f) => {
+                setPdf(f);
+                setErrors((e) => ({ ...e, project_pdf: checkPdf(f) }));
+              },
+            }}
+          />
           {formError && <Alert>{formError}</Alert>}
           <div className="flex flex-col-reverse gap-3 sm:flex-row">
             <button

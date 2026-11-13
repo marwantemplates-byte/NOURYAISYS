@@ -82,6 +82,9 @@ create table if not exists public.email_campaigns (
   created_at       timestamptz not null default now()
 );
 
+-- ملف المشروع PDF (ليسانس 3 / ماستر 2) — المخزن والقواعد في 004_project_pdf.sql
+alter table public.profiles add column if not exists project_file text;
+
 create index if not exists items_published_starts_idx on public.items (published, starts_at);
 create index if not exists rsvps_user_idx on public.rsvps (user_id);
 create index if not exists student_notes_student_idx on public.student_notes (student_id, created_at desc);
@@ -157,6 +160,11 @@ begin
     new.status     := old.status;
     new.email      := old.email;
     new.created_at := old.created_at;
+    if new.project_file is distinct from old.project_file
+       and new.project_file is not null
+       and new.project_file not like auth.uid()::text || '/%' then
+      new.project_file := old.project_file;
+    end if;
   end if;
   new.id := old.id;
   return new;

@@ -17,6 +17,7 @@ npm run build   # بناء الإنتاج
 |---|---|---|
 | `LEAF_COUNT_DESKTOP` | `components/hero/leaves.ts` | عدد الأوراق على الكمبيوتر (40) |
 | `LEAF_COUNT_MOBILE` | `components/hero/leaves.ts` | عدد الأوراق على الهاتف، أقل من 768px (18) |
+| `LEAF_EXTRA_TOP_DESKTOP` / `_MOBILE` | `components/hero/leaves.ts` | أوراق إضافية في الأعلى في صفحات الدخول والتسجيل (16 / 8) |
 
 ## بيانات تجريبية
 - `data/events.ts`: الأحداث والدورات القادمة (تتبدل بـ Supabase من بعد).
@@ -25,7 +26,8 @@ npm run build   # بناء الإنتاج
 ## Supabase — الإعداد (مرة واحدة)
 1. **قاعدة البيانات:** Supabase → **SQL Editor** → New query → الصق محتوى `supabase/001_schema.sql` → **Run**.
    (الملف آمن لإعادة التنفيذ بعد أي تعديل.)
-2. **بيانات تجريبية (اختياري):** نفّذ `supabase/003_demo_items.sql`.
+2. **ملف المشروع PDF:** نفّذ `supabase/004_project_pdf.sql` (المخزن الخاص بملفات PDF لطلبة ليسانس 3 و ماستر 2).
+   - **بيانات تجريبية (اختياري):** نفّذ `supabase/003_demo_items.sql`.
 3. **روابط الموقع:** Authentication → **URL Configuration**:
    - **Site URL:** `https://incubator-platform-beryl.vercel.app`
    - **Redirect URLs:** زيد `https://incubator-platform-beryl.vercel.app/**` و `http://localhost:3000/**`

@@ -7,6 +7,9 @@
 export const LEAF_COUNT_DESKTOP = 40;
 /** Number of leaves on screens < 768px wide. */
 export const LEAF_COUNT_MOBILE = 18;
+/** Extra leaves in the TOP band on the login / register pages (desktop, mobile). */
+export const LEAF_EXTRA_TOP_DESKTOP = 16;
+export const LEAF_EXTRA_TOP_MOBILE = 8;
 
 const GREENS = ["#4F7D3A", "#2E6B4A", "#6E9440", "#86A84B", "#3F6B33"];
 const GOLDS = ["#C9A24B", "#D8B45E", "#B88A35", "#E0C27A"];
@@ -100,7 +103,12 @@ export type LeafField = {
   draw: () => void;
 };
 
-export function createLeafField(canvas: HTMLCanvasElement): LeafField | null {
+export type LeafOptions = {
+  /** Extra leaves drifting in the top third (desktop / mobile). */
+  extraTop?: { desktop: number; mobile: number };
+};
+
+export function createLeafField(canvas: HTMLCanvasElement, opts: LeafOptions = {}): LeafField | null {
   const ctx = canvas.getContext("2d");
   if (!ctx) return null;
 
@@ -112,9 +120,10 @@ export function createLeafField(canvas: HTMLCanvasElement): LeafField | null {
 
   const margin = 60;
 
-  const build = (n: number) => {
+  const build = (n: number, extra: number) => {
     leaves = [];
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < n + extra; i++) {
+      const isExtra = i >= n;
       const gold = Math.random() < 0.3;
       const palette = gold ? GOLDS : GREENS;
       const depth = Math.random(); // 0 = far, 1 = near
@@ -130,8 +139,11 @@ export function createLeafField(canvas: HTMLCanvasElement): LeafField | null {
         sprite,
         // Spread across the whole hero on load — never starts empty
         x: rand(-margin, w + margin),
-        // Orderly lanes from top to ~88% of height, with slight jitter
-        lane: Math.min(0.9, (i + 0.5) / n * 0.86 + 0.03 + rand(-0.015, 0.015)),
+        // Orderly lanes from top to ~88% of height, with slight jitter.
+        // Extra leaves get their own lanes in the top band (2%–32%).
+        lane: isExtra
+          ? 0.02 + ((i - n + 0.5) / extra) * 0.3 + rand(-0.015, 0.015)
+          : Math.min(0.9, ((i + 0.5) / n) * 0.86 + 0.03 + rand(-0.015, 0.015)),
         speed: 26 + depth * 34 + rand(-4, 4),
         amp: rand(10, 26),
         freq: rand(0.006, 0.012),
@@ -156,10 +168,12 @@ export function createLeafField(canvas: HTMLCanvasElement): LeafField | null {
       dpr = ratio;
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
-      const n = w < 768 ? LEAF_COUNT_MOBILE : LEAF_COUNT_DESKTOP;
-      if (n !== count) {
-        count = n;
-        build(n);
+      const mobile = w < 768;
+      const n = mobile ? LEAF_COUNT_MOBILE : LEAF_COUNT_DESKTOP;
+      const extra = opts.extraTop ? (mobile ? opts.extraTop.mobile : opts.extraTop.desktop) : 0;
+      if (n + extra !== count) {
+        count = n + extra;
+        build(n, extra);
       } else if (prevW !== w) {
         for (const l of leaves) l.x = (l.x / prevW) * w;
       }

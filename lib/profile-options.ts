@@ -39,3 +39,17 @@ export function validateProject(v: ProfileFields) {
   }
   return e;
 }
+
+/** Levels that must upload a project PDF (graduation years). */
+export const PDF_LEVELS = ["ليسانس 3", "ماستر 2"];
+export const MAX_PDF_MB = 10;
+export const needsPdf = (level: string | null | undefined) => !!level && PDF_LEVELS.includes(level);
+
+/** Arabic error for an invalid PDF, or "" if the file is fine. */
+export function checkPdf(file: File | null) {
+  if (!file) return "";
+  const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+  if (!isPdf) return "الملف يجب أن يكون بصيغة PDF.";
+  if (file.size > MAX_PDF_MB * 1024 * 1024) return `حجم الملف أكبر من ${MAX_PDF_MB} ميغا.`;
+  return "";
+}

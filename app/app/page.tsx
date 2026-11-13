@@ -4,6 +4,7 @@ import ItemCard from "@/components/app/ItemCard";
 import { Alert } from "@/components/ui/form";
 import { loadItemsWithRsvp } from "@/lib/feed";
 import { sortFeed, type ItemType } from "@/lib/items";
+import { needsPdf } from "@/lib/profile-options";
 import { requireProfile } from "@/lib/session";
 
 export const metadata: Metadata = { title: "الدورات والأحداث — حاضنة الأعمال" };
@@ -28,6 +29,17 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
     <>
       <h1 className="text-3xl font-bold text-olive">{firstName ? `مرحبًا ${firstName} 👋` : "مرحبًا 👋"}</h1>
       <p className="mt-2 text-lg text-ink/70">الدورات والأحداث والمنشورات الخاصة بالحاضنة.</p>
+
+      {needsPdf(profile?.level) && !profile?.project_file && (
+        <div className="mt-6">
+          <Alert kind="info">
+            لم ترفع ملف مشروعك (PDF) بعد، وهو مطلوب لطلبة {profile?.level}.{" "}
+            <Link href="/app/profile" className="font-bold text-emerald underline underline-offset-4">
+              ارفعه من صفحة «ملفي»
+            </Link>
+          </Alert>
+        </div>
+      )}
 
       <nav aria-label="تصفية حسب النوع" className="mt-6 -mx-4 overflow-x-auto px-4">
         <ul className="flex gap-2">

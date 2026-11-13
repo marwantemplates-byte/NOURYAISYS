@@ -15,6 +15,7 @@ export type Profile = {
   has_prototype: boolean;
   prototype_desc: string | null;
   prototype_link: string | null;
+  project_file: string | null;
   role: "student" | "admin";
   status: "active" | "blocked";
 };

@@ -2,7 +2,7 @@
 
 import { getImageProps } from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { createLeafField } from "./leaves";
+import { createLeafField, LEAF_EXTRA_TOP_DESKTOP, LEAF_EXTRA_TOP_MOBILE } from "./leaves";
 
 const MAX_DPR = 2;
 const FRAME_MS = 1000 / 60; // 60fps cap
@@ -29,7 +29,14 @@ const { props: mobile } = getImageProps({
  * covered we observe `coverTargetId` (the in-flow hero section): once that has
  * scrolled out, the curtain covers the whole background → pause the leaves + hide the layer.
  */
-export default function HeroScene({ coverTargetId }: { coverTargetId?: string }) {
+export default function HeroScene({
+  coverTargetId,
+  extraTopLeaves = false,
+}: {
+  coverTargetId?: string;
+  /** Add more leaves in the top band (used behind the login / register pages). */
+  extraTopLeaves?: boolean;
+}) {
   const rootRef = useRef<HTMLDivElement>(null);
   const leafRef = useRef<HTMLCanvasElement>(null);
   const [motionOk, setMotionOk] = useState(false);
@@ -49,7 +56,10 @@ export default function HeroScene({ coverTargetId }: { coverTargetId?: string })
     const leafCanvas = leafRef.current;
     if (!root || !leafCanvas) return;
 
-    const leaves = createLeafField(leafCanvas);
+    const leaves = createLeafField(
+      leafCanvas,
+      extraTopLeaves ? { extraTop: { desktop: LEAF_EXTRA_TOP_DESKTOP, mobile: LEAF_EXTRA_TOP_MOBILE } } : {},
+    );
     if (!leaves) return;
 
     const resize = () => {
@@ -115,7 +125,7 @@ export default function HeroScene({ coverTargetId }: { coverTargetId?: string })
       document.removeEventListener("visibilitychange", sync);
       root.style.visibility = "";
     };
-  }, [motionOk, coverTargetId]);
+  }, [motionOk, coverTargetId, extraTopLeaves]);
 
   return (
     <div ref={rootRef} className="absolute inset-0 overflow-hidden" aria-hidden="true">
