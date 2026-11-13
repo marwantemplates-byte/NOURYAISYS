@@ -10,7 +10,22 @@ export default async function StudentsPage() {
     )
     .eq("role", "student")
     .order("created_at", { ascending: false })
-    .returns<StudentRow[]>();
+    .returns<Omit<StudentRow, "confirmed" | "attended" | "rate">[]>();
+
+  // Attendance per student (admin can read all rsvps)
+  const { data: rsvps } = await supabase.from("rsvps").select("user_id,attended");
+  const agg = new Map<string, { confirmed: number; came: number; absent: number }>();
+  for (const r of rsvps ?? []) {
+    const a = agg.get(r.user_id) ?? { confirmed: 0, came: 0, absent: 0 };
+    a.confirmed++;
+    if (r.attended === true) a.came++;
+    if (r.attended === false) a.absent++;
+    agg.set(r.user_id, a);
+  }
+  const rows: StudentRow[] = (data ?? []).map((s) => {
+    const a = agg.get(s.id) ?? { confirmed: 0, came: 0, absent: 0 };
+    return { ...s, confirmed: a.confirmed, attended: a.came, rate: a.came + a.absent > 0 ? Math.round((a.came / (a.came + a.absent)) * 100) : -1 };
+  });
 
   return (
     <>
@@ -21,7 +36,7 @@ export default async function StudentsPage() {
           تعذّر تحميل الطلبة. أعد تحميل الصفحة.
         </p>
       ) : (
-        <StudentsTable rows={data ?? []} />
+        <StudentsTable rows={rows} />
       )}
     </>
   );

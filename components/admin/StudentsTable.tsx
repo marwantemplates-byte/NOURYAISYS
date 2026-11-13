@@ -21,9 +21,13 @@ export type StudentRow = {
   project_file: string | null;
   status: "active" | "blocked";
   created_at: string;
+  /** Courses confirmed / actually attended; rate = attended ÷ marked (−1 = nothing marked yet). */
+  confirmed: number;
+  attended: number;
+  rate: number;
 };
 
-type SortKey = "created_at" | "full_name" | "specialty" | "level";
+type SortKey = "created_at" | "full_name" | "specialty" | "level" | "attended" | "rate";
 
 const dateFmt = new Intl.DateTimeFormat("ar-DZ", { day: "numeric", month: "short", year: "numeric", timeZone: "Africa/Algiers" });
 const norm = (v: string | null | undefined) => (v ?? "").toLowerCase();
@@ -55,6 +59,7 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
       return true;
     });
     return list.sort((a, b) => {
+      if (sort.key === "attended" || sort.key === "rate") return (a[sort.key] - b[sort.key]) * sort.dir;
       const av = sort.key === "created_at" ? a.created_at : (a[sort.key] ?? "");
       const bv = sort.key === "created_at" ? b.created_at : (b[sort.key] ?? "");
       return av.localeCompare(bv, "ar") * sort.dir;
@@ -64,7 +69,7 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
   const filtered = q || specialty || level || proto || pdf;
 
   const toggleSort = (key: SortKey) =>
-    setSort((s) => (s.key === key ? { key, dir: (s.dir * -1) as 1 | -1 } : { key, dir: key === "created_at" ? -1 : 1 }));
+    setSort((s) => (s.key === key ? { key, dir: (s.dir * -1) as 1 | -1 } : { key, dir: key === "created_at" || key === "attended" || key === "rate" ? -1 : 1 }));
 
   const openPdf = async (path: string) => {
     setPdfError("");
@@ -80,10 +85,10 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
   };
 
   const exportCsv = () => {
-    const head = ["الاسم واللقب", "البريد الإلكتروني", "الهاتف", "الكلية", "التخصص", "المستوى", "عنوان المشروع", "فكرة المشروع", "نموذج أولي", "وصف النموذج", "رابط النموذج", "ملف PDF", "الحالة", "تاريخ التسجيل"];
+    const head = ["الاسم واللقب", "البريد الإلكتروني", "الهاتف", "الكلية", "التخصص", "المستوى", "عنوان المشروع", "فكرة المشروع", "نموذج أولي", "وصف النموذج", "رابط النموذج", "ملف PDF", "دورات أكّدها", "دورات حضرها", "نسبة الحضور", "الحالة", "تاريخ التسجيل"];
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
     const lines = shown.map((r) =>
-      [r.full_name, r.email, r.phone, r.faculty, r.specialty, r.level, r.project_title, r.project_idea, r.has_prototype ? "نعم" : "لا", r.prototype_desc, r.prototype_link, r.project_file ? "نعم" : "لا", r.status === "blocked" ? "موقوف" : "نشط", new Date(r.created_at).toLocaleDateString("fr-DZ")]
+      [r.full_name, r.email, r.phone, r.faculty, r.specialty, r.level, r.project_title, r.project_idea, r.has_prototype ? "نعم" : "لا", r.prototype_desc, r.prototype_link, r.project_file ? "نعم" : "لا", r.confirmed, r.attended, r.rate < 0 ? "—" : `${r.rate}%`, r.status === "blocked" ? "موقوف" : "نشط", new Date(r.created_at).toLocaleDateString("fr-DZ")]
         .map(esc)
         .join(","),
     );
@@ -181,7 +186,7 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
         <>
         <p className="text-xs text-ink/55 lg:hidden">↔ اسحب الجدول يمينًا ويسارًا لرؤية باقي الأعمدة.</p>
         <div className="overflow-x-auto rounded-2xl border border-olive/10 bg-white shadow-sm">
-          <table className="w-full min-w-[860px] border-collapse">
+          <table className="w-full min-w-[960px] border-collapse">
             <thead className="sticky top-0 bg-olive/5">
               <tr>
                 <th scope="col" className={`${th} w-10`}>#</th>
@@ -191,6 +196,8 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
                 <th scope="col" className={th}>المشروع</th>
                 <th scope="col" className={th}>نموذج أولي</th>
                 <th scope="col" className={th}>PDF</th>
+                <SortTh k="attended">حضر</SortTh>
+                <SortTh k="rate">نسبة الحضور</SortTh>
                 <SortTh k="created_at">التسجيل</SortTh>
                 <th scope="col" className={th}><span className="sr-only">تفاصيل</span></th>
               </tr>
@@ -203,7 +210,7 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
                     <tr className={`border-t border-olive/10 ${i % 2 ? "bg-ivory/50" : ""} ${r.status === "blocked" ? "opacity-60" : ""}`}>
                       <td className={`${td} text-ink/50`}>{i + 1}</td>
                       <td className={td}>
-                        <span className="font-bold text-ink">{r.full_name || "—"}</span>
+                        <a href={`/admin/students/${r.id}`} className="font-bold text-ink hover:text-emerald hover:underline">{r.full_name || "—"}</a>
                         {r.status === "blocked" && <span className="ms-2 rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-800">موقوف</span>}
                         <a href={`mailto:${r.email}`} dir="ltr" className="block text-xs text-ink/60 hover:text-emerald">{r.email}</a>
                         {r.phone && (
@@ -230,6 +237,11 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
                           <span className="text-ink/40">—</span>
                         )}
                       </td>
+                      <td className={`${td} whitespace-nowrap`}>
+                        <span className="font-bold text-olive">{r.attended}</span>
+                        <span className="text-ink/50"> / {r.confirmed}</span>
+                      </td>
+                      <td className={`${td} whitespace-nowrap font-bold`}>{r.rate < 0 ? <span className="font-normal text-ink/40">—</span> : `${r.rate}%`}</td>
                       <td className={`${td} whitespace-nowrap text-ink/60`}>{dateFmt.format(new Date(r.created_at))}</td>
                       <td className={td}>
                         <button
@@ -244,7 +256,7 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
                     </tr>
                     {open && (
                       <tr className="border-t border-dashed border-olive/10 bg-gold-light/15">
-                        <td colSpan={9} className="px-4 py-4">
+                        <td colSpan={11} className="px-4 py-4">
                           <dl className="grid gap-4 text-sm md:grid-cols-3">
                             <div className="md:col-span-2">
                               <dt className="font-bold text-olive">فكرة المشروع</dt>
