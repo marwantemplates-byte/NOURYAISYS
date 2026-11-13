@@ -1,6 +1,6 @@
 import SectionHeading from "./SectionHeading";
 
-const OFFERS = [
+export const OFFERS = [
   {
     title: "المرافقة",
     text: "مؤطرون يتابعونك خطوة بخطوة: صياغة الفكرة، دراسة السوق، وبناء نموذج العمل.",

@@ -5,10 +5,20 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import Spinner from "@/components/ui/Spinner";
 
-const NAV = [
+type NavItem = { href: string; label: string; icon: string; children?: { href: string; label: string }[] };
+
+const NAV: NavItem[] = [
+  {
+    href: "/app/home",
+    label: "الصفحة الرئيسية",
+    icon: "M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10",
+    children: [
+      { href: "/app?tab=course", label: "الدورات" },
+      { href: "/app/about", label: "حاضنة الأعمال" },
+    ],
+  },
   { href: "/app", label: "الدورات والأحداث", icon: "M7 3v3M17 3v3M4 8h16M5 5h14v15H5z" },
   { href: "/app/profile", label: "ملفي", icon: "M12 12a4 4 0 100-8 4 4 0 000 8zm-7 9a7 7 0 0114 0" },
-  { href: "/", label: "الصفحة الرئيسية", icon: "M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10" },
 ];
 
 function Icon({ d }: { d: string }) {
@@ -25,6 +35,7 @@ export default function StudentShell({ name, subtitle, children }: { name: strin
   const search = useSearchParams();
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState<string | null>(null);
+  const [homeOpen, setHomeOpen] = useState(true);
 
   useEffect(() => {
     setOpen(false);
@@ -41,7 +52,13 @@ export default function StudentShell({ name, subtitle, children }: { name: strin
     };
   }, [open]);
 
-  const isActive = (href: string) => (href === "/app" ? pathname === "/app" || pathname.startsWith("/app/items") : pathname === href);
+  const tab = search.get("tab");
+  const isActive = (href: string) => {
+    const [path, query] = href.split("?");
+    if (query) return pathname === path && `tab=${tab}` === query;
+    if (href === "/app") return (pathname === "/app" && tab !== "course") || pathname.startsWith("/app/items");
+    return pathname === href;
+  };
 
   return (
     <div className="min-h-svh bg-ivory">
@@ -92,25 +109,58 @@ export default function StudentShell({ name, subtitle, children }: { name: strin
               <ul className="space-y-1">
                 {NAV.map((item) => {
                   const active = isActive(item.href);
+                  const link = (href: string, label: string, sub = false, icon?: string) => {
+                    const on = isActive(href);
+                    const busy = pending === href;
+                    return (
+                      <Link
+                        href={href}
+                        aria-current={on ? "page" : undefined}
+                        aria-busy={busy || undefined}
+                        onClick={() => {
+                          if (on) setOpen(false);
+                          else setPending(href);
+                        }}
+                        className={`flex min-h-12 flex-1 items-center gap-3 rounded-xl px-3 font-medium transition-colors ${
+                          on ? "bg-olive/10 text-olive" : "text-ink hover:bg-olive/5"
+                        } ${sub ? "min-h-11 ps-11 text-[15px]" : ""} ${busy ? "pending-ring bg-gold-light/30" : ""}`}
+                      >
+                        {icon && (
+                          <span className={on || busy ? "text-emerald" : "text-ink/60"}>
+                            {busy ? <Spinner className="m-[1px]" /> : <Icon d={icon} />}
+                          </span>
+                        )}
+                        {sub && busy && <Spinner className="h-4 w-4 text-emerald" />}
+                        {sub && !busy && <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-gold" />}
+                        {label}
+                      </Link>
+                    );
+                  };
+                  if (!item.children) return <li key={item.href}>{link(item.href, item.label, false, item.icon)}</li>;
                   return (
                     <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        aria-current={active ? "page" : undefined}
-                        aria-busy={pending === item.href || undefined}
-                        onClick={() => {
-                          if (active) setOpen(false);
-                          else setPending(item.href);
-                        }}
-                        className={`flex min-h-12 items-center gap-3 rounded-xl px-3 font-medium transition-colors ${
-                          active ? "bg-olive/10 text-olive" : "text-ink hover:bg-olive/5"
-                        } ${pending === item.href ? "pending-ring bg-gold-light/30" : ""}`}
-                      >
-                        <span className={active || pending === item.href ? "text-emerald" : "text-ink/60"}>
-                          {pending === item.href ? <Spinner className="m-[1px]" /> : <Icon d={item.icon} />}
-                        </span>
-                        {item.label}
-                      </Link>
+                      <div className="flex items-center gap-1">
+                        {link(item.href, item.label, false, item.icon)}
+                        <button
+                          type="button"
+                          onClick={() => setHomeOpen((o) => !o)}
+                          aria-expanded={homeOpen}
+                          aria-controls="home-sub"
+                          aria-label={homeOpen ? "إخفاء الأقسام" : "إظهار الأقسام"}
+                          className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg hover:bg-olive/5 ${active ? "text-olive" : "text-ink/60"}`}
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" className={`transition-transform ${homeOpen ? "rotate-180" : ""}`}>
+                            <path d="M6 9l6 6 6-6" />
+                          </svg>
+                        </button>
+                      </div>
+                      {homeOpen && (
+                        <ul id="home-sub" className="mt-1 space-y-1">
+                          {item.children.map((c) => (
+                            <li key={c.href} className="flex">{link(c.href, c.label, true)}</li>
+                          ))}
+                        </ul>
+                      )}
                     </li>
                   );
                 })}
