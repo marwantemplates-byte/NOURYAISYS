@@ -22,9 +22,10 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getClaims() verifies the JWT locally (ES256 signing keys) — no network round trip,
+  // and still refreshes an expired session. Much faster than getUser().
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims?.sub ? { id: data.claims.sub } : null;
 
   const { pathname, search } = request.nextUrl;
   const isAdminLogin = pathname === "/admin/login";

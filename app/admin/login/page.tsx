@@ -18,11 +18,10 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
 
   // Already signed in as admin → straight to the dashboard
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (user && !error) {
-    const { data: p } = await supabase.from("profiles").select("role,status").eq("id", user.id).maybeSingle();
+  const { data } = await supabase.auth.getClaims();
+  const userId = data?.claims?.sub;
+  if (userId && !error) {
+    const { data: p } = await supabase.from("profiles").select("role,status").eq("id", userId).maybeSingle();
     if (p?.role === "admin" && p.status === "active") redirect("/admin");
   }
 

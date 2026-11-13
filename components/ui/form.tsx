@@ -1,3 +1,4 @@
+import Spinner from "@/components/ui/Spinner";
 import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
 
 const fieldBase =
@@ -62,8 +63,11 @@ export function SubmitButton({ loading, children }: { loading?: boolean; childre
       type="submit"
       disabled={loading}
       aria-busy={loading}
-      className="inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-gold px-6 text-lg font-bold text-ink transition-colors hover:bg-gold-light disabled:cursor-wait disabled:opacity-70"
+      className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-gold px-6 text-lg font-bold text-ink transition-colors hover:bg-gold-light disabled:cursor-wait ${
+        loading ? "pending-ring" : ""
+      }`}
     >
+      {loading && <Spinner />}
       {loading ? "لحظة…" : children}
     </button>
   );

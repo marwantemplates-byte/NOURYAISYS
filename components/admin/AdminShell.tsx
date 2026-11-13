@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import Spinner from "@/components/ui/Spinner";
 
 type NavItem = { href: string; label: string; icon: string; soon?: boolean };
 
@@ -26,9 +27,13 @@ function Icon({ d }: { d: string }) {
 export default function AdminShell({ name, children }: { name: string; children: ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState<string | null>(null);
 
-  // Close the drawer on navigation / Escape
-  useEffect(() => setOpen(false), [pathname]);
+  // Close the drawer / clear the loading ring once the new page is shown
+  useEffect(() => {
+    setOpen(false);
+    setPending(null);
+  }, [pathname]);
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
@@ -74,11 +79,16 @@ export default function AdminShell({ name, children }: { name: string; children:
                 <Link
                   href={item.href}
                   aria-current={active ? "page" : undefined}
+                  aria-busy={pending === item.href || undefined}
+                  onClick={() => {
+                    if (active) setOpen(false);
+                    else setPending(item.href);
+                  }}
                   className={`flex min-h-12 items-center gap-3 rounded-xl px-3 font-medium transition-colors ${
                     active ? "bg-gold text-ink" : "text-white/90 hover:bg-white/10"
-                  }`}
+                  } ${pending === item.href ? "pending-ring bg-white/10" : ""}`}
                 >
-                  <Icon d={item.icon} />
+                  {pending === item.href ? <Spinner className="m-[1px] text-gold" /> : <Icon d={item.icon} />}
                   {item.label}
                 </Link>
               </li>

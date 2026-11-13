@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import Spinner from "@/components/ui/Spinner";
 import { RSVP_MESSAGES, arabicError } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/client";
 
@@ -76,7 +77,8 @@ export default function RsvpButton(props: Props) {
               ✓ مسجّل
             </span>
             {props.attended === null && !props.ended && (
-              <button type="button" onClick={cancel} disabled={busy} className={`${btn} min-h-11 px-3 text-sm font-medium text-ink/60 underline underline-offset-4 hover:text-red-800`}>
+              <button type="button" onClick={cancel} disabled={busy} className={`${btn} min-h-11 px-3 text-sm font-medium text-ink/60 underline underline-offset-4 hover:text-red-800 ${busy ? "pending-ring" : ""}`}>
+                {busy && <Spinner className="h-4 w-4" />}
                 {busy ? "لحظة…" : "إلغاء المشاركة"}
               </button>
             )}
@@ -95,7 +97,8 @@ export default function RsvpButton(props: Props) {
       ) : props.full ? (
         <span className={`${btn} w-full bg-olive/5 text-ink/60`}>اكتملت الأماكن</span>
       ) : (
-        <button type="button" onClick={confirm} disabled={busy} aria-busy={busy} className={`${btn} w-full bg-gold text-ink hover:bg-gold-light disabled:opacity-70`}>
+        <button type="button" onClick={confirm} disabled={busy} aria-busy={busy} className={`${btn} w-full bg-gold text-ink hover:bg-gold-light ${busy ? "pending-ring" : ""}`}>
+          {busy && <Spinner />}
           {busy ? "لحظة…" : "نأكد مشاركتي"}
         </button>
       )}

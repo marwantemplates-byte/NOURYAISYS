@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import Spinner from "@/components/ui/Spinner";
 
 const NAV = [
   { href: "/app", label: "الدورات والأحداث", icon: "M7 3v3M17 3v3M4 8h16M5 5h14v15H5z" },
@@ -23,8 +24,12 @@ export default function StudentShell({ name, subtitle, children }: { name: strin
   const pathname = usePathname();
   const search = useSearchParams();
   const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState<string | null>(null);
 
-  useEffect(() => setOpen(false), [pathname, search]);
+  useEffect(() => {
+    setOpen(false);
+    setPending(null);
+  }, [pathname, search]);
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
@@ -92,12 +97,17 @@ export default function StudentShell({ name, subtitle, children }: { name: strin
                       <Link
                         href={item.href}
                         aria-current={active ? "page" : undefined}
+                        aria-busy={pending === item.href || undefined}
+                        onClick={() => {
+                          if (active) setOpen(false);
+                          else setPending(item.href);
+                        }}
                         className={`flex min-h-12 items-center gap-3 rounded-xl px-3 font-medium transition-colors ${
                           active ? "bg-olive/10 text-olive" : "text-ink hover:bg-olive/5"
-                        }`}
+                        } ${pending === item.href ? "pending-ring bg-gold-light/30" : ""}`}
                       >
-                        <span className={active ? "text-emerald" : "text-ink/60"}>
-                          <Icon d={item.icon} />
+                        <span className={active || pending === item.href ? "text-emerald" : "text-ink/60"}>
+                          {pending === item.href ? <Spinner className="m-[1px]" /> : <Icon d={item.icon} />}
                         </span>
                         {item.label}
                       </Link>

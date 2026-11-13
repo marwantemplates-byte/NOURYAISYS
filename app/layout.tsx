@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Reem_Kufi, Tajawal } from "next/font/google";
+import { Suspense } from "react";
+import NavFeedback from "@/components/ui/NavFeedback";
 import "./globals.css";
 
 const reemKufi = Reem_Kufi({
@@ -29,7 +31,12 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl" className={`${reemKufi.variable} ${tajawal.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Suspense>
+          <NavFeedback />
+        </Suspense>
+      </body>
     </html>
   );
 }

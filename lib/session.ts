@@ -23,10 +23,11 @@ export type Profile = {
 /** Signed-in user + profile (cached per request). Redirects to `loginPath` if signed out. */
 export const requireProfile = cache(async (loginPath: string = "/login?next=/app") => {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect(loginPath);
+  // Local JWT verification (no extra request to Supabase Auth on every page)
+  const { data } = await supabase.auth.getClaims();
+  const claims = data?.claims;
+  if (!claims?.sub) redirect(loginPath);
+  const user = { id: claims.sub, email: (claims.email as string | undefined) ?? "" };
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle<Profile>();
   return { supabase, user, profile };
 });
