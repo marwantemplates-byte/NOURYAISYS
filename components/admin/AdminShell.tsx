@@ -10,8 +10,7 @@ type NavItem = { href: string; label: string; icon: string; soon?: boolean };
 const NAV: NavItem[] = [
   { href: "/admin", label: "نظرة عامة", icon: "M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10" },
   { href: "/admin/students", label: "الطلبة", icon: "M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 21a8 8 0 0116 0" },
-  { href: "/admin/items", label: "الدورات والأحداث", icon: "M7 3v3M17 3v3M4 8h16M5 5h14v15H5z", soon: true },
-  { href: "/admin/attendance", label: "الحضور", icon: "M9 12l2 2 4-4M5 4h14v16H5z", soon: true },
+  { href: "/admin/items", label: "الدورات والأحداث", icon: "M7 3v3M17 3v3M4 8h16M5 5h14v15H5z" },
   { href: "/admin/emails", label: "الإيميل الجماعي", icon: "M4 6h16v12H4zM4 7l8 6 8-6", soon: true },
 ];
 
