@@ -2,6 +2,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import { emailConfigured, sendEmail, textToHtml } from "@/lib/email";
 import { createClient } from "@/lib/supabase/server";
 
+// Sending can take a while for many recipients
+export const maxDuration = 60;
+export const runtime = "nodejs";
+
 type Audience = { type: "all" } | { type: "specialty"; value: string } | { type: "item"; item_id: string };
 
 /** Bulk email (admin only). Recipients are recomputed on the server — the client list is never trusted. */
@@ -16,7 +20,7 @@ export async function POST(request: NextRequest) {
   const { subject, body, audience, test } = (await request.json()) as { subject?: string; body?: string; audience?: Audience; test?: boolean };
   if (!subject?.trim() || !body?.trim() || !audience) return NextResponse.json({ error: "الموضوع والنص مطلوبان." }, { status: 400 });
   if (!emailConfigured()) {
-    return NextResponse.json({ error: "NO_KEY", message: "خدمة الإيميل غير مفعّلة: أضف BREVO_API_KEY و BREVO_SENDER_EMAIL في Vercel." }, { status: 503 });
+    return NextResponse.json({ error: "NO_KEY", message: "خدمة الإيميل غير مفعّلة: أضف GMAIL_USER و GMAIL_APP_PASSWORD في Vercel." }, { status: 503 });
   }
 
   // Recipients (RLS: the admin can read all profiles / rsvps)

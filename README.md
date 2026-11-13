@@ -55,7 +55,10 @@ npm run build   # بناء الإنتاج
 - تأكيد/إلغاء الحضور عبر `rsvp_item()` / `cancel_rsvp()` (تحترم العدد الأقصى، والإلغاء ممنوع بعد ما يسجّل المدير الحضور).
 - `attended` و `student_notes` و `email_campaigns`: للمدير برك.
 
-## الإيميل الجماعي (Brevo)
+## الإيميل الجماعي (Gmail أو Brevo)
+**الأسهل (Gmail):** في Vercel زيد `GMAIL_USER` = إيميل الحاضنة و `GMAIL_APP_PASSWORD` = كلمة سر التطبيقات (myaccount.google.com/apppasswords). الحد ≈ 500 مستلم في النهار.
+
+**أو Brevo:**
 في Vercel → Settings → Environment Variables (Production):
 - `BREVO_API_KEY` (سري)
 - `BREVO_SENDER_EMAIL` (إيميل مُتحقّق منه في Brevo → Senders)

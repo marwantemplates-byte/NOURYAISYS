@@ -109,7 +109,7 @@ export default function EmailComposer({
       <form onSubmit={(e) => e.preventDefault()} noValidate className="space-y-5 rounded-2xl border border-olive/10 bg-white p-5 shadow-sm sm:p-6">
         {!configured && (
           <Alert kind="info">
-            <strong>خدمة الإرسال غير مفعّلة بعد.</strong> أضف <code dir="ltr">BREVO_API_KEY</code> و <code dir="ltr">BREVO_SENDER_EMAIL</code> في Vercel.
+            <strong>خدمة الإرسال غير مفعّلة بعد.</strong> أضف <code dir="ltr">GMAIL_USER</code> و <code dir="ltr">GMAIL_APP_PASSWORD</code> في Vercel.
             إلى ذلك الحين: اضغط «نسخ كل الإيميلات» وأرسل من Gmail (ضعها في خانة Bcc).
           </Alert>
         )}
