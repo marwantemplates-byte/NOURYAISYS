@@ -25,10 +25,10 @@ export default function StudentNotes({ studentId, adminId, initial }: { studentI
       .from("student_notes")
       .insert({ student_id: studentId, note: text.trim(), created_by: adminId })
       .select("id,note,created_at")
-      .single<Note>();
+      .single();
     setBusy(false);
     if (error || !data) return setError("تعذّر الحفظ: " + (error?.message ?? ""));
-    setNotes((n) => [data, ...n]);
+    setNotes((n) => [data as Note, ...n]);
     setText("");
   };
 
