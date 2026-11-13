@@ -21,3 +21,28 @@ npm run build   # بناء الإنتاج
 ## بيانات تجريبية
 - `data/events.ts`: الأحداث والدورات القادمة (تتبدل بـ Supabase من بعد).
 - `data/site.ts`: معلومات التواصل وأرقام الإحصائيات.
+
+## Supabase — الإعداد (مرة واحدة)
+1. **قاعدة البيانات:** Supabase → **SQL Editor** → New query → الصق محتوى `supabase/001_schema.sql` → **Run**.
+   (الملف آمن لإعادة التنفيذ بعد أي تعديل.)
+2. **بيانات تجريبية (اختياري):** نفّذ `supabase/003_demo_items.sql`.
+3. **روابط الموقع:** Authentication → **URL Configuration**:
+   - **Site URL:** `https://incubator-platform-beryl.vercel.app`
+   - **Redirect URLs:** زيد `https://incubator-platform-beryl.vercel.app/**` و `http://localhost:3000/**`
+4. **قوالب الإيميل** (Authentication → **Email Templates**) — باه الروابط تخدم حتى إذا فتح الطالب الإيميل في جهاز آخر:
+   - **Confirm signup:** بدّل الرابط بـ
+     `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&next=/app`
+   - **Reset password:** بدّل الرابط بـ
+     `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/reset-password`
+5. **حساب مدير:** سجّل حساب عادي من `/register`، أكّد الإيميل، ومن بعد نفّذ `supabase/002_make_admin.sql` (بدّل الإيميل فيه).
+
+### المتغيرات
+- `NEXT_PUBLIC_SUPABASE_URL` و `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (قيم علنية، شوف `.env.example`).
+  القيم الحالية موجودة كافتراضية في `lib/supabase/config.ts`، والمتغيرات في Vercel تغلبها.
+- **ممنوع** تحط `service_role` / secret key في الكود ولا في متغير يبدا بـ `NEXT_PUBLIC_`.
+
+### الحماية (ملخص)
+- الطالب يقرا ويبدّل بروفايلو برك، وما يقدرش يبدّل `role` ولا `status`.
+- رابط Google Meet ما يتقراش من الجدول: يجي غير من `get_meeting_link()` بعد تأكيد الحضور.
+- تأكيد/إلغاء الحضور عبر `rsvp_item()` / `cancel_rsvp()` (تحترم العدد الأقصى، والإلغاء ممنوع بعد ما يسجّل المدير الحضور).
+- `attended` و `student_notes` و `email_campaigns`: للمدير برك.

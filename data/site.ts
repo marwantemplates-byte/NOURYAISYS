@@ -6,7 +6,10 @@ export const CONTACT = {
   facebook: "https://www.facebook.com/",
 };
 
-/** Placeholder numbers for the stats section. */
+/** Number of partners shown on the home page (not stored in the database). */
+export const PARTNERS_COUNT = 12;
+
+/** Fallback numbers — used only if Supabase is unreachable. */
 export const STATS = [
   { value: 250, suffix: "+", label: "طالب مسجّل" },
   { value: 60, suffix: "", label: "مشروع مرافَق" },

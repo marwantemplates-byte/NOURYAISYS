@@ -7,6 +7,9 @@ import Events from "@/components/sections/Events";
 import CallToAction from "@/components/sections/CallToAction";
 import Footer from "@/components/sections/Footer";
 
+// Re-generate the page at most once a minute (events & numbers come from Supabase)
+export const revalidate = 60;
+
 export default function HomePage() {
   return (
     <>

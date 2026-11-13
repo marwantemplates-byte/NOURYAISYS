@@ -1,20 +1,14 @@
-/**
- * Sample upcoming events & courses for the home page.
- * Static placeholder data — replace with Supabase `items` later (same field names as SPEC §4).
- */
-export type EventItem = {
-  id: string;
-  type: "course" | "event" | "post";
-  title: string;
-  starts_at: string; // ISO date-time
-  mode: "online" | "onsite" | "hybrid";
-  location: string;
-  trainer_name: string;
-  image_url?: string; // optional; a styled placeholder is shown when empty
-};
+import type { Item } from "@/lib/items";
 
-export const UPCOMING_EVENTS: EventItem[] = [
+/**
+ * Fallback sample events — shown on the home page ONLY if Supabase can't be reached.
+ * Real events come from the `items` table (published = true).
+ */
+const base = { body: null, ends_at: null, image_url: null, capacity: null, published: true, created_at: "2026-11-01T00:00:00Z" };
+
+export const SAMPLE_ITEMS: Item[] = [
   {
+    ...base,
     id: "sample-1",
     type: "course",
     title: "من الفكرة إلى نموذج العمل: ورشة Business Model Canvas",
@@ -24,15 +18,17 @@ export const UPCOMING_EVENTS: EventItem[] = [
     trainer_name: "د. أستاذ مكوّن",
   },
   {
+    ...base,
     id: "sample-2",
     type: "course",
     title: "مسار القرار 1275: كيف تحضّر مشروع «شهادة — مؤسسة ناشئة»",
     starts_at: "2026-11-26T14:00:00+01:00",
     mode: "online",
-    location: "Google Meet",
+    location: null,
     trainer_name: "أ. أستاذة مكوّنة",
   },
   {
+    ...base,
     id: "sample-3",
     type: "event",
     title: "يوم الابتكار: عرض مشاريع الطلبة أمام لجنة من الخبراء",
@@ -42,15 +38,3 @@ export const UPCOMING_EVENTS: EventItem[] = [
     trainer_name: "فريق الحاضنة",
   },
 ];
-
-export const TYPE_LABELS: Record<EventItem["type"], string> = {
-  course: "دورة تكوينية",
-  event: "حدث",
-  post: "منشور",
-};
-
-export const MODE_LABELS: Record<EventItem["mode"], string> = {
-  online: "أونلاين",
-  onsite: "حضوري",
-  hybrid: "مختلط",
-};
