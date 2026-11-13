@@ -10,5 +10,5 @@ export const metadata: Metadata = { title: "لوحة التحكم — حاضنة
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const { profile } = await requireProfile();
   if (!profile || profile.role !== "admin" || profile.status !== "active") redirect("/app");
-  return <AdminShell>{children}</AdminShell>;
+  return <AdminShell name={profile.full_name || profile.email}>{children}</AdminShell>;
 }

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export type LatestStudent = {
   id: string;
   full_name: string;
@@ -44,45 +46,34 @@ export default function AdminOverview({
       </ul>
 
       <section aria-labelledby="latest-title" className="mt-10">
-        <h2 id="latest-title" className="text-xl font-bold text-olive">آخر المسجلين</h2>
+        <div className="flex items-center justify-between gap-3">
+          <h2 id="latest-title" className="text-xl font-bold text-olive">آخر المسجلين</h2>
+          <Link href="/admin/students" className="inline-flex min-h-11 items-center rounded-xl border-2 border-olive/20 px-4 font-bold text-olive hover:border-olive">
+            جدول كل الطلبة ←
+          </Link>
+        </div>
         {latest.length > 0 ? (
-          <div className="mt-4 overflow-x-auto rounded-2xl border border-olive/10 bg-white shadow-sm">
-            <table className="w-full min-w-[640px] text-right">
-              <thead className="bg-olive/5 text-sm text-ink/70">
-                <tr>
-                  <th scope="col" className="px-4 py-3 font-medium">الاسم</th>
-                  <th scope="col" className="px-4 py-3 font-medium">التخصص</th>
-                  <th scope="col" className="px-4 py-3 font-medium">المستوى</th>
-                  <th scope="col" className="px-4 py-3 font-medium">المشروع</th>
-                  <th scope="col" className="px-4 py-3 font-medium">التاريخ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {latest.map((s) => (
-                  <tr key={s.id} className="border-t border-olive/10">
-                    <td className="px-4 py-3">
-                      <span className="font-medium text-ink">{s.full_name || "—"}</span>
-                      <span className="block text-sm text-ink/60" dir="ltr">{s.email}</span>
-                    </td>
-                    <td className="px-4 py-3 text-ink/80">{s.specialty || "—"}</td>
-                    <td className="px-4 py-3 text-ink/80">{s.level || "—"}</td>
-                    <td className="px-4 py-3 text-ink/80">{s.project_title || "—"}</td>
-                    <td className="px-4 py-3 text-sm text-ink/60">{fmt.format(new Date(s.created_at))}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ul className="mt-4 divide-y divide-olive/10 rounded-2xl border border-olive/10 bg-white shadow-sm">
+            {latest.map((s) => (
+              <li key={s.id} className="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:gap-4">
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold text-ink">{s.full_name || "—"}</p>
+                  <p className="truncate text-sm text-ink/60" dir="ltr">{s.email}</p>
+                </div>
+                <p className="text-sm text-ink/80 sm:w-48">
+                  {[s.specialty, s.level].filter(Boolean).join(" · ") || "—"}
+                </p>
+                <p className="text-sm text-ink/80 sm:w-64 sm:truncate">{s.project_title || "—"}</p>
+                <p className="text-xs text-ink/50 sm:w-24 sm:text-left">{fmt.format(new Date(s.created_at))}</p>
+              </li>
+            ))}
+          </ul>
         ) : (
           <p className="mt-4 rounded-2xl border border-dashed border-olive/20 bg-white/60 p-8 text-center text-ink/60">
             لا يوجد طلبة مسجلون بعد.
           </p>
         )}
       </section>
-
-      <p className="mt-10 rounded-xl border border-gold/40 bg-gold-light/30 p-4 text-ink/80">
-        قريبًا في لوحة التحكم: نشر الدورات والأحداث، جدول كل الطلبة، تسجيل الحضور، والإيميل الجماعي.
-      </p>
     </>
   );
 }
