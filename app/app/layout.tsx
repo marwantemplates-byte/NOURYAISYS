@@ -5,7 +5,7 @@ import { requireProfile } from "@/lib/session";
 
 export default async function StudentLayout({ children }: { children: ReactNode }) {
   const { profile } = await requireProfile();
-  // Admins never see the student area
+  // Admins never see the student area (they belong in /admin)
   if (profile?.role === "admin" && profile.status === "active") redirect("/admin");
   const blocked = profile?.status === "blocked";
 

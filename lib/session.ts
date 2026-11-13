@@ -20,13 +20,13 @@ export type Profile = {
   status: "active" | "blocked";
 };
 
-/** Signed-in user + profile for /app pages (cached per request). Redirects to /login if signed out. */
-export const requireProfile = cache(async () => {
+/** Signed-in user + profile (cached per request). Redirects to `loginPath` if signed out. */
+export const requireProfile = cache(async (loginPath: string = "/login?next=/app") => {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/login?next=/app");
+  if (!user) redirect(loginPath);
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle<Profile>();
   return { supabase, user, profile };
 });

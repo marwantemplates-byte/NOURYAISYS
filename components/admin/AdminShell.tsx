@@ -93,7 +93,7 @@ export default function AdminShell({ name, children }: { name: string; children:
           <Icon d="M14 3h7v7M21 3l-9 9M19 14v6H4V5h6" />
           عرض الموقع
         </Link>
-        <form action="/auth/signout" method="post">
+        <form action="/auth/signout?to=/admin/login" method="post">
           <button type="submit" className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-white/80 hover:bg-white/10 hover:text-white">
             <Icon d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10" />
             خروج

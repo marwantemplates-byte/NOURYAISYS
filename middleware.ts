@@ -27,10 +27,19 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname, search } = request.nextUrl;
-  const isPrivate = pathname.startsWith("/app") || pathname.startsWith("/admin");
+  const isAdminLogin = pathname === "/admin/login";
+  const isAdmin = pathname.startsWith("/admin") && !isAdminLogin;
+  const isStudent = pathname.startsWith("/app");
   const isAuthPage = pathname === "/login" || pathname === "/register";
 
-  if (isPrivate && !user) {
+  // Admin pages → the admin's own login page (/admin/login), never the students' /login
+  if (isAdmin && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/admin/login";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+  if (isStudent && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.search = `?next=${encodeURIComponent(pathname + search)}`;

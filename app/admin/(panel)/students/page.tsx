@@ -2,7 +2,7 @@ import StudentsTable, { type StudentRow } from "@/components/admin/StudentsTable
 import { requireProfile } from "@/lib/session";
 
 export default async function StudentsPage() {
-  const { supabase } = await requireProfile();
+  const { supabase } = await requireProfile("/admin/login");
   const { data, error } = await supabase
     .from("profiles")
     .select(

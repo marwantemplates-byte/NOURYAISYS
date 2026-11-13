@@ -6,9 +6,10 @@ import { requireProfile } from "@/lib/session";
 
 export const metadata: Metadata = { title: "لوحة التحكم — حاضنة الأعمال" };
 
-/** Admin area: only active admins. Real protection is RLS; this redirects everyone else. */
+/** Admin area (everything under /admin except /admin/login): only active admins.
+ *  Real protection is RLS in the database; this only redirects. */
 export default async function AdminLayout({ children }: { children: ReactNode }) {
-  const { profile } = await requireProfile();
-  if (!profile || profile.role !== "admin" || profile.status !== "active") redirect("/app");
+  const { profile } = await requireProfile("/admin/login");
+  if (!profile || profile.role !== "admin" || profile.status !== "active") redirect("/admin/login?error=notadmin");
   return <AdminShell name={profile.full_name || profile.email}>{children}</AdminShell>;
 }

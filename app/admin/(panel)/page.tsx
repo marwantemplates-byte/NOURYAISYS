@@ -3,7 +3,7 @@ import { requireProfile } from "@/lib/session";
 
 /** Admin overview (first version): registration numbers + latest students. */
 export default async function AdminHome() {
-  const { supabase, profile } = await requireProfile();
+  const { supabase, profile } = await requireProfile("/admin/login");
   const weekAgo = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
 
   const [total, week, withPdf, latest] = await Promise.all([
