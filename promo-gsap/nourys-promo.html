@@ -70,6 +70,11 @@ html,body{height:100%;background:#053B42;overflow:hidden}
 .typing i{width:16px;height:16px;border-radius:50%;background:#0C6873;display:block}
 .pill{display:inline-flex;align-items:center;gap:18px;background:var(--acc);color:var(--deep);border-radius:999px;padding:22px 60px;font-size:56px;font-weight:800;position:relative;overflow:hidden;
   box-shadow:0 30px 70px rgba(5,59,66,.55)}
+
+/* initial (pre-entrance) states so nothing pops before its animation */
+#s1a .w,#s1b .w,#ord,#tap,#rowN,#chN,#cur,#destL,#s4 .pc,#logo .w,#p6{opacity:0}
+#p4 .dr{stroke-dasharray:1;stroke-dashoffset:1}
+.mask .mi,#dot,#dest,#dstart{opacity:0}
 </style>
 </head>
 <body>
@@ -83,7 +88,7 @@ html,body{height:100%;background:#053B42;overflow:hidden}
       <div class="abs center" style="top:300px"><span class="mask"><span class="mi kick" id="s1k">NOURYS · نظام متابعة الطلبيات</span></span></div>
       <div class="abs center" style="top:640px;font-size:150px;line-height:1.2;white-space:nowrap" id="s1a"><span class="w">طلبيات</span> <span class="w acc">بزاف؟</span></div>
       <div class="abs center" style="top:900px;font-size:104px;line-height:1.2;white-space:nowrap" id="s1b"><span class="w">وما</span> <span class="w">تلحقش</span> <span class="w">تتبعهم<span id="p1" class="acc" style="display:inline-block">؟</span></span></div>
-      <div class="pl" data-depth="1.6"><div class="abs" style="left:120px;top:1320px;width:840px;height:6px;border-radius:6px;background:rgba(187,232,236,.18)"><i id="s1bar" style="position:absolute;inset:0;border-radius:6px;background:#3FD1C6;transform-origin:100% 50%;display:block"></i></div></div>
+      <div class="pl" data-depth="1.6"><div class="abs" style="left:120px;top:1320px;width:840px;height:6px;border-radius:6px;background:rgba(187,232,236,.18)"><i id="s1bar" style="position:absolute;inset:0;border-radius:6px;background:#3FD1C6;transform-origin:100% 50%;display:block;transform:scaleX(0)"></i></div></div>
     </div></section>
 
     <!-- ============ SCENE 2 : ORDER ARRIVES ============ -->
@@ -160,7 +165,7 @@ html,body{height:100%;background:#053B42;overflow:hidden}
           <path id="dz" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="M46 66 L118 42 L212 30 L296 24 L330 40 L338 118 L362 168 L372 258 L312 330 L242 384 L188 372 L92 282 L30 222 L22 144 Z" fill="rgba(63,209,198,.06)" stroke="#BBE8EC" stroke-width="3" stroke-linejoin="round"/>
           <defs><mask id="rm"><path id="rmask" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="M92 62 C 150 110, 230 105, 318 74" stroke="#fff" stroke-width="12" fill="none"/></mask></defs>
           <path id="route" d="M92 62 C 150 110, 230 105, 318 74" stroke="#3FD1C6" stroke-width="5" stroke-dasharray="2 12" stroke-linecap="round" fill="none" mask="url(#rm)"/>
-          <circle cx="92" cy="62" r="8" fill="#BBE8EC"/>
+          <circle id="dstart" cx="92" cy="62" r="8" fill="#BBE8EC"/>
           <circle id="dest" cx="318" cy="74" r="11" fill="#3FD1C6"/>
           <circle id="dot" r="10" fill="#FFFFFF" cx="92" cy="62"/>
           <text id="destL" x="300" y="112" fill="#FFFFFF" font-family="Cairo" font-weight="800" font-size="24" text-anchor="middle">تبسة</text>
@@ -296,7 +301,7 @@ html,body{height:100%;background:#053B42;overflow:hidden}
     tl.fromTo(BARS, { opacity: .95 }, { opacity: 0, duration: .12, ease: 'power4.out' }, B);
     tl.fromTo('#shake', { x: 0, y: 0 }, { keyframes: [{ x: 6, y: -5, duration: .07 }, { x: -6, y: 4, duration: .08 }, { x: 5, y: -3, duration: .08 }, { x: -3, y: 2, duration: .08 }, { x: 0, y: 0, duration: .09 }], ease: 'power4.out' }, B + .03);
   }
-  const mask = (els, at, st = .12) => tl.fromTo(els, { yPercent: 115 }, { yPercent: 0, duration: .7, ease: 'expo.out', stagger: st }, at);
+  const mask = (els, at, st = .12) => tl.fromTo(els, { yPercent: 115, opacity: 0 }, { yPercent: 0, opacity: 1, duration: .7, ease: 'expo.out', stagger: st }, at);
   const slam = (els, at, st = .2) => {
     tl.fromTo(els, { scale: 2.6, opacity: 0, y: -30, filter: 'blur(16px)' }, { keyframes: [{ scale: .94, opacity: 1, y: 0, filter: 'blur(0px)', duration: .32, ease: 'expo.out' }, { scale: 1, duration: .2, ease: 'power4.out' }], stagger: st }, at);
   };
@@ -368,6 +373,7 @@ html,body{height:100%;background:#053B42;overflow:hidden}
   mask($$('#s4 .mi'), 15.25, .2);
   typeIn($('#trk'), 'DHD…7784', 15.75, .7);
   tl.fromTo('#dz', { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.1, ease: 'power4.inOut' }, 15.6);
+  tl.fromTo(['#dot', '#dstart', '#dest'], { opacity: 0 }, { opacity: 1, duration: .3, ease: 'power4.out' }, 16.15);
   tl.fromTo('#rmask', { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.1, ease: 'power4.inOut' }, 16.4);
   const ROUTE = $('#route'), RL = ROUTE.getTotalLength(), dot = $('#dot'), dO = { p: 0 };
   tl.fromTo(dO, { p: 0 }, { p: 1, duration: 1.1, ease: 'power4.inOut', onUpdate: () => { const q = ROUTE.getPointAtLength(dO.p * RL); dot.setAttribute('cx', q.x); dot.setAttribute('cy', q.y); } }, 16.4);
@@ -399,7 +405,7 @@ html,body{height:100%;background:#053B42;overflow:hidden}
   landIn('s6', 25);
   const L = $$('#logo .w');
   tl.fromTo(L, { x: () => gsap.utils.random(-500, 500), y: () => gsap.utils.random(-700, 700), rotation: () => gsap.utils.random(-120, 120), scale: () => gsap.utils.random(.3, 2.4), opacity: 0, filter: 'blur(14px)' },
-    { x: 0, y: 0, rotation: 0, scale: 1, opacity: 1, filter: 'blur(0px)', duration: 1.0, ease: 'expo.out', stagger: { each: .06, from: 'random' } }, 25.3);
+    { x: 0, y: 0, rotation: 0, scale: 1, opacity: 1, filter: 'blur(0px)', duration: 1.0, ease: 'expo.out', stagger: { each: .06, from: 'random' } }, 25.05);
   microShake(26.05, 5);
   mask($$('#s6 .mi'), 26.25, .25);
   pop('#p6', 27.2);
