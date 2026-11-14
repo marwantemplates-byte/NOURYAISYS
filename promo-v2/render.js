@@ -11,7 +11,7 @@ const fs = require('fs');
   const browser = await chromium.launch({ args: ['--force-color-profile=srgb'] });
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   page.on('pageerror', (e) => console.error('PAGE ERROR', e.message));
-  await page.goto('file://' + path.join(__dirname, 'index.html'));
+  await page.goto('file://' + path.join(__dirname, process.env.PAGE || 'index.html'));
   await page.evaluate(() => window.ready);
 
   if (mode === 'stills') {

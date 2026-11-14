@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>NOURYS film</title>
+<link rel="stylesheet" href="fonts/local.css">
+<style>
+:root{--deep:#053B42;--acc:#3FD1C6;--light:#BBE8EC;--wa:#25D366}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#053B42}
+#stage{position:absolute;inset:0;overflow:hidden;background:radial-gradient(120% 80% at 50% 35%,#10808A 0%,#0C6873 45%,#053B42 100%);font-family:Cairo,sans-serif;color:#fff}
+#vp{position:absolute;inset:0;perspective:1700px;perspective-origin:50% 50%}
+#world{position:absolute;left:540px;top:960px;width:0;height:0;transform-style:preserve-3d}
+.o{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d}
+.f{position:absolute;backface-visibility:hidden}
+.w{display:inline-block;white-space:nowrap}
+.acc{color:var(--acc)}
+#bgp{position:absolute;left:-6000px;top:-5000px;width:12000px;height:14000px;background-image:linear-gradient(rgba(187,232,236,.06) 3px,transparent 3px),linear-gradient(90deg,rgba(187,232,236,.06) 3px,transparent 3px);background-size:160px 160px}
+.pt{border-radius:50%}
+.alu{background:linear-gradient(160deg,#13909a 0%,#0C6873 55%,#0a5b64 100%)}
+/* laptop */
+#lidF{left:-500px;top:-640px;width:1000px;height:640px;border-radius:36px 36px 8px 8px;background:#042f35;box-shadow:inset 0 0 0 3px rgba(187,232,236,.25)}
+#lidB{left:-500px;top:-640px;width:1000px;height:640px;border-radius:36px 36px 8px 8px;transform:translateZ(-14px) rotateY(180deg)}
+#lidE{left:-500px;top:-8px;width:1000px;height:14px;transform-origin:50% 100%;transform:rotateX(-90deg)}
+#screen{position:absolute;left:24px;top:24px;right:24px;bottom:30px;border-radius:14px;overflow:hidden;background:#021f23}
+#glare{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,0) 38%)}
+#baseT{left:-530px;top:0;width:1060px;height:700px;transform-origin:50% 0;transform:rotateX(90deg);border-radius:6px 6px 40px 40px}
+.keys{position:absolute;left:70px;right:70px;top:60px;height:330px;border-radius:14px;background:repeating-linear-gradient(90deg,#0a5d66 0 58px,#06454d 58px 66px),#06454d;-webkit-mask:repeating-linear-gradient(#000 0 56px,transparent 56px 66px)}
+#pad{position:absolute;left:330px;width:400px;top:430px;height:220px;border-radius:20px;background:rgba(5,59,66,.35);box-shadow:inset 0 0 0 2px rgba(187,232,236,.18)}
+#baseF{left:-530px;top:0;width:1060px;height:26px;transform:translateZ(700px);border-radius:0 0 22px 22px;background:linear-gradient(#0C6873,#053B42)}
+#shadow{left:-800px;top:-500px;width:1600px;height:1300px;transform:translateY(30px) rotateX(90deg);background:radial-gradient(closest-side,rgba(2,25,29,.75),rgba(2,25,29,0))}
+.bbar{height:54px;background:#0C6873;display:flex;align-items:center;gap:10px;padding:0 22px}
+.dot{width:14px;height:14px;border-radius:50%;background:rgba(187,232,236,.45);display:inline-block}
+.url{direction:ltr;flex:1;margin-right:16px;background:rgba(5,59,66,.6);border-radius:999px;padding:3px 20px;font-family:Tajawal;font-weight:700;font-size:22px;color:var(--light)}
+.page{position:absolute;top:54px;left:0;right:0;bottom:0;background:linear-gradient(180deg,#053B42,#042f35)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--acc);color:#053B42;font-family:Cairo;font-weight:800;border-radius:16px}
+.fld{margin-top:14px}
+.fld label{display:block;font-family:Tajawal;font-weight:700;font-size:21px;color:var(--light);margin-bottom:4px}
+.fld .in{height:52px;border-radius:12px;background:#021f23;border:2px solid rgba(187,232,236,.22);display:flex;align-items:center;padding:0 16px;font-family:Tajawal;font-weight:700;font-size:26px;color:#fff;white-space:nowrap}
+.fld .in.on{border-color:var(--acc);box-shadow:0 0 0 4px rgba(63,209,198,.18)}
+.caret{display:inline-block;width:3px;height:28px;background:var(--acc);margin:0 2px;vertical-align:middle}
+.ocard{width:560px;height:176px;margin:-88px 0 0 -280px;border-radius:30px;background:linear-gradient(150deg,#0C6873,#053B42);border:3px solid var(--acc);display:flex;align-items:center;gap:22px;padding:0 28px;overflow:hidden}
+.ico{width:96px;height:96px;border-radius:24px;background:var(--acc);display:flex;align-items:center;justify-content:center;font-size:52px;flex:none}
+/* sheet */
+#shF{left:-500px;top:-340px;width:1000px;height:680px;border-radius:30px;background:#053B42;box-shadow:inset 0 0 0 3px rgba(187,232,236,.18);overflow:hidden}
+.shL{left:-500px;top:-340px;width:1000px;height:680px;border-radius:30px}
+.row{position:absolute;left:0;right:0;height:100px;display:flex;border-bottom:2px solid rgba(187,232,236,.10)}
+.c{display:flex;align-items:center;justify-content:center;font-family:Tajawal;font-weight:700;font-size:33px;color:#fff;white-space:nowrap;position:relative}
+.hdr .c{font-family:Cairo;font-weight:800;color:#053B42;font-size:33px}
+.badge{display:inline-block;font-family:Cairo;font-weight:800;font-size:27px;padding:5px 20px;border-radius:999px;direction:ltr;white-space:nowrap}
+.b-new{background:rgba(187,232,236,.18);color:var(--light)}
+.b-ok{background:var(--acc);color:#053B42}
+.b-cb{border:2px solid var(--light);color:var(--light)}
+.b-na{border:2px dashed rgba(187,232,236,.6);color:rgba(187,232,236,.8)}
+.mi{height:58px;display:flex;align-items:center;padding:0 14px;border-radius:12px;direction:ltr}
+.cap{font-family:Cairo;font-weight:800;color:#fff;text-align:center;white-space:nowrap;line-height:1.25;text-shadow:0 10px 40px rgba(2,25,29,.5)}
+.calc-l{display:flex;justify-content:space-between;align-items:center;font-family:Tajawal;font-weight:700;font-size:40px;color:var(--light);height:80px}
+.calc-l b{font-family:Cairo;font-weight:800;color:#fff}
+/* truck */
+.tf{background:linear-gradient(180deg,#3FD1C6,#2fb9ae)}
+.sign{left:-190px;top:-330px;width:380px;height:110px;border-radius:28px;background:#053B42;border:4px solid var(--acc);display:flex;align-items:center;justify-content:center;gap:16px;font-family:Cairo;font-weight:800;font-size:44px;direction:ltr;box-shadow:0 0 40px rgba(63,209,198,.45)}
+.chk{width:44px;height:44px;border-radius:50%;background:var(--acc);display:inline-flex;align-items:center;justify-content:center;color:#053B42;font-size:28px;font-weight:900}
+/* phone */
+.bub{background:var(--wa);color:#053B42;font-family:Cairo;font-weight:700;font-size:36px;line-height:1.45;padding:16px 26px 10px;border-radius:30px 8px 30px 30px;max-width:470px;box-shadow:0 10px 24px rgba(5,59,66,.45);transform-origin:100% 0}
+.bub .meta{font-family:Tajawal;font-weight:700;font-size:21px;color:rgba(5,59,66,.7);text-align:left;direction:ltr}
+.typing{background:var(--wa);border-radius:30px 8px 30px 30px;padding:22px 30px;display:flex;gap:12px;direction:ltr;transform-origin:100% 0}
+.typing i{width:16px;height:16px;border-radius:50%;background:#053B42;display:block}
+.step{display:flex;flex-direction:column;align-items:center;gap:6px;font-family:Tajawal;font-weight:700;font-size:23px;color:rgba(187,232,236,.6);width:140px;z-index:2}
+.step .n{width:38px;height:38px;border-radius:50%;background:#053B42;border:4px solid rgba(187,232,236,.35)}
+.step.on{color:#fff}.step.on .n{background:var(--acc);border-color:var(--acc);box-shadow:0 0 18px #3FD1C6}
+/* chart */
+.bar6{position:absolute;bottom:90px;width:84px;border-radius:16px 16px 6px 6px}
+.ml{position:absolute;bottom:34px;width:120px;text-align:center;font-family:Tajawal;font-weight:700;font-size:28px;color:var(--light)}
+</style>
+</head>
+<body>
+<div id="stage"><div id="vp"><div id="world">
+
+  <div class="o" id="bgo"><div class="f" id="bgp"></div></div>
+  <div class="o" id="glows"></div>
+  <div class="o" id="pts"></div>
+
+  <!-- ROAD (ground plane) -->
+  <div class="o" id="road">
+    <div class="f" id="roadF" style="backface-visibility:visible;left:-2600px;top:0;width:3600px;height:1200px;transform-origin:50% 0;transform:translateZ(-300px) rotateX(90deg);background:linear-gradient(90deg,rgba(3,40,45,0),rgba(3,40,45,.95) 10%,rgba(3,40,45,.95) 90%,rgba(3,40,45,0));">
+      <div style="position:absolute;left:0;right:0;top:292px;height:18px;background:repeating-linear-gradient(90deg,rgba(187,232,236,.85) 0 120px,transparent 120px 220px)"></div>
+      <div style="position:absolute;left:0;right:0;top:40px;height:10px;background:#3FD1C6;box-shadow:0 0 30px #3FD1C6"></div>
+      <div style="position:absolute;left:0;right:0;top:1100px;height:14px;background:#3FD1C6;box-shadow:0 0 30px #3FD1C6"></div>
+    </div>
+  </div>
+  <div class="o" id="signs"></div>
+  <div class="o" id="cap3"><div class="f cap" style="left:-540px;width:1080px;top:-120px;font-size:96px">
+    <span class="w">مربوطة</span> <span class="w">مع</span><br><span class="w">شركة</span> <span class="w acc">التوصيل</span></div></div>
+
+  <!-- links (pull-back) -->
+  <div class="o" id="links"><svg class="f" id="lsvg" style="left:-1000px;top:-1300px;width:2000px;height:2600px;overflow:visible" viewBox="-1000 -1300 2000 2600"></svg></div>
+
+  <div class="o" id="cap1"><div class="f cap" style="left:-540px;width:1080px;top:-80px;font-size:84px">
+    <span class="w">طلبية</span> <span class="w">جديدة</span> <span class="w">من</span> <span class="w acc">متجرك…</span></div></div>
+
+  <!-- ===== LAPTOP ===== -->
+  <div class="o" id="laptop">
+    <div class="f" id="shadow"></div>
+    <div class="f alu" id="baseT"><div class="keys"></div><div id="pad"></div></div>
+    <div class="f" id="baseF"></div>
+    <div class="o" id="lid">
+      <div class="f alu" id="lidB"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:Cairo;font-weight:900;font-size:70px;color:rgba(187,232,236,.55);direction:ltr">NOURYS</div></div>
+      <div class="f alu" id="lidE"></div>
+      <div class="f" id="lidF"><div id="screen">
+        <div id="ui" style="position:absolute;inset:0">
+          <div class="bbar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><div class="url">www.mystore.dz</div><span style="font-size:26px">🛒</span></div>
+          <div class="page">
+            <div style="position:absolute;right:40px;top:40px;width:330px;height:330px;border-radius:26px;background:linear-gradient(150deg,#10808A,#0C6873);display:flex;align-items:center;justify-content:center">
+              <svg viewBox="0 0 100 100" width="210" height="210"><rect x="30" y="6" width="40" height="88" rx="12" fill="#053B42"/><circle cx="50" cy="50" r="27" fill="#053B42" stroke="#3FD1C6" stroke-width="5"/><path d="M50 35V50L61 58" stroke="#BBE8EC" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+            </div>
+            <div style="position:absolute;right:400px;top:46px;left:30px">
+              <div style="font-family:Cairo;font-weight:800;font-size:46px;line-height:1.2">ساعة ذكية Pro</div>
+              <div style="color:var(--acc);font-size:26px;margin:6px 0;direction:ltr;text-align:right">★★★★★</div>
+              <div style="font-family:Cairo;font-weight:800;font-size:44px;color:var(--acc)">3900 دج</div>
+              <div style="font-family:Tajawal;font-weight:700;font-size:23px;color:var(--light);margin:8px 0 22px">🚚 توصيل لكل الولايات</div>
+              <div class="btn" id="buy" style="font-size:34px;padding:10px 46px;position:relative;overflow:hidden">اطلب الآن<i id="buyRip" style="position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px;border-radius:50%;background:rgba(255,255,255,.6)"></i></div>
+            </div>
+            <div id="form" style="position:absolute;left:0;top:0;bottom:0;width:440px;background:#0a4f57;box-shadow:20px 0 60px rgba(2,25,29,.6);padding:22px 30px">
+              <div style="font-family:Cairo;font-weight:800;font-size:32px">معلومات الطلب</div>
+              <div class="fld"><label>الاسم</label><div class="in" id="f0"></div></div>
+              <div class="fld"><label>الهاتف</label><div class="in" id="f1" style="direction:ltr;justify-content:flex-end"></div></div>
+              <div class="fld"><label>الولاية</label><div class="in" id="f2" style="justify-content:space-between"><span id="f2t"></span><span style="color:var(--light);font-size:22px">▾</span></div></div>
+              <div class="btn" id="conf" style="margin-top:22px;width:100%;height:60px;font-size:30px;position:relative;overflow:hidden"><span id="confT">تأكيد الطلب</span><i id="confRip" style="position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px;border-radius:50%;background:rgba(255,255,255,.6)"></i></div>
+            </div>
+          </div>
+          <div id="scard" style="position:absolute;left:50%;top:50%" class="ocard">
+            <div class="ico">🛒</div>
+            <div><div style="font-family:Cairo;font-weight:800;font-size:38px;line-height:1.2">طلبية جديدة <bdi dir="ltr" style="color:var(--acc)">#1042</bdi></div>
+            <div style="font-family:Tajawal;font-weight:700;font-size:28px;color:var(--light)">أمين ب. · وهران · 3900 دج</div></div>
+          </div>
+          <svg id="cur" viewBox="0 0 32 32" width="52" height="52" style="position:absolute;left:0;top:0;transform-origin:0 0"><path d="M4 2 L4 26 L10 20 L14 30 L18 28 L14 18 L23 18 Z" fill="#FFFFFF" stroke="#053B42" stroke-width="2" stroke-linejoin="round"/></svg>
+        </div>
+        <div id="glare"></div>
+        <div id="scrOff" style="position:absolute;inset:0;background:#021f23"></div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ===== SHEET ===== -->
+  <div class="o" id="sheet">
+    <div class="f shL" id="shL2" style="transform:translateZ(-36px);background:#032a2f"></div>
+    <div class="f shL" id="shL1" style="transform:translateZ(-18px);background:#04343a;box-shadow:0 60px 120px rgba(2,25,29,.6)"></div>
+    <div class="f" id="shF">
+      <div style="height:76px;background:#0C6873;display:flex;align-items:center;gap:16px;padding:0 30px">
+        <svg width="42" height="42" viewBox="0 0 40 40"><rect x="4" y="4" width="32" height="32" rx="6" fill="#3FD1C6"/><path d="M4 15H36M4 25H36M16 4V36" stroke="#053B42" stroke-width="3"/></svg>
+        <span style="font-family:Cairo;font-weight:800;font-size:32px" dir="ltr">Google Sheet</span>
+        <span style="font-family:Tajawal;font-weight:700;font-size:30px;color:var(--light)">· الطلبيات</span>
+      </div>
+      <div class="row hdr" id="hdr" style="top:76px;height:86px;background:var(--acc);border:0">
+        <div class="c" style="width:200px">الاسم</div><div class="c" style="width:230px">الهاتف</div><div class="c" style="width:160px">الولاية</div><div class="c" style="width:190px">المنتج</div><div class="c" style="width:220px">الحالة</div>
+      </div>
+      <div class="row" id="rA" style="top:162px"><div class="c" style="width:200px">سارة م.</div><div class="c" style="width:230px" dir="ltr">0661 22 33 44</div><div class="c" style="width:160px">الجزائر</div><div class="c" style="width:190px">حقيبة</div><div class="c" style="width:220px"><span class="badge b-cb">Call back</span></div></div>
+      <div class="row" id="rB" style="top:262px"><div class="c" style="width:200px">ياسين ك.</div><div class="c" style="width:230px" dir="ltr">0770 55 66 77</div><div class="c" style="width:160px">سطيف</div><div class="c" style="width:190px">سماعات</div><div class="c" style="width:220px"><span class="badge b-na">No answer</span></div></div>
+      <div class="row" id="rC" style="top:362px"><div class="c" style="width:200px">ليلى ع.</div><div class="c" style="width:230px" dir="ltr">0698 40 11 25</div><div class="c" style="width:160px">قسنطينة</div><div class="c" style="width:190px">عطر</div><div class="c" style="width:220px"><span class="badge b-ok">Confirmée ✓</span></div></div>
+      <div class="row" id="rN" style="top:162px">
+        <div id="rNhl" style="position:absolute;inset:0;background:var(--acc)"></div>
+        <div class="c" style="width:200px">أمين ب.</div><div class="c" style="width:230px" dir="ltr">0550 12 34 56</div><div class="c" id="cW" style="width:160px;border-radius:12px">وهران</div><div class="c" style="width:190px">ساعة ذكية</div>
+        <div class="c" style="width:220px"><span class="badge b-new" id="bNew">Nouvelle</span></div>
+      </div>
+      <div id="gridv" style="position:absolute;top:162px;left:0;right:0;bottom:0"></div>
+      <div id="menu" style="position:absolute;left:14px;top:246px;width:260px;padding:8px;border-radius:18px;background:#0C6873;box-shadow:0 30px 60px rgba(2,25,29,.7),0 0 0 2px rgba(187,232,236,.25);transform-origin:50% 0">
+        <div class="mi" id="mi0"><span class="badge b-new">Nouvelle</span></div>
+        <div class="mi" id="mi1"><span class="badge b-ok">Confirmée ✓</span></div>
+        <div class="mi" id="mi2"><span class="badge b-cb">Call back</span></div>
+        <div class="mi" id="mi3"><span class="badge b-na">No answer</span></div>
+      </div>
+      <svg id="cur2" viewBox="0 0 32 32" width="56" height="56" style="position:absolute;left:0;top:0;transform-origin:0 0"><path d="M4 2 L4 26 L10 20 L14 30 L18 28 L14 18 L23 18 Z" fill="#FFFFFF" stroke="#053B42" stroke-width="2" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+  <div class="o" id="cap2"><div class="f cap" style="left:-540px;width:1080px;top:-120px;font-size:86px">
+    <span class="w">تتسجل</span> <span class="w">أوتوماتيك</span><br><span class="w">في</span> <span class="w acc" dir="ltr">Google Sheet</span></div></div>
+
+  <!-- calc card -->
+  <div class="o" id="calc"><div class="f" id="calcF" style="left:-430px;top:0;width:860px;padding:24px 46px;border-radius:30px;background:#053B42;box-shadow:inset 0 0 0 3px rgba(187,232,236,.18),0 50px 100px rgba(2,25,29,.55);transform-origin:50% 0">
+    <div class="calc-l"><span>سعر المنتج</span><span><b id="v1">0</b> دج</span></div>
+    <div class="calc-l"><span>التوصيل <span id="wil" style="display:inline-block;font-size:30px;padding:2px 22px;margin-right:10px;border-radius:999px;background:#0C6873;color:#fff;border:2px solid var(--acc)">وهران</span></span><span><b id="v2">0</b> دج</span></div>
+    <div style="height:3px;background:rgba(187,232,236,.25);margin:12px 0"></div>
+    <div class="calc-l" style="height:96px"><span style="font-family:Cairo;font-weight:800;font-size:50px;color:#fff">المجموع</span><span style="color:var(--acc)"><b id="v3" style="color:var(--acc);font-size:76px">0</b> <span style="font-size:42px">دج</span></span></div>
+    <div style="font-family:Tajawal;font-weight:700;font-size:30px;color:var(--light);text-align:center;margin-top:6px">⚡ يتحسب أوتوماتيك حسب الولاية</div>
+  </div></div>
+
+  <!-- ===== TRUCK ===== -->
+  <div class="o" id="truck">
+    <div class="f" style="left:-600px;top:-200px;width:1100px;height:400px;transform:rotateX(90deg);background:radial-gradient(closest-side,rgba(2,25,29,.7),rgba(2,25,29,0))"></div>
+    <!-- cargo -->
+    <div class="f tf" style="left:-300px;top:-340px;width:520px;height:260px;transform-origin:50% 0;transform:translateZ(-130px) rotateX(90deg);background:#5fe0d6" id="cargoTop"></div>
+    <div class="f tf" style="left:90px;top:-340px;width:260px;height:270px;transform:rotateY(90deg);background:#2aa79d"></div>
+    <div class="f tf" style="left:-430px;top:-340px;width:260px;height:270px;transform:rotateY(-90deg);background:#2aa79d"></div>
+    <div class="f tf" id="cargoS" style="left:-300px;top:-340px;width:520px;height:270px;transform:translateZ(130px);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-direction:column">
+      <div style="font-family:Cairo;font-weight:900;font-size:70px;color:#053B42;direction:ltr;line-height:1">NOURYS</div>
+      <div style="font-family:Tajawal;font-weight:700;font-size:30px;color:#053B42">توصيل لكل الولايات</div>
+      <div id="cargoFlash" style="position:absolute;inset:0;background:#fff;opacity:0"></div>
+    </div>
+    <!-- cab -->
+    <div class="f" style="left:-480px;top:-280px;width:180px;height:240px;transform-origin:50% 0;transform:translateZ(-120px) rotateX(90deg);background:#d6f3f5"></div>
+    <div class="f" style="left:-600px;top:-280px;width:240px;height:210px;transform:rotateY(-90deg);background:#9fd8dd;border-radius:30px 0 0 0">
+      <div style="position:absolute;left:30px;right:30px;top:24px;height:90px;border-radius:16px;background:#053B42"></div></div>
+    <div class="f" style="left:-480px;top:-280px;width:180px;height:210px;transform:translateZ(120px);background:#BBE8EC;border-radius:44px 0 0 0">
+      <div style="position:absolute;left:24px;right:20px;top:24px;height:90px;border-radius:30px 10px 10px 10px;background:#053B42"></div></div>
+    <!-- chassis + wheels -->
+    <div class="f" style="left:-495px;top:-82px;width:730px;height:34px;transform:translateZ(126px);background:#053B42;border-radius:12px"></div>
+    <div class="f" id="wh1" style="left:-442px;top:-104px;width:108px;height:108px;transform:translateZ(134px);border-radius:50%;background:#053B42;border:12px solid #BBE8EC"><i style="position:absolute;left:36px;top:2px;width:12px;height:28px;border-radius:4px;background:#3FD1C6"></i><i style="position:absolute;left:30px;top:30px;width:24px;height:24px;border-radius:50%;background:#3FD1C6"></i></div>
+    <div class="f" id="wh2" style="left:66px;top:-104px;width:108px;height:108px;transform:translateZ(134px);border-radius:50%;background:#053B42;border:12px solid #BBE8EC"><i style="position:absolute;left:36px;top:2px;width:12px;height:28px;border-radius:4px;background:#3FD1C6"></i><i style="position:absolute;left:30px;top:30px;width:24px;height:24px;border-radius:50%;background:#3FD1C6"></i></div>
+  </div>
+  <div class="o" id="speed"></div>
+
+  <!-- ===== PHONE ===== -->
+  <div class="o" id="phone">
+    <div class="f" id="phF" style="left:-300px;top:-610px;width:600px;height:1220px;border-radius:90px;background:#053B42;border:12px solid #0C6873;box-shadow:inset 0 0 0 3px rgba(63,209,198,.5),14px 10px 0 #0a5b64,24px 18px 0 #053B42,40px 60px 120px rgba(2,25,29,.6);overflow:hidden">
+      <div style="height:170px;background:#0C6873;display:flex;align-items:flex-end;gap:18px;padding:0 36px 24px">
+        <div style="width:80px;height:80px;border-radius:50%;background:var(--acc);color:#053B42;display:flex;align-items:center;justify-content:center;font-family:Cairo;font-weight:900;font-size:46px">N</div>
+        <div><div style="font-family:Cairo;font-weight:800;font-size:38px;line-height:1.2" dir="ltr">NOURYS</div><div style="font-family:Tajawal;font-weight:700;font-size:25px;color:var(--light)">متصل الآن</div></div>
+      </div>
+      <div style="position:absolute;left:0;right:0;top:20px;margin:auto;width:150px;height:32px;border-radius:20px;background:#053B42"></div>
+      <div style="position:relative;height:112px;display:flex;justify-content:space-between;align-items:center;padding:0 30px;background:rgba(12,104,115,.35)">
+        <div style="position:absolute;left:100px;right:100px;top:35px;height:6px;background:rgba(187,232,236,.25)"></div>
+        <div id="pfill" style="position:absolute;right:100px;top:35px;height:6px;width:0;background:var(--acc);box-shadow:0 0 12px #3FD1C6"></div>
+        <div class="step" id="st0"><i class="n"></i>تأكيد</div><div class="step" id="st1"><i class="n"></i>في الطريق</div><div class="step" id="st2"><i class="n"></i>استلام</div>
+      </div>
+      <div style="padding:34px 28px;display:flex;flex-direction:column;align-items:flex-start;gap:24px;height:930px;background-image:radial-gradient(rgba(187,232,236,.08) 3px,transparent 3px);background-size:46px 46px">
+        <div class="bub" id="bb0">✅ تم تأكيد طلبيتك<div class="meta">10:24 ✓✓</div></div>
+        <div class="bub" id="bb1">🚚 طلبيتك في الطريق<div class="meta">14:02 ✓✓</div></div>
+        <div class="bub" id="bb2">🎉 يعطيك الصحة على الاستلام<div class="meta">17:45 ✓✓</div></div>
+        <div class="typing" id="typ"><i></i><i></i><i></i></div>
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.09),rgba(255,255,255,0) 35%)"></div>
+    </div>
+  </div>
+  <div class="o" id="cap4"><div class="f cap" style="left:-540px;width:1080px;top:-120px;font-size:84px">
+    <span class="w">الزبون</span> <span class="w">يتابع</span> <span class="w">طلبيتو…</span><br><span class="w acc">في</span> <span class="w acc">الواتساب</span></div></div>
+
+  <!-- dimmer, hub, chart, final -->
+  <div class="o" id="dim"><div class="f" id="dimF" style="left:-3000px;top:-3000px;width:6000px;height:6000px;background:#053B42;opacity:0"></div></div>
+  <div class="o" id="hub">
+    <div class="f" id="hubGlow" style="left:-450px;top:-450px;width:900px;height:900px;border-radius:50%;background:radial-gradient(closest-side,rgba(63,209,198,.55),rgba(63,209,198,0))"></div>
+    <svg class="f" id="hubRing" style="left:-230px;top:-230px;width:460px;height:460px" viewBox="0 0 460 460"><circle cx="230" cy="230" r="215" fill="none" stroke="#3FD1C6" stroke-width="6" stroke-dasharray="40 26" stroke-linecap="round"/></svg>
+    <div class="f" id="hubC" style="left:-160px;top:-160px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#10808A,#053B42);border:7px solid var(--acc);box-shadow:0 0 80px rgba(63,209,198,.7);display:flex;align-items:center;justify-content:center"><span id="hubT" style="font-family:Cairo;font-weight:900;font-size:62px;direction:ltr">NOURYS</span></div>
+  </div>
+  <div class="o" id="cap5"><div class="f cap" style="left:-540px;width:1080px;top:-130px;font-size:116px">
+    <span class="w">روتور</span> <span class="w acc">أقل…</span><br><span class="w">فايدة</span> <span class="w acc">أكثر</span> <span class="w">📈</span></div></div>
+  <div class="o" id="chart"><div class="f" id="chartF" style="left:-430px;top:-330px;width:860px;height:660px;border-radius:36px;background:#053B42;box-shadow:inset 0 0 0 3px rgba(187,232,236,.18),0 60px 120px rgba(2,25,29,.6)">
+    <div style="position:absolute;top:26px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:26px">
+      <span style="font-family:Tajawal;font-weight:700;font-size:40px;color:var(--light)">نسبة الروتور</span>
+      <span id="rnum" style="font-family:Cairo;font-weight:900;font-size:96px;line-height:1.1;direction:ltr;min-width:200px">35%</span>
+      <svg width="60" height="80" viewBox="0 0 130 170"><path d="M65 10V140M15 95L65 150L115 95" stroke="#3FD1C6" stroke-width="22" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="bar6" id="b0" style="left:90px;background:rgba(187,232,236,.55)"></div><div class="bar6" id="b1" style="left:215px;background:rgba(187,232,236,.55)"></div><div class="bar6" id="b2" style="left:340px;background:rgba(187,232,236,.55)"></div><div class="bar6" id="b3" style="left:465px;background:var(--acc)"></div><div class="bar6" id="b4" style="left:590px;background:var(--acc)"></div><div class="bar6" id="b5" style="left:715px;background:var(--acc)"></div>
+    <div class="ml" style="left:72px">جانفي</div><div class="ml" style="left:197px">فيفري</div><div class="ml" style="left:322px">مارس</div><div class="ml" style="left:447px">أفريل</div><div class="ml" style="left:572px">ماي</div><div class="ml" style="left:697px">جوان</div>
+    <div style="position:absolute;left:40px;right:40px;bottom:86px;height:3px;background:rgba(187,232,236,.3)"></div>
+    <svg style="position:absolute;inset:0;overflow:visible" viewBox="0 0 860 660"><polyline id="tl" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" points="132,190 257,250 382,312 507,368 632,416 770,452" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><polygon id="tla" points="800,470 750,438 744,488" fill="#fff"/></svg>
+  </div></div>
+  <div class="o" id="final">
+    <div class="f" style="left:-540px;width:1080px;top:-700px;text-align:center;direction:ltr;font-family:Cairo;font-weight:900;font-size:196px;line-height:1.1" id="logoT"><span class="w">N</span><span class="w">O</span><span class="w">U</span><span class="w">R</span><span class="w">Y</span><span class="w">S</span><span class="w acc">.</span></div>
+    <div class="f" id="fSub" style="left:-540px;width:1080px;top:-455px;text-align:center;direction:ltr;font-family:Tajawal;font-weight:700;font-size:50px;letter-spacing:8px;color:var(--light)">Suivi WhatsApp</div>
+    <div class="f cap" id="fSlog" style="left:-540px;width:1080px;top:-250px;font-size:110px"><span class="w">خلي</span> <span class="w">السيستام</span><br><span class="w">يخدم</span> <span class="w acc">بلاصتك</span></div>
+    <div class="f" id="fC1" style="left:-540px;width:1080px;top:150px;display:flex;justify-content:center">
+      <div style="position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:20px;background:var(--acc);color:#053B42;border-radius:999px;padding:18px 56px;font-family:Cairo;font-weight:800;font-size:58px;box-shadow:0 0 60px rgba(63,209,198,.6)">
+        <svg width="58" height="58" viewBox="0 0 40 40"><path d="M20 4C11 4 4 10.5 4 18.5c0 4.3 2 8 5.3 10.7L8 36l7.4-3.7c1.5.4 3 .6 4.6.6 9 0 16-6.5 16-14.4S29 4 20 4Z" fill="#053B42"/></svg>
+        <bdi dir="ltr">0697680910</bdi>
+        <i id="shine" style="position:absolute;top:-20px;bottom:-20px;width:120px;left:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);transform:skewX(-20deg)"></i>
+      </div></div>
+    <div class="f" id="fC2" style="left:-540px;width:1080px;top:310px;display:flex;justify-content:center">
+      <div style="display:inline-flex;align-items:center;gap:18px;border:4px solid var(--light);border-radius:999px;padding:12px 48px;font-family:Cairo;font-weight:800;font-size:52px;background:rgba(5,59,66,.7);direction:ltr">
+        <span style="width:62px;height:62px;border-radius:18px;border:5px solid var(--acc);display:inline-flex;align-items:center;justify-content:center;color:var(--acc);font-size:36px">@</span>nourys_ai</div></div>
+  </div>
+
+  <!-- flying cards -->
+  <div class="o" id="card"><div class="f ocard" id="cardF" style="left:0;top:0">
+    <div class="ico">🛒</div>
+    <div><div style="font-family:Cairo;font-weight:800;font-size:38px;line-height:1.2">طلبية جديدة <bdi dir="ltr" style="color:var(--acc)">#1042</bdi></div>
+    <div style="font-family:Tajawal;font-weight:700;font-size:28px;color:var(--light)">أمين ب. · وهران · 3900 دج</div></div>
+  </div></div>
+  <div class="o" id="card2"><div class="f" id="card2F" style="left:0;top:0;width:520px;height:150px;margin:-75px 0 0 -260px;border-radius:28px;background:linear-gradient(150deg,#0C6873,#053B42);border:3px solid var(--acc);display:flex;align-items:center;justify-content:center;gap:22px;overflow:hidden">
+    <span style="font-family:Tajawal;font-weight:700;font-size:36px"><bdi dir="ltr">#1042</bdi> · وهران</span><span class="badge b-ok" style="font-size:30px">Confirmée ✓</span>
+  </div></div>
+  <div class="o" id="trail"></div>
+
+</div></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const P=(t,s,d)=>cl((t-s)/d);
+const lerp=(a,b,e)=>a+(b-a)*e;
+const PI=Math.PI;
+const eo=x=>x>=1?1:1-Math.pow(2,-10*x);
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const eio5=x=>x<.5?16*x**5:1-Math.pow(-2*x+2,5)/2;
+const spr=(x,k=7,w=11)=>x<=0?0:x>=1?1:1-Math.exp(-k*x)*Math.cos(w*x);
+const bo=x=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const pos=(el,x=0,y=0,z=0,rx=0,ry=0,rz=0,s=1)=>el.style.transform=`translate3d(${x}px,${y}px,${z}px) rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${s})`;
+const fx=(el,o=1,b=0)=>{el.style.opacity=o;el.style.filter=b>.3?`blur(${b.toFixed(1)}px)`:'none'};
+const pulse=(t,tc,d=.16)=>Math.sin(PI*P(t,tc,d));
+
+/* ---------- world layout ---------- */
+const SCR={x:0,y:-325,z:0};
+const SH={x:560,y:1250,z:-250,ry:-14};
+const CALC={x:560,y:1660,z:-250};
+const ROADY=3060;
+const PH={x:-1500,y:2450,z:-900,ry:18};
+const H={x:-550,y:1500};
+const SLOT={lap:[H.x,H.y-700,0,.5],sheet:[H.x+500,H.y-30,0,.5],truck:[H.x+20,H.y+700,0,.55],phone:[H.x-500,H.y-30,0,.5]};
+const G0=25.9; // gather start
+
+/* ---------- truck path ---------- */
+function TX(t){
+  if(t<12.7)return 1800;
+  if(t<14.6)return lerp(1800,500,spr(P(t,12.7,1.1),6,7));
+  if(t<19){const u=P(t,14.6,4.4),d=4.4,u2=u*u,u3=u2*u;return (2*u3-3*u2+1)*500+(-2*u3+3*u2)*-1150+(u3-u2)*d*-900;}
+  const k=Math.min(t,20.6)-19;return -1150-900*k-600*k*k;
+}
+
+/* ---------- camera ---------- */
+const CAM=[
+ [-1.0,  0,-300,   0, -900, -24, 34, -3],
+ [ 0.0,  0,-300,   0, -650, -20, 26, -2],
+ [ 1.3,  0,-330,   0, -120, -11,  6,  0],
+ [ 2.3, -170,-335,  0, 250,  -6, -4,  0],
+ [ 3.2,  -60,-325, 30, 120,  -6, -6,  0],
+ [ 3.6,  -40,-330, 40, -60,  -6, -8,  1],
+ [ 4.4,  280, 420,-120,-520,   2,-16,  2],
+ [ 5.4,  520,1150,-250, -20,  -2,  9, -1],
+ [ 6.6,  530,1190,-250,  30,  -3, 13,  0],
+ [ 7.7,  360,1210,-250, 170,  -3, 10,  0],
+ [ 8.9,  430,1300,-250,  20,  -5, 12,  0],
+ [10.0,  560,1640,-250, -90, -14, 12,  0],
+ [11.4,  560,1700,-250, -30, -11,  9,  0],
+ [12.6,  560,2250,-120,-480,  -6,  3,  1],
+ [13.7,  500,2780,   0,-260, -15,  0,  0],
+ [16.4,  -300,2770,  0,-380, -12, -3,  0],
+ [19.2, -1150,2790,  0,-320, -11, -7,  0],
+ [20.4, -1500,2500,-900, -70,  -3,-17,  0],
+ [22.2, -1500,2510,-900, -10,  -2,-13,  0],
+ [24.2, -1500,2500,-900, -60,  -3,-20,  0],
+ [25.8, -1470,2450,-900,-220,  -2,-15,  0],
+ [27.5,  H.x,H.y-260, 0,-900,  -4,  0,  0],
+ [29.0,  H.x,H.y-180, 0,-760,  -3,  4,  0],
+ [31.0,  H.x,H.y-100, 0,-660,  -2, -3,  0],
+ [32.7,  H.x,H.y,   300,  -10,  0,  2,  0],
+ [36.5,  H.x,H.y,   300,   40,  0, -3,  0],
+ [38.0,  H.x,H.y,   300,   50,  0, -4,  0],
+];
+function camAt(t){
+  const K=CAM;let i=0;while(i<K.length-2&&t>K[i+1][0])i++;
+  const k0=K[Math.max(0,i-1)],k1=K[i],k2=K[i+1],k3=K[Math.min(K.length-1,i+2)];
+  const u=cl((t-k1[0])/(k2[0]-k1[0])),u2=u*u,u3=u2*u,d=k2[0]-k1[0];
+  const out=[];
+  for(let c=1;c<8;c++){
+    const m1=(k2[c]-k0[c])/(k2[0]-k0[0]||1)*d, m2=(k3[c]-k1[c])/(k3[0]-k1[0]||1)*d;
+    out.push((2*u3-3*u2+1)*k1[c]+(u3-2*u2+u)*m1+(-2*u3+3*u2)*k2[c]+(u3-u2)*m2);
+  }
+  // follow the truck
+  const w=eio(P(t,13.1,.8))*(1-eio(P(t,18.9,1.0)));
+  out[0]=lerp(out[0],TX(t-.12)-60,w);
+  return out;
+}
+
+/* ---------- particles & glows ---------- */
+let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const PT=[];
+for(let i=0;i<110;i++){const d=document.createElement('div');d.className='f pt';
+  const z=lerp(-1600,700,rnd()),sz=lerp(6,22,rnd());
+  Object.assign(d.style,{width:sz+'px',height:sz+'px',background:i%3?'#BBE8EC':'#3FD1C6'});
+  $('pts').appendChild(d);PT.push({d,x:lerp(-2600,1700,rnd()),y:lerp(-1500,4400,rnd()),z,sp:lerp(10,40,rnd()),ph:rnd()*6,o:lerp(.25,.7,rnd())});}
+const GL=[[0,-350,-500,1500,.30],[560,1300,-700,1600,.28],[-300,2900,-900,1800,.22],[-1750,2600,-700,1500,.3],[H.x,H.y,-600,2000,.25]].map(([x,y,z,s,a])=>{
+  const d=document.createElement('div');d.className='f';Object.assign(d.style,{left:-s/2+'px',top:-s/2+'px',width:s+'px',height:s+'px',borderRadius:'50%',background:`radial-gradient(closest-side,rgba(63,209,198,${a}),rgba(63,209,198,0))`});
+  $('glows').appendChild(d);pos(d,x,y,z);return d;});
+for(let i=0;i<4;i++){const v=document.createElement('div');v.style.cssText=`position:absolute;top:0;bottom:0;width:2px;background:rgba(187,232,236,.10);right:${[200,430,590,780][i]}px`;$('gridv').appendChild(v);}
+
+/* signs along the road */
+const SIGNX=[250,-230,-700,-1150],SIGNN=['Yalidine','ZR Express','DHD','World Express'];
+const SIGNT=SIGNX.map(x=>{for(let t=12;t<20;t+=.01)if(TX(t)<x+420)return t;return 99;});
+const SG=SIGNX.map((x,i)=>{const o=document.createElement('div');o.className='o';
+  o.innerHTML=`<div class="f" style="left:-7px;top:-220px;width:14px;height:220px;background:linear-gradient(#BBE8EC,#0C6873);border-radius:7px"></div><div class="f sign">${SIGNN[i]} <span class="chk">✓</span></div>`;
+  $('signs').appendChild(o);return o;});
+/* speed lines */
+const SPD=[0,1,2,3].map(i=>{const d=document.createElement('div');d.className='f';d.style.cssText=`left:0;top:${-300+i*70}px;width:${[260,180,300,160][i]}px;height:10px;border-radius:10px;background:${i%2?'#3FD1C6':'#BBE8EC'}`;$('speed').appendChild(d);return d;});
+
+/* links between stations (relative to hub) */
+const NS='http://www.w3.org/2000/svg';
+const LP=['M150 -690 C 420 -690, 500 -500, 500 -215','M500 150 C 500 420, 380 600, 210 600','M-170 600 C -380 600, -500 460, -500 290',
+          'M0 -165 L0 -650','M165 0 L245 -30','M0 165 L0 500','M-165 0 L-195 -30'];
+const LINKS=LP.map((d,i)=>{const p=document.createElementNS(NS,'path');p.setAttribute('d',d);p.setAttribute('fill','none');
+  p.setAttribute('stroke',i<3?'#3FD1C6':'rgba(187,232,236,.55)');p.setAttribute('stroke-width',i<3?14:6);p.setAttribute('stroke-linecap','round');
+  if(i<3)p.setAttribute('filter','drop-shadow(0 0 14px #3FD1C6)');p.setAttribute('pathLength','1');p.setAttribute('stroke-dasharray','1');p.setAttribute('stroke-dashoffset','1');$('lsvg').appendChild(p);return p;});
+const PUL=[];for(let i=0;i<6;i++){const c=document.createElementNS(NS,'circle');c.setAttribute('r','16');c.setAttribute('fill','#fff');c.setAttribute('filter','drop-shadow(0 0 12px #3FD1C6)');$('lsvg').appendChild(c);PUL.push(c);}
+
+/* caption word animation */
+function words(capId,t0,t,stg=.09,tout=99){
+  const ox=P(t,tout,.45);
+  [...$(capId).querySelectorAll('.w')].forEach((w,i)=>{
+    const e=P(t,t0+i*stg,.7),k=spr(e,6,9);
+    w.style.transform=`translateY(${lerp(70,0,k)-eio(ox)*60}px) rotateX(${lerp(-80,0,eo(e))}deg)`;
+    w.style.opacity=cl(e*3)*(1-ox);const b=(1-eo(e))*10+ox*12;w.style.filter=b>.3?`blur(${b}px)`:'none';
+  });
+}
+const typeStr=(s,t,t0,cps)=>{const n=Math.floor(cl((t-t0)*cps,0,s.length));return [...s].slice(0,n).join('')};
+
+/* ================= RENDER ================= */
+function render(t){
+  const [cx,cy,cz,dist,rx,ry,rz]=camAt(t);
+  const hx=Math.sin(t*.9)*.6,hy=Math.cos(t*.7)*.5;
+  $('world').style.transform=`translateZ(${dist}px) rotateX(${rx+hy}deg) rotateY(${ry+hx}deg) rotateZ(${rz}deg) translate3d(${-cx}px,${-cy}px,${-cz}px)`;
+  pos($('bgo'),0,0,-2200);
+  PT.forEach(p=>{const y=p.y-t*p.sp,dz=Math.abs(p.z-cz);pos(p.d,p.x+Math.sin(t*.6+p.ph)*40,y,p.z);fx(p.d,p.o,Math.min(16,dz/70));});
+  GL.forEach((g,i)=>g.style.opacity=.75+.25*Math.sin(t*1.3+i*2));
+
+  const gat=i=>eio(P(t,G0+i*.12,1.7));
+  const rcz=-1000*eio(P(t,31.2,1.6));     // gather progress per station
+
+  /* ---- caption 1 + laptop ---- */
+  pos($('cap1'),0,-860,60);words('cap1',.55,t,.09,3.3);
+  const gl=gat(0);
+  pos($('laptop'),lerp(0,SLOT.lap[0],gl),lerp(0,SLOT.lap[1],gl),rcz,0,0,0,lerp(1,SLOT.lap[3],gl));
+  const lid=spr(P(t,.05,1.25),5.5,8);
+  $('lid').style.transform=`rotateX(${lerp(-90,0,lid)}deg)`;
+  $('scrOff').style.opacity=1-P(t,.75,.35);
+  const CP=[[700,560],[520,330],[520,330],[230,300],[230,300],[230,300],[230,515],[300,600]];
+  const CT=[.7,1.35,1.55,1.85,2.0,2.95,3.2,3.6];
+  let cxp=CP[0][0],cyp=CP[0][1];
+  for(let i=0;i<CT.length-1;i++){if(t>=CT[i]){const e=eio(P(t,CT[i],CT[i+1]-CT[i]));cxp=lerp(CP[i][0],CP[i+1][0],e);cyp=lerp(CP[i][1],CP[i+1][1],e);}}
+  $('cur').style.transform=`translate(${cxp}px,${cyp}px) scale(${1-.2*Math.max(pulse(t,1.4),pulse(t,3.05))})`;
+  $('cur').style.opacity=cl((t-.8)*4)*(1-P(t,3.25,.2));
+  $('buy').style.transform=`scale(${1-.08*pulse(t,1.42)})`;
+  const r1=P(t,1.48,.55);$('buyRip').style.transform=`scale(${eo(r1)*9})`;$('buyRip').style.opacity=r1>0?.8*(1-r1):0;
+  $('form').style.transform=`translateX(${lerp(-470,0,spr(P(t,1.55,.6),7,10))}px)`;
+  const T0=typeStr('أمين ب.',t,1.75,14),T1=typeStr('0550 12 34 56',t,2.15,26),T2=typeStr('وهران',t,2.65,14);
+  const caret='<i class="caret"></i>';
+  $('f0').innerHTML=T0+(t>=1.7&&t<2.15?caret:'');$('f0').classList.toggle('on',t>=1.7&&t<2.15);
+  $('f1').innerHTML=T1+(t>=2.15&&t<2.65?caret:'');$('f1').classList.toggle('on',t>=2.15&&t<2.65);
+  $('f2t').innerHTML=T2+(t>=2.65&&t<3.0?caret:'');$('f2').classList.toggle('on',t>=2.65&&t<3.0);
+  $('conf').style.transform=`scale(${1-.08*pulse(t,3.07)})`;
+  const r2=P(t,3.12,.5);$('confRip').style.transform=`scale(${eo(r2)*12})`;$('confRip').style.opacity=r2>0?.8*(1-r2):0;
+  $('confT').textContent=t>3.15?'✓ تم الطلب':'تأكيد الطلب';
+  const sc=P(t,3.2,.35);
+  $('scard').style.transform=`scale(${lerp(.6,1,spr(sc,7,10))})`;$('scard').style.opacity=t<3.62?cl(sc*3):0;
+  $('scard').style.boxShadow=`0 0 ${lerp(0,70,sc)}px rgba(63,209,198,${.8*sc})`;
+  const uiB=sc*(1-P(t,6,1));$('ui').style.filter=uiB>0.01?`blur(${uiB*6}px) brightness(${1-uiB*.35})`:'none';
+
+  /* ---- sheet ---- */
+  const sb=P(t,3.85,1.0),sbs=spr(sb,6,9),gs=gat(1);
+  pos($('sheet'),lerp(SH.x,SLOT.sheet[0],gs),lerp(SH.y+lerp(260,0,eo(sb)),SLOT.sheet[1],gs),lerp(SH.z,0,gs)+rcz,lerp(-35,0,sbs),lerp(SH.ry+lerp(25,0,sbs),-6,gs),0,lerp(1,SLOT.sheet[3],gs)*lerp(.7,1,sbs));
+  ['shF','shL1','shL2'].forEach(id=>fx($(id),cl(sb*2.5)));
+  [...$('hdr').children].forEach((c,i)=>{const e=P(t,4.2+i*.06,.45);c.style.transform=`translateY(${lerp(-60,0,spr(e,7,10))}px)`;c.style.opacity=cl(e*3);});
+  const push=spr(P(t,5.05,.6),7,10)*100;
+  ['rA','rB','rC'].forEach((id,i)=>{const e=P(t,4.45+i*.1,.45);$(id).style.transform=`translate(${lerp(-120,0,eo(e))}px,${push}px)`;$(id).style.opacity=cl(e*2.5);});
+  const land=P(t,5.25,.35);
+  $('rN').style.opacity=land>0?1:0;
+  const conf=t>=8.1;
+  $('rNhl').style.opacity=.08+.42*(1-P(t,5.6,1.3))+.4*(1-P(t,8.1,1.0))*(conf?1:0)+.35*pulse(t,12.0,.5);
+  const bn=$('bNew');bn.className='badge '+(conf?'b-ok':'b-new');bn.textContent=conf?'Confirmée ✓':'Nouvelle';
+  bn.style.transform=`scale(${conf?lerp(1.5,1,spr(P(t,8.1,.6),6,10)):1})`;bn.style.boxShadow=conf?`0 0 ${30*(1-P(t,8.1,1.2))}px #3FD1C6`:'none';
+  /* dropdown */
+  const mo=spr(P(t,7.3,.4),7,10)*(1-eio(P(t,8.05,.2)));
+  $('menu').style.transform=`scaleY(${Math.max(0,mo)})`;$('menu').style.opacity=cl(mo*3);
+  const hv=t<7.65?0:t<8.05?1:-1;
+  [0,1,2,3].forEach(i=>$('mi'+i).style.background=i===hv?'rgba(63,209,198,.25)':'transparent');
+  const c2a=eio(P(t,6.6,.6)),c2b=eio(P(t,7.6,.3)),c2c=eio(P(t,8.35,.6));
+  const c2x=lerp(lerp(lerp(620,95,c2a),95,c2b),420,c2c),c2y=lerp(lerp(lerp(600,215,c2a),345,c2b),640,c2c);
+  $('cur2').style.transform=`translate(${c2x}px,${c2y}px) scale(${1-.2*Math.max(pulse(t,7.22),pulse(t,7.98))})`;
+  $('cur2').style.opacity=cl((t-6.5)*5)*(1-P(t,8.6,.3));
+  pos($('cap2'),SH.x,SH.y-560,SH.z+40,0,SH.ry);words('cap2',5.15,t,.08,9.0);
+  /* wilaya glow */
+  const gw=.6*pulse(t,10.0,1.2);$('cW').style.background=`rgba(63,209,198,${gw})`;$('wil').style.boxShadow=`0 0 0 ${gw*18}px rgba(63,209,198,${gw*.7})`;
+
+  /* ---- calc card ---- */
+  const ca=P(t,9.2,.7),cg=eio(P(t,G0-.4,.6));
+  pos($('calc'),CALC.x,CALC.y,CALC.z,0,SH.ry);
+  $('calcF').style.transform=`rotateX(${lerp(-95,0,spr(ca,6,9))}deg)`;$('calcF').style.opacity=cl(ca*3)*(1-cg);
+  $('v1').textContent=Math.round(3900*eo(P(t,9.7,.9))/10)*10;
+  $('v2').textContent=Math.round(600*eo(P(t,10.05,.9))/10)*10;
+  $('v3').textContent=Math.round(4500*eo(P(t,10.45,1.0))/10)*10;
+
+  /* ---- card 1 : laptop -> sheet ---- */
+  const lift=P(t,3.55,.55),fly=P(t,4.05,1.25),L=eio(lift),F=eio5(fly);
+  const rowW={x:SH.x,y:SH.y-128,z:SH.z+4};
+  const sz0=SCR.z+L*380;
+  const x=lerp(SCR.x,rowW.x,F)+Math.sin(F*PI)*-260, y=lerp(SCR.y-L*40,rowW.y,F)-Math.sin(F*PI)*120, z=lerp(sz0,rowW.z,F)+Math.sin(F*PI)*260;
+  const m=eo(land),cw=lerp(560,1000,m),ch=lerp(176,100,m),cf=$('cardF');
+  cf.style.width=cw+'px';cf.style.height=ch+'px';cf.style.margin=`${-ch/2}px 0 0 ${-cw/2}px`;cf.style.borderRadius=lerp(30,0,m)+'px';
+  [...cf.children].forEach(c=>c.style.opacity=1-cl(m*2));
+  pos($('card'),x,y,z,Math.sin(F*PI)*18-L*(1-F)*8,lerp(lerp(0,-18,L),SH.ry,F)+Math.sin(F*PI)*-25,Math.sin(F*PI)*-10-L*(1-F)*4);
+  fx(cf,t<3.62||t>6?0:1-P(t,5.45,.25));
+  cf.style.boxShadow=`0 0 ${lerp(50,90,Math.sin(F*PI))}px rgba(63,209,198,${.6+.3*Math.sin(F*PI)}),0 40px 80px rgba(2,25,29,.5)`;
+
+  /* ---- card 2 : confirmed row -> truck ---- */
+  const r2l=P(t,12.0,.5),r2f=P(t,12.4,1.5),r2d=P(t,13.95,.4);
+  const L2=eio(r2l),F2=eio5(r2f),tx=TX(t);
+  const tgt={x:TX(13.9),y:ROADY-340-130,z:0};
+  const x2=lerp(rowW.x,tgt.x,F2)+Math.sin(F2*PI)*220, y2=lerp(rowW.y,tgt.y,F2)+lerp(0,eio(r2d)*170,1), z2=lerp(rowW.z+L2*300,tgt.z,F2)+Math.sin(F2*PI)*300;
+  pos($('card2'),x2,y2,z2,Math.sin(F2*PI)*-20,lerp(lerp(SH.ry,0,L2),0,F2)+Math.sin(F2*PI)*20,Math.sin(F2*PI)*8,lerp(1,.45,eio(r2d)));
+  const c2w=lerp(1000,520,eo(r2l)),c2h=lerp(100,150,eo(r2l)),c2f=$('card2F');
+  c2f.style.width=c2w+'px';c2f.style.height=c2h+'px';c2f.style.margin=`${-c2h/2}px 0 0 ${-c2w/2}px`;
+  fx(c2f,(t>=12.0&&r2d<1)?1-cl((r2d-.6)/.4):0);
+  c2f.style.boxShadow=`0 0 ${60+40*Math.sin(F2*PI)}px rgba(63,209,198,.75)`;
+  trail(t);
+
+  /* ---- road / truck / signs ---- */
+  const roadO=cl((t-11.5)*1.5)*(1-eio(P(t,G0,.8)));
+  pos($('road'),0,ROADY,0);$('roadF').style.opacity=roadO;
+  const gt=gat(2);
+  const bump=Math.sin(PI*P(t,14.15,.35));
+  const drv=t>14.6&&t<20.6?Math.sin(t*40)*2:0;
+  pos($('truck'),lerp(tx,SLOT.truck[0],gt),lerp(ROADY,SLOT.truck[1],gt)-bump*18+drv,rcz,0,0,lerp(0,0,gt),lerp(1,SLOT.truck[3],gt));
+  $('truck').style.transform+=` scaleY(${1-.06*bump})`;
+  [...$('truck').children].forEach(f=>f.style.opacity=t<12.5?0:1);
+  $('cargoFlash').style.opacity=.6*pulse(t,14.2,.4);
+  const wr=-(tx-1800)/60*180/PI;$('wh1').style.transform=`translateZ(134px) rotate(${wr}deg)`;$('wh2').style.transform=`translateZ(134px) rotate(${wr}deg)`;
+  const vel=Math.abs(TX(t)-TX(t-.05))/.05;
+  pos($('speed'),tx+300,ROADY-60,140);
+  SPD.forEach((d,i)=>{const ph=(t*2.6+i*.31)%1;d.style.transform=`translateX(${ph*320}px) scaleX(${1-ph*.6})`;d.style.opacity=cl(vel/900)*(1-ph)*(1-gt);});
+  SG.forEach((o,i)=>{const e=P(t,SIGNT[i],.6);pos(o,SIGNX[i],ROADY,-330,0,0,0,Math.max(0,spr(e,6,9)));
+    [...o.children].forEach(f=>f.style.opacity=(e>0?1:0)*(1-eio(P(t,19.9,.6))));o.style.display=t>20.6?'none':'block';
+    o.querySelector('.chk').style.transform=`scale(${Math.max(0,bo(P(t,SIGNT[i]+.35,.4)))})`;});
+  pos($('cap3'),-250,ROADY-860,-300);words('cap3',14.3,t,.1,19.4);
+
+  /* ---- phone ---- */
+  const gp=gat(3);
+  const AR=[21.2,22.6,24.0];let prot=0;AR.forEach(ti=>{if(t>ti)prot+=Math.exp(-(t-ti)*5)*Math.sin((t-ti)*26)*2.2});
+  const pin=spr(P(t,19.0,1.2),5,7);
+  pos($('phone'),lerp(PH.x,SLOT.phone[0],gp),lerp(PH.y+lerp(500,0,pin),SLOT.phone[1],gp),lerp(PH.z,0,gp)+rcz,0,lerp(PH.ry+lerp(-50,0,pin),10,gp),prot,lerp(1,SLOT.phone[3],gp));
+  [...$('phone').children].forEach(f=>f.style.opacity=t<18.9?0:cl((t-18.9)*4));
+  AR.forEach((ti,i)=>{const b=$('bb'+i);b.style.display=t>=ti?'block':'none';const p=P(t,ti,.5);
+    b.style.transform=`scale(${Math.max(0,spr(p,7,11))})`;b.style.opacity=cl(p*4);$('st'+i).classList.toggle('on',t>=ti);});
+  const TW=[[20.5,21.2],[21.9,22.6],[23.3,24.0]],tw=TW.find(([a,b])=>t>=a&&t<b),typ=$('typ');
+  typ.style.display=tw?'flex':'none';
+  if(tw){[...typ.children].forEach((d,i)=>d.style.transform=`translateY(${-Math.max(0,Math.sin(t*14-i*.9))*10}px)`);typ.style.transform=`scale(${spr(P(t,tw[0],.35),7,11)})`;}
+  $('pfill').style.width=(380*(.5*eo(P(t,22.6,.5))+.5*eo(P(t,24.0,.5))))+'px';
+  pos($('cap4'),PH.x+40,PH.y-830,PH.z+30,0,PH.ry);words('cap4',20.9,t,.1,25.9);
+
+  /* ---- pull back: links + hub ---- */
+  pos($('links'),H.x,H.y,-40+rcz);
+  LINKS.forEach((p,i)=>p.setAttribute('stroke-dashoffset',1-eio(P(t,27.0+i*.12,.8))));
+  PUL.forEach((c,i)=>{const pth=LINKS[i%3];const u=((t-27.9)*.6+i*.17)%1;const on=t>27.9;const pt=pth.getPointAtLength(u*pth.getTotalLength());
+    c.setAttribute('cx',pt.x);c.setAttribute('cy',pt.y);c.setAttribute('opacity',on?Math.sin(u*PI)*cl((t-27.9)*2):0);});
+  const hp=spr(P(t,26.6,.9),6,9);
+  pos($('hub'),H.x,H.y,80,0,0,0,Math.max(0,hp)*(1+.03*Math.sin(t*3)));
+  ['hubGlow','hubRing','hubC'].forEach(id=>$(id).style.opacity=t<26.6?0:1);
+  $('hubRing').style.transform=`rotate(${t*30}deg)`;
+  $('hubT').style.opacity=1-P(t,31.3,.5);
+  $('hubGlow').style.transform=`scale(${1+.15*Math.sin(t*2.4)+P(t,31.3,1.5)*.8})`;
+
+  /* ---- chart (28.7 - 31.4) ---- */
+  const chIn=spr(P(t,28.7,.9),6,8),chOut=eio(P(t,31.2,.7));
+  pos($('chart'),H.x,H.y+170+chOut*700,450,lerp(60,0,chIn)+chOut*40,0,0,Math.max(0,chIn));
+  $('chartF').style.opacity=(t<28.7?0:1)*(1-chOut);
+  $('rnum').textContent=Math.round(lerp(35,8,eio(P(t,29.3,1.5))))+'%';
+  [.98,.8,.62,.46,.32,.2].forEach((h,i)=>$('b'+i).style.height=(400*h*eo(P(t,29.0+i*.08,.7)))+'px');
+  $('tl').style.strokeDashoffset=1-eio(P(t,29.6,.9));$('tla').style.opacity=P(t,30.4,.15);
+  pos($('cap5'),H.x,H.y-560,450);words('cap5',29.4,t,.12,31.2);
+  /* dimmer */
+  pos($('dim'),H.x,H.y,40);
+  const dO=.55*eio(P(t,28.6,.6))*(1-eio(P(t,31.2,.6)))+.72*eio(P(t,31.4,1.0));$('dimF').style.opacity=dO;$('dimF').style.display=dO>0.001?'block':'none';
+  ['roadF','calcF','chartF','cardF','card2F'].forEach(id=>{const e=$(id);e.style.display=(+e.style.opacity>0.001)?'block':'none';});
+
+  /* ---- final ---- */
+  pos($('final'),H.x,H.y,300);
+  [...$('logoT').children].forEach((w,i)=>{const e=P(t,31.9+i*.07,.7),k=spr(e,6,9);w.style.transform=`translateY(${lerp(120,0,k)}px) scale(${lerp(1.6,1,eo(e))})`;w.style.opacity=cl(e*3);w.style.filter=e<1?`blur(${(1-eo(e))*16}px)`:'none';});
+  const fs=P(t,32.5,.6);$('fSub').style.opacity=fs;$('fSub').style.letterSpacing=lerp(30,8,eo(fs))+'px';
+  [...$('fSlog').querySelectorAll('.w')].forEach((w,i)=>{const e=P(t,32.8+i*.12,.7),k=spr(e,6,9);w.style.transform=`translateY(${lerp(80,0,k)}px) rotateX(${lerp(-80,0,eo(e))}deg)`;w.style.opacity=cl(e*3);w.style.filter=e<1?`blur(${(1-eo(e))*10}px)`:'none';});
+  [['fC1',33.7],['fC2',34.0]].forEach(([id,s])=>{const e=P(t,s,.7);$(id).style.transform=`translateY(${lerp(120,0,spr(e,6,9))+Math.sin(t*2+s)*5}px)`;$(id).style.opacity=cl(e*2.5);});
+  const sp=((t-34.6)/1.6)%1;$('shine').style.left=lerp(-160,700,t>34.6?sp:0)+'px';$('shine').style.opacity=t>34.6?1:0;
+}
+
+/* glowing trails behind flying cards */
+const TR=[];for(let i=0;i<14;i++){const d=document.createElement('div');d.className='f';d.style.cssText='left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;background:#3FD1C6;box-shadow:0 0 30px #3FD1C6';$('trail').appendChild(d);TR.push(d);}
+function trail(t){
+  const rowW={x:SH.x,y:SH.y-128,z:SH.z+4};
+  TR.forEach((d,i)=>{
+    const tt=t-i*.028;
+    let x,y,z,on=false;
+    const fl=eio5(P(tt,4.05,1.25)),Li=eio(P(tt,3.55,.55));
+    if(tt<6){x=lerp(SCR.x,rowW.x,fl)+Math.sin(fl*PI)*-260;y=lerp(SCR.y-Li*40,rowW.y,fl)-Math.sin(fl*PI)*120;z=lerp(SCR.z+Li*380,rowW.z,fl)+Math.sin(fl*PI)*260;on=fl>.02&&fl<.97;}
+    else{const F2=eio5(P(tt,12.4,1.5)),L2=eio(P(tt,12.0,.5)),tg={x:TX(13.9),y:ROADY-470,z:0};
+      x=lerp(rowW.x,tg.x,F2)+Math.sin(F2*PI)*220;y=lerp(rowW.y,tg.y,F2);z=lerp(rowW.z+L2*300,tg.z,F2)+Math.sin(F2*PI)*300;on=F2>.02&&F2<.97;}
+    pos(d,x,y,z,0,0,0,1-i/16);d.style.opacity=on?(1-i/14)*.7:0;
+  });
+}
+
+window.render=render;window.DUR=36.5;
+window.ready=(async()=>{
+  await Promise.all(['800 40px Cairo','900 40px Cairo','700 40px Tajawal'].flatMap(f=>[document.fonts.load(f,'ابت'),document.fonts.load(f,'Abc')]));
+  await document.fonts.ready;render(0);return true;})();
+</script>
+</body>
+</html>
