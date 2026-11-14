@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>NOURYS — Suivi WhatsApp (promo)</title>
+<link rel="stylesheet" href="fonts/local.css">
+<style>
+:root{--t1:#0C6873;--t2:#10808A;--deep:#053B42;--acc:#3FD1C6;--light:#BBE8EC;--wa:#25D366;--w:#FFFFFF}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--deep)}
+#stage{position:absolute;inset:0;overflow:hidden;background:linear-gradient(165deg,#0C6873 0%,#10808A 100%);font-family:Cairo,sans-serif;color:#fff}
+.abs{position:absolute}
+.anchor{position:absolute;left:0;top:0;width:0;height:0}
+.anchor>.in{position:absolute;left:0;top:0;transform:translate(-50%,-50%);white-space:nowrap}
+.scene{position:absolute;inset:0;transform-origin:50% 48%;visibility:hidden}
+.tint{position:absolute;inset:-300px;background:var(--deep)}
+.w{display:inline-block;white-space:nowrap}
+.ttl{position:absolute;left:30px;right:30px;text-align:center;font-family:Cairo;font-weight:800;line-height:1.28;color:#fff}
+.ttl .l{display:block}
+.acc{color:var(--acc)}
+.lt{color:var(--light)}
+.sub{font-family:Tajawal;font-weight:700;color:var(--light)}
+.pill{display:inline-flex;align-items:center;gap:14px;padding:12px 34px;border-radius:999px;background:var(--deep);color:var(--acc);font-family:Tajawal;font-weight:700;font-size:38px;border:2px solid rgba(63,209,198,.45);white-space:nowrap}
+.card{background:var(--deep);border-radius:38px;box-shadow:0 40px 90px rgba(5,59,66,.55);border:2px solid rgba(187,232,236,.12)}
+/* bg */
+#grid{position:absolute;inset:-200px;background-image:linear-gradient(rgba(187,232,236,.07) 2px,transparent 2px),linear-gradient(90deg,rgba(187,232,236,.07) 2px,transparent 2px);background-size:90px 90px}
+.blob{position:absolute;border-radius:50%;filter:blur(40px)}
+.pt{position:absolute;border-radius:50%;background:var(--light)}
+/* HUD */
+#hud{position:absolute;left:60px;right:60px;top:64px;height:80px;display:flex;align-items:center;justify-content:space-between;z-index:50}
+#wm{font-family:Cairo;font-weight:900;font-size:46px;letter-spacing:2px;direction:ltr}
+#wm i{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--acc);margin-left:6px}
+#cnt{font-family:Tajawal;font-weight:700;font-size:32px;color:var(--light);direction:ltr}
+#cnt b{color:#fff;font-size:40px}
+#prog{position:absolute;left:60px;right:60px;top:156px;height:6px;border-radius:6px;background:rgba(187,232,236,.2);z-index:50;overflow:hidden;direction:ltr}
+#progf{height:100%;width:0;background:var(--acc);border-radius:6px}
+/* transition bars */
+.bar{position:absolute;top:-100px;height:2120px;transform-origin:50% 50%;z-index:40}
+/* S2 */
+.dot{width:16px;height:16px;border-radius:50%;background:rgba(187,232,236,.5);display:inline-block}
+.btn{display:inline-flex;align-items:center;justify-content:center;background:var(--acc);color:var(--deep);font-family:Cairo;font-weight:800;font-size:38px;border-radius:22px;padding:10px 44px;position:relative;overflow:hidden}
+.ring{position:absolute;left:0;top:0;width:240px;height:240px;border-radius:50%;border:5px solid var(--acc)}
+/* S3 sheet */
+.row{position:absolute;left:0;right:0;height:96px;display:flex;border-bottom:2px solid rgba(187,232,236,.10)}
+.c{display:flex;align-items:center;justify-content:center;font-family:Tajawal;font-weight:700;font-size:33px;color:#fff;position:relative;white-space:nowrap}
+.hdr .c{font-family:Cairo;font-weight:800;color:var(--deep);font-size:34px}
+.badge{display:inline-block;font-family:Cairo;font-weight:800;font-size:27px;padding:6px 20px;border-radius:999px;direction:ltr;white-space:nowrap}
+.b-new{background:rgba(187,232,236,.18);color:var(--light)}
+.b-ok{background:var(--acc);color:var(--deep)}
+.b-cb{border:2px solid var(--light);color:var(--light)}
+.b-na{border:2px dashed rgba(187,232,236,.55);color:rgba(187,232,236,.75)}
+.calc-l{display:flex;justify-content:space-between;align-items:center;font-family:Tajawal;font-weight:700;font-size:42px;color:var(--light);height:84px}
+.calc-l b{font-family:Cairo;font-weight:800;color:#fff}
+/* S4 */
+.co{display:flex;align-items:center;justify-content:center;gap:18px;height:110px;border-radius:30px;background:var(--deep);border:3px solid rgba(63,209,198,.6);font-family:Cairo;font-weight:800;font-size:46px;color:#fff;direction:ltr}
+.chk{width:44px;height:44px;border-radius:50%;background:var(--acc);display:inline-flex;align-items:center;justify-content:center;color:var(--deep);font-size:30px;font-weight:900}
+/* S5 phone */
+.bub{background:var(--wa);color:var(--deep);font-family:Cairo;font-weight:700;font-size:36px;line-height:1.45;padding:18px 26px 12px;border-radius:30px 8px 30px 30px;max-width:510px;box-shadow:0 10px 24px rgba(5,59,66,.45);transform-origin:100% 0}
+.bub .meta{font-family:Tajawal;font-weight:700;font-size:22px;color:rgba(5,59,66,.7);text-align:left;direction:ltr;margin-top:2px}
+.typing{background:var(--wa);border-radius:30px 8px 30px 30px;padding:22px 30px;display:flex;gap:12px;direction:ltr}
+.typing i{width:16px;height:16px;border-radius:50%;background:var(--deep);display:block}
+.step{display:flex;flex-direction:column;align-items:center;gap:8px;font-family:Tajawal;font-weight:700;font-size:24px;color:rgba(187,232,236,.6);width:150px;z-index:2}
+.step .n{width:40px;height:40px;border-radius:50%;background:#053B42;border:4px solid rgba(187,232,236,.35)}
+.step.on{color:#fff}
+.step.on .n{background:var(--acc);border-color:var(--acc)}
+/* S6 */
+.bar6{position:absolute;bottom:90px;width:84px;border-radius:16px 16px 6px 6px}
+.ml{position:absolute;bottom:30px;width:120px;text-align:center;font-family:Tajawal;font-weight:700;font-size:28px;color:var(--light)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <!-- background -->
+  <div id="grid"></div>
+  <div class="blob" id="bl1" style="width:900px;height:900px;background:radial-gradient(circle,rgba(63,209,198,.35),transparent 65%)"></div>
+  <div class="blob" id="bl2" style="width:1000px;height:1000px;background:radial-gradient(circle,rgba(5,59,66,.55),transparent 65%)"></div>
+  <div id="pts"></div>
+
+  <!-- ================= SCENE 1 : HOOK ================= -->
+  <section class="scene" id="s1">
+    <div class="tint" style="opacity:.42"></div>
+    <div class="abs" style="top:225px;left:0;right:0;text-align:center" data-a="down 0.1 0.6"><span class="pill">⚠️ المشكل</span></div>
+    <div class="abs" id="s1vis" style="left:290px;top:340px;width:500px;height:500px" data-a="pop 0 0.8">
+      <svg id="s1ring" class="abs" style="inset:0" viewBox="0 0 500 500">
+        <circle cx="250" cy="250" r="225" fill="none" stroke="rgba(187,232,236,.22)" stroke-width="3" stroke-dasharray="4 16"/>
+        <path d="M250 30 A220 220 0 1 1 30 250" fill="none" stroke="#3FD1C6" stroke-width="16" stroke-linecap="round"/>
+        <polyline points="-6,292 30,246 66,292" fill="none" stroke="#3FD1C6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div id="s1box" class="abs" style="left:140px;top:140px;width:220px;height:220px">
+        <svg viewBox="0 0 100 100" width="220" height="220"><path d="M50 8 90 28 90 72 50 92 10 72 10 28Z" fill="#053B42" stroke="#BBE8EC" stroke-width="3.5" stroke-linejoin="round"/><path d="M10 28 50 48 90 28M50 48V92" stroke="#BBE8EC" stroke-width="3.5" fill="none" stroke-linejoin="round"/><path d="M30 18 70 38V54" stroke="#3FD1C6" stroke-width="6" fill="none" stroke-linecap="round"/></svg>
+      </div>
+      <div class="anchor" id="l0" style="left:250px;top:250px"><div class="in pill" style="font-size:40px;color:#fff;background:rgba(5,59,66,.9)"><bdi dir="ltr">-800</bdi> دج</div></div>
+      <div class="anchor" id="l1" style="left:250px;top:250px"><div class="in pill" style="font-size:40px;color:#fff;background:rgba(5,59,66,.9)"><bdi dir="ltr">-1200</bdi> دج</div></div>
+      <div class="anchor" id="l2" style="left:250px;top:250px"><div class="in pill" style="font-size:40px;color:#fff;background:rgba(5,59,66,.9)"><bdi dir="ltr">-650</bdi> دج</div></div>
+    </div>
+    <div class="ttl" style="top:900px;font-size:150px" data-a="slam 0.45 0.7 0.14">
+      <span class="l"><span class="w acc" id="s1w">الروتور</span> <span class="w">راهو</span></span>
+      <span class="l"><span class="w">ياكل</span> <span class="w">فايدتك؟</span></span>
+    </div>
+    <div class="abs card" style="top:1350px;left:100px;right:100px;padding:36px 50px;border-right:12px solid var(--acc)" data-a="up 1.7 0.7">
+      <div class="sub" style="font-size:58px;line-height:1.55;text-align:center" data-a="right 1.95 0.7 0.3">
+        <span class="w">طلبيات ما تتأكدش…</span><br><span class="w" style="color:#fff">وزبائن ما يستلموش</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCENE 2 : STORE ================= -->
+  <section class="scene" id="s2">
+    <div class="abs" style="top:225px;left:0;right:0;display:flex;justify-content:center;gap:22px" data-a="down 0.1 0.6 0.1">
+      <span class="w pill">🛍️ متجرك</span><span class="w pill" style="font-family:Cairo;font-weight:800">Shopify</span><span class="w pill" style="font-family:Cairo;font-weight:800">Website</span>
+    </div>
+    <div class="abs card" style="top:345px;left:110px;width:860px;height:370px;overflow:hidden" data-a="up 0.2 0.8">
+      <div style="height:66px;background:#0C6873;display:flex;align-items:center;gap:12px;padding:0 30px">
+        <i class="dot"></i><i class="dot"></i><i class="dot"></i>
+        <div dir="ltr" style="margin-right:20px;flex:1;background:rgba(5,59,66,.6);border-radius:999px;padding:4px 24px;font-family:Tajawal;font-weight:700;font-size:26px;color:var(--light)">www.mystore.dz</div>
+      </div>
+      <div style="display:flex;gap:36px;padding:34px 40px;align-items:center">
+        <div style="width:230px;height:230px;border-radius:28px;background:linear-gradient(150deg,#10808A,#0C6873);display:flex;align-items:center;justify-content:center;flex:none">
+          <svg viewBox="0 0 100 100" width="150" height="150"><rect x="30" y="8" width="40" height="84" rx="12" fill="#053B42"/><circle cx="50" cy="50" r="26" fill="#053B42" stroke="#3FD1C6" stroke-width="5"/><path d="M50 36V50L60 57" stroke="#BBE8EC" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div style="font-family:Cairo;font-weight:800;font-size:56px;line-height:1.3">ساعة ذكية</div>
+          <div style="font-family:Cairo;font-weight:800;font-size:46px;color:var(--acc);margin:4px 0 22px">3900 دج</div>
+          <div class="btn" id="s2btn">اطلب الآن<i id="s2rip" class="abs" style="left:50%;top:50%;width:40px;height:40px;margin:-20px;border-radius:50%;background:rgba(255,255,255,.55)"></i></div>
+        </div>
+      </div>
+    </div>
+    <svg class="abs" style="inset:0;pointer-events:none" viewBox="0 0 1080 1920">
+      <path id="s2path" d="M540 715 C 330 800, 330 920, 540 1010" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" fill="none" stroke="#BBE8EC" stroke-opacity=".55" stroke-width="6" stroke-linecap="round"/>
+    </svg>
+    <div class="abs" style="left:420px;top:890px;width:240px;height:240px" data-a="pop 0.9 0.6">
+      <div id="s2hub" class="abs" style="inset:0">
+        <div class="ring" id="r0"></div><div class="ring" id="r1"></div><div class="ring" id="r2"></div>
+        <div class="abs" style="inset:0;border-radius:50%;background:radial-gradient(circle at 50% 35%,#0C6873,#053B42);border:6px solid var(--acc);box-shadow:0 0 70px rgba(63,209,198,.55);display:flex;align-items:center;justify-content:center;font-family:Cairo;font-weight:900;font-size:44px;direction:ltr">NOURYS</div>
+      </div>
+    </div>
+    <div class="anchor" id="fd0"><div class="in" style="width:22px;height:22px;border-radius:50%;background:var(--acc);box-shadow:0 0 18px #3FD1C6"></div></div>
+    <div class="anchor" id="fd1"><div class="in" style="width:22px;height:22px;border-radius:50%;background:var(--acc);box-shadow:0 0 18px #3FD1C6"></div></div>
+    <div class="anchor" id="fd2"><div class="in" style="width:22px;height:22px;border-radius:50%;background:var(--acc);box-shadow:0 0 18px #3FD1C6"></div></div>
+    <div class="anchor" id="fd3"><div class="in" style="width:22px;height:22px;border-radius:50%;background:var(--acc);box-shadow:0 0 18px #3FD1C6"></div></div>
+    <div class="anchor" id="s2ord"><div class="in" style="background:var(--acc);color:var(--deep);border-radius:26px;padding:16px 34px;box-shadow:0 20px 50px rgba(5,59,66,.5);text-align:center">
+      <div style="font-family:Cairo;font-weight:800;font-size:40px;line-height:1.25">🛒 طلبية جديدة</div>
+      <div style="font-family:Tajawal;font-weight:700;font-size:28px"><bdi dir="ltr">#1042</bdi> · 3900 دج</div>
+    </div></div>
+    <div class="abs" style="top:1162px;left:0;right:0;text-align:center" data-a="up 2.6 0.6">
+      <span class="pill" style="color:#fff">طلبيات اليوم: <b id="s2cnt" style="color:var(--acc);font-family:Cairo;font-weight:800;min-width:60px;display:inline-block">1</b></span>
+    </div>
+    <div class="ttl" style="top:1330px;font-size:92px" data-a="slam 2.9 0.7 0.11">
+      <span class="l"><span class="w">كل</span> <span class="w">طلبية</span> <span class="w">من</span> <span class="w">متجرك…</span></span>
+      <span class="l"><span class="w">تدخل</span> <span class="w acc" style="position:relative">وحدها<i class="abs" style="left:0;right:0;bottom:18px;height:14px;border-radius:8px;background:var(--acc);opacity:.45;transform-origin:100% 50%" data-a="wipe 3.75 0.5"></i></span></span>
+    </div>
+  </section>
+
+  <!-- ================= SCENE 3 : GOOGLE SHEET ================= -->
+  <section class="scene" id="s3">
+    <div class="ttl" style="top:205px;font-size:104px" data-a="slam 0.15 0.7 0.11">
+      <span class="l"><span class="w">تتسجل</span> <span class="w">أوتوماتيك</span></span>
+      <span class="l"><span class="w">في</span> <span class="w acc" dir="ltr">Google Sheet</span></span>
+    </div>
+    <div class="abs card" id="s3sheet" style="top:520px;left:50px;width:980px;height:540px;overflow:hidden" data-a="up 0.45 0.8">
+      <div style="height:70px;background:#0C6873;display:flex;align-items:center;gap:16px;padding:0 28px">
+        <svg width="40" height="40" viewBox="0 0 40 40"><rect x="4" y="4" width="32" height="32" rx="6" fill="#3FD1C6"/><path d="M4 15H36M4 25H36M16 4V36" stroke="#053B42" stroke-width="3"/></svg>
+        <span style="font-family:Cairo;font-weight:800;font-size:32px" dir="ltr">Google Sheet</span>
+        <span style="font-family:Tajawal;font-weight:700;font-size:30px;color:var(--light)">· الطلبيات</span>
+      </div>
+      <div class="row hdr" style="top:70px;height:84px;background:var(--acc);border:0">
+        <div class="c" style="width:200px">الاسم</div><div class="c" style="width:230px">الهاتف</div><div class="c" style="width:160px">الولاية</div><div class="c" style="width:180px">المنتج</div><div class="c" style="width:210px">الحالة</div>
+      </div>
+      <div class="row" id="rA" style="top:154px">
+        <div class="c" style="width:200px">سارة م.</div><div class="c" style="width:230px" dir="ltr">0661 22 33 44</div><div class="c" style="width:160px">الجزائر</div><div class="c" style="width:180px">حقيبة</div><div class="c" style="width:210px"><span class="badge b-cb">Call back</span></div>
+      </div>
+      <div class="row" id="rB" style="top:250px">
+        <div class="c" style="width:200px">ياسين ك.</div><div class="c" style="width:230px" dir="ltr">0770 55 66 77</div><div class="c" style="width:160px">سطيف</div><div class="c" style="width:180px">سماعات</div><div class="c" style="width:210px"><span class="badge b-na">No answer</span></div>
+      </div>
+      <div class="row" id="rN" style="top:154px">
+        <div id="rNhl" class="abs" style="inset:0;background:var(--acc)"></div>
+        <div class="c" style="width:200px">أمين ب.</div><div class="c" style="width:230px" dir="ltr">0550 12 34 56</div><div class="c" id="cW" style="width:160px;border-radius:14px">وهران</div><div class="c" style="width:180px">ساعة ذكية</div>
+        <div class="c" style="width:210px">
+          <span class="badge b-new abs" id="bNew" style="left:50%;top:50%;margin:-24px 0 0 -72px">Nouvelle</span>
+          <span class="badge b-ok abs" id="bConf" style="left:50%;top:50%;margin:-24px 0 0 -95px">Confirmée ✓</span>
+        </div>
+      </div>
+      <div class="row" style="top:346px;opacity:.35"></div><div class="row" style="top:442px;opacity:.2"></div>
+      <div class="abs" id="s3click" style="left:118px;top:214px;width:60px;height:60px;margin:-30px;border-radius:50%;border:5px solid #fff"></div>
+      <div class="abs" id="s3cur" style="left:0;top:0;width:64px;height:64px">
+        <svg viewBox="0 0 32 32" width="64" height="64"><path d="M4 2 L4 26 L10 20 L14 30 L18 28 L14 18 L23 18 Z" fill="#FFFFFF" stroke="#053B42" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+    <div class="abs card" style="top:1120px;left:110px;width:860px;padding:26px 50px" data-a="up 2.95 0.7">
+      <div class="calc-l"><span>سعر المنتج</span><span><b id="v1">0</b> دج</span></div>
+      <div class="calc-l"><span>التوصيل <span id="s3wil" class="pill" style="font-size:30px;padding:4px 22px;margin-right:10px;color:#fff">وهران</span></span><span><b id="v2">0</b> دج</span></div>
+      <div style="height:3px;background:rgba(187,232,236,.25);margin:14px 0"></div>
+      <div class="calc-l" style="height:100px"><span style="font-family:Cairo;font-weight:800;font-size:52px;color:#fff">المجموع</span><span style="color:var(--acc)"><b id="v3" style="color:var(--acc);font-size:76px">0</b> <span style="font-size:44px">دج</span></span></div>
+    </div>
+    <div class="abs sub" style="top:1560px;left:0;right:0;text-align:center;font-size:44px" data-a="up 4.2 0.6">⚡ يتحسب أوتوماتيك حسب الولاية</div>
+  </section>
+
+  <!-- ================= SCENE 4 : DELIVERY ================= -->
+  <section class="scene" id="s4">
+    <div class="ttl" style="top:205px;font-size:118px" data-a="slam 0.15 0.7 0.12">
+      <span class="l"><span class="w">مربوطة</span> <span class="w">مع</span></span>
+      <span class="l"><span class="w">شركة</span> <span class="w acc">التوصيل</span></span>
+    </div>
+    <div class="abs" id="road" style="top:1172px;left:-40px;right:-40px;height:12px;background:repeating-linear-gradient(90deg,rgba(187,232,236,.55) 0 70px,transparent 70px 130px);border-radius:6px"></div>
+    <div class="abs" style="top:1182px;left:0;right:0;height:3px;background:rgba(187,232,236,.18)"></div>
+    <div class="abs" id="sl0" style="top:930px;left:800px;width:200px;height:8px;border-radius:8px;background:var(--light)"></div>
+    <div class="abs" id="sl1" style="top:1010px;left:820px;width:140px;height:8px;border-radius:8px;background:var(--acc)"></div>
+    <div class="abs" id="sl2" style="top:1090px;left:800px;width:220px;height:8px;border-radius:8px;background:var(--light)"></div>
+    <div class="abs" id="s4truck" style="left:250px;top:860px;width:560px;height:300px">
+      <svg viewBox="0 0 560 300" width="560" height="300" style="overflow:visible">
+        <rect x="170" y="14" width="375" height="205" rx="26" fill="#3FD1C6"/>
+        <rect x="170" y="150" width="375" height="18" fill="#053B42" opacity=".25"/>
+        <text x="357" y="112" text-anchor="middle" font-family="Cairo" font-weight="900" font-size="54" fill="#053B42">NOURYS</text>
+        <path d="M172 78 H78 Q46 78 34 108 L12 168 V222 H172Z" fill="#BBE8EC"/>
+        <path d="M150 98 H86 Q68 98 60 116 L46 152 H150Z" fill="#053B42"/>
+        <rect x="0" y="212" width="550" height="22" rx="10" fill="#053B42"/>
+        <g id="wh1"><circle cx="110" cy="238" r="44" fill="#053B42" stroke="#BBE8EC" stroke-width="9"/><circle cx="110" cy="238" r="14" fill="#3FD1C6"/><rect x="104" y="200" width="12" height="20" rx="4" fill="#3FD1C6"/></g>
+        <g id="wh2"><circle cx="440" cy="238" r="44" fill="#053B42" stroke="#BBE8EC" stroke-width="9"/><circle cx="440" cy="238" r="14" fill="#3FD1C6"/><rect x="434" y="200" width="12" height="20" rx="4" fill="#3FD1C6"/></g>
+      </svg>
+    </div>
+    <svg class="abs" style="inset:0" viewBox="0 0 1080 1920">
+      <line id="cl0" x1="540" y1="1190" x2="760" y2="1270" pathLength="1" stroke-dasharray="1" stroke="#3FD1C6" stroke-width="5"/>
+      <line id="cl1" x1="540" y1="1190" x2="320" y2="1270" pathLength="1" stroke-dasharray="1" stroke="#3FD1C6" stroke-width="5"/>
+      <line id="cl2" x1="540" y1="1190" x2="760" y2="1410" pathLength="1" stroke-dasharray="1" stroke="#3FD1C6" stroke-width="5"/>
+      <line id="cl3" x1="540" y1="1190" x2="320" y2="1410" pathLength="1" stroke-dasharray="1" stroke="#3FD1C6" stroke-width="5"/>
+    </svg>
+    <div class="abs" style="top:1250px;left:90px;right:90px;display:grid;grid-template-columns:1fr 1fr;gap:30px 40px" data-a="pop 2.05 0.5 0.13">
+      <div class="w co">Yalidine <span class="chk" id="k0">✓</span></div>
+      <div class="w co">ZR Express <span class="chk" id="k1">✓</span></div>
+      <div class="w co">DHD <span class="chk" id="k2">✓</span></div>
+      <div class="w co">World Express <span class="chk" id="k3">✓</span></div>
+    </div>
+    <div class="abs" style="top:1560px;left:0;right:0;text-align:center" data-a="up 3.25 0.6">
+      <span class="pill" style="color:#fff;font-size:42px">📦 رقم التتبع: <bdi dir="ltr" id="trk" style="color:var(--acc);font-family:Cairo;font-weight:800;min-width:250px;display:inline-block;text-align:left"></bdi></span>
+    </div>
+    <div class="anchor" id="s4card"><div class="in" style="background:var(--deep);border:3px solid var(--acc);border-radius:28px;padding:20px 34px;display:flex;align-items:center;gap:22px;box-shadow:0 24px 60px rgba(5,59,66,.6)">
+      <span style="font-family:Tajawal;font-weight:700;font-size:36px"><bdi dir="ltr">#1042</bdi> · وهران</span><span class="badge b-ok" style="font-size:30px">Confirmée ✓</span>
+    </div></div>
+  </section>
+
+  <!-- ================= SCENE 5 : WHATSAPP ================= -->
+  <section class="scene" id="s5">
+    <div class="abs" style="left:205px;top:200px;width:670px;height:1200px" data-a="blur 0 0.8">
+      <div id="s5ph" class="abs" style="inset:0;border-radius:92px;background:#053B42;border:12px solid #0C6873;box-shadow:0 0 0 4px rgba(63,209,198,.55),0 50px 110px rgba(5,59,66,.6);overflow:hidden">
+        <div style="height:170px;background:#0C6873;display:flex;align-items:flex-end;gap:20px;padding:0 40px 26px">
+          <div style="width:84px;height:84px;border-radius:50%;background:var(--acc);color:var(--deep);display:flex;align-items:center;justify-content:center;font-family:Cairo;font-weight:900;font-size:48px">N</div>
+          <div><div style="font-family:Cairo;font-weight:800;font-size:40px;line-height:1.2" dir="ltr">NOURYS</div><div style="font-family:Tajawal;font-weight:700;font-size:26px;color:var(--light)">متصل الآن</div></div>
+        </div>
+        <div class="abs" style="left:28px;top:28px;width:150px;height:30px;border-radius:20px;background:#053B42;right:0;margin:auto"></div>
+        <div style="position:relative;height:120px;display:flex;justify-content:space-between;align-items:center;padding:0 40px;background:rgba(12,104,115,.35)">
+          <div class="abs" style="left:115px;right:115px;top:38px;height:6px;background:rgba(187,232,236,.25)"></div>
+          <div class="abs" id="s5fill" style="right:115px;top:38px;height:6px;width:0;background:var(--acc)"></div>
+          <div class="step" id="st0"><i class="n"></i>تأكيد</div>
+          <div class="step" id="st1"><i class="n"></i>في الطريق</div>
+          <div class="step" id="st2"><i class="n"></i>استلام</div>
+        </div>
+        <div id="chat" style="padding:34px 30px;display:flex;flex-direction:column;align-items:flex-start;gap:24px;height:900px;background-image:radial-gradient(rgba(187,232,236,.08) 3px,transparent 3px);background-size:46px 46px">
+          <div class="bub" id="bb0">✅ تم تأكيد طلبيتك<div class="meta">10:24 ✓✓</div></div>
+          <div class="bub" id="bb1">🚚 طلبيتك في الطريق، خلي التيليفون شاعل<div class="meta">14:02 ✓✓</div></div>
+          <div class="bub" id="bb2">🎉 يعطيك الصحة على الاستلام<div class="meta">17:45 ✓✓</div></div>
+          <div class="typing" id="typ"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="ttl" style="top:1450px;font-size:88px" data-a="slam 3.45 0.7 0.1">
+      <span class="l"><span class="w">الزبون</span> <span class="w">يتابع</span> <span class="w">طلبيتو</span></span>
+      <span class="l"><span class="w">خطوة</span> <span class="w">بخطوة…</span> <span class="w acc">في الواتساب</span></span>
+    </div>
+  </section>
+
+  <!-- ================= SCENE 6 : RESULT ================= -->
+  <section class="scene" id="s6">
+    <div class="abs" style="top:225px;left:0;right:0;text-align:center" data-a="down 0.1 0.6"><span class="pill">📊 النتيجة</span></div>
+    <div class="abs" style="top:330px;left:0;right:0;text-align:center" data-a="up 0.25 0.7">
+      <div class="sub" style="font-size:48px">نسبة الروتور</div>
+      <div style="display:flex;justify-content:center;align-items:center;gap:30px;direction:ltr;margin-top:-20px">
+        <span id="s6num" style="font-family:Cairo;font-weight:900;font-size:250px;line-height:1.1;min-width:520px;text-align:center">35%</span>
+        <svg width="130" height="170" viewBox="0 0 130 170"><path d="M65 10V140M15 95L65 150L115 95" stroke="#3FD1C6" stroke-width="22" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+    <div class="abs card" style="top:760px;left:90px;width:900px;height:540px" data-a="up 0.4 0.8">
+      <div class="bar6" id="b0" style="left:100px;background:rgba(187,232,236,.55)"></div>
+      <div class="bar6" id="b1" style="left:240px;background:rgba(187,232,236,.55)"></div>
+      <div class="bar6" id="b2" style="left:380px;background:rgba(187,232,236,.55)"></div>
+      <div class="bar6" id="b3" style="left:520px;background:var(--acc)"></div>
+      <div class="bar6" id="b4" style="left:660px;background:var(--acc)"></div>
+      <div class="bar6" id="b5" style="left:800px;background:var(--acc)"></div>
+      <div class="ml" style="left:82px">جانفي</div><div class="ml" style="left:222px">فيفري</div><div class="ml" style="left:362px">مارس</div><div class="ml" style="left:502px">أفريل</div><div class="ml" style="left:642px">ماي</div><div class="ml" style="left:782px">جوان</div>
+      <div class="abs" style="left:30px;right:30px;bottom:86px;height:3px;background:rgba(187,232,236,.3)"></div>
+      <svg class="abs" style="inset:0;overflow:visible" viewBox="0 0 900 540">
+        <polyline id="s6line" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" points="142,64 282,123 422,184 562,240 702,290 830,326" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+        <polygon id="s6arr" points="860,340 808,300 804,350" fill="#FFFFFF"/>
+      </svg>
+    </div>
+    <div class="ttl" style="top:1380px;font-size:124px" data-a="slam 2.0 0.7 0.13">
+      <span class="l"><span class="w">روتور</span> <span class="w acc">أقل…</span></span>
+      <span class="l"><span class="w">فايدة</span> <span class="w acc">أكثر</span> <span class="w">📈</span></span>
+    </div>
+  </section>
+
+  <!-- ================= SCENE 7 : OUTRO ================= -->
+  <section class="scene" id="s7">
+    <div class="anchor" id="s7burst" style="left:540px;top:640px"><div class="in" style="width:1100px;height:1100px;border-radius:50%;background:radial-gradient(circle,rgba(63,209,198,.45),rgba(63,209,198,0) 62%)"></div></div>
+    <div class="anchor" id="s7r0" style="left:540px;top:640px"><div class="in" style="width:600px;height:600px;border-radius:50%;border:4px solid rgba(187,232,236,.5)"></div></div>
+    <div class="anchor" id="s7r1" style="left:540px;top:640px"><div class="in" style="width:600px;height:600px;border-radius:50%;border:4px solid rgba(63,209,198,.6)"></div></div>
+    <div class="abs" style="top:470px;left:0;right:0;text-align:center;direction:ltr;font-family:Cairo;font-weight:900;font-size:205px;line-height:1.1" data-a="slam 0.2 0.6 0.07">
+      <span class="w">N</span><span class="w">O</span><span class="w">U</span><span class="w">R</span><span class="w">Y</span><span class="w">S</span><span class="w acc">.</span>
+    </div>
+    <div class="abs" style="top:715px;left:0;right:0;text-align:center;direction:ltr;font-family:Tajawal;font-weight:700;font-size:52px;letter-spacing:8px;color:var(--light)" data-a="up 0.8 0.6">Suivi WhatsApp</div>
+    <div class="ttl" style="top:880px;font-size:112px" data-a="slam 1.1 0.7 0.12">
+      <span class="l"><span class="w">خلي</span> <span class="w">السيستام</span></span>
+      <span class="l"><span class="w">يخدم</span> <span class="w acc">بلاصتك</span></span>
+    </div>
+    <div class="abs" style="top:1250px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:34px" data-a="up 1.9 0.6 0.2">
+      <div class="w" id="cta1" style="position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:20px;background:var(--acc);color:var(--deep);border-radius:999px;padding:18px 54px;font-family:Cairo;font-weight:800;font-size:56px;box-shadow:0 24px 60px rgba(5,59,66,.5)">
+        <svg width="56" height="56" viewBox="0 0 40 40"><path d="M20 4C11 4 4 10.5 4 18.5c0 4.3 2 8 5.3 10.7L8 36l7.4-3.7c1.5.4 3 .6 4.6.6 9 0 16-6.5 16-14.4S29 4 20 4Z" fill="#053B42"/></svg>
+        راسلنا: <bdi dir="ltr">0557241006</bdi>
+        <i id="shine" class="abs" style="top:-20px;bottom:-20px;width:120px;left:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);transform:skewX(-20deg)"></i>
+      </div>
+      <div class="w" style="display:inline-flex;align-items:center;gap:18px;border:3px solid var(--light);border-radius:999px;padding:14px 40px;font-family:Cairo;font-weight:800;font-size:36px;color:#fff;background:rgba(5,59,66,.6);direction:ltr">
+        <span style="width:54px;height:54px;border-radius:16px;border:4px solid var(--acc);display:inline-flex;align-items:center;justify-content:center;color:var(--acc);font-size:30px">@</span>
+        https://www.instagram.com/nourys_ai
+      </div>
+    </div>
+  </section>
+
+  <!-- transition bars -->
+  <div class="bar" id="tb0" style="width:70px;background:var(--light)"></div>
+  <div class="bar" id="tb1" style="width:2400px;background:var(--deep)"></div>
+  <div class="bar" id="tb2" style="width:2400px;background:var(--acc)"></div>
+
+  <!-- HUD -->
+  <div id="hud"><div id="wm">NOURYS<i></i></div><div id="cnt"><b id="cnum">01</b> / 07</div></div>
+  <div id="prog"><div id="progf"></div></div>
+</div>
+
+<script>
+const DUR = 36;
+const SC = [
+  {id:'s1',a:0,b:5},{id:'s2',a:5,b:10},{id:'s3',a:10,b:16},{id:'s4',a:16,b:21},
+  {id:'s5',a:21,b:27},{id:'s6',a:27,b:31.5},{id:'s7',a:31.5,b:36}
+];
+const $=id=>document.getElementById(id);
+const cl=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const P=(t,s,d)=>cl((t-s)/d);
+const lerp=(a,b,e)=>a+(b-a)*e;
+const eo=x=>x>=1?1:1-Math.pow(2,-10*x);
+const ei=x=>x<=0?0:Math.pow(2,10*x-10);
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const bo=x=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const PI=Math.PI;
+function T(el,{x=0,y=0,s=1,r=0,o=1,b=0}={}){
+  el.style.transform=`translate(${x}px,${y}px) scale(${s}) rotate(${r}deg)`;
+  el.style.opacity=o; el.style.filter=b>.2?`blur(${b}px)`:'none';
+}
+const fmt=n=>String(n);
+
+/* generic entrance effects */
+const FX={
+  slam:e=>{const k=eo(e);return{o:cl(e*3),s:lerp(1.9,1,k),b:(1-k)*18}},
+  up:e=>{const k=eo(e);return{o:cl(e*2.5),y:lerp(140,0,k)}},
+  down:e=>{const k=eo(e);return{o:cl(e*2.5),y:lerp(-120,0,k)}},
+  pop:e=>({o:cl(e*4),s:Math.max(0,bo(e))}),
+  right:e=>({o:cl(e*2.5),x:lerp(280,0,eo(e))}),
+  fade:e=>({o:e}),
+  blur:e=>({o:cl(e*2),b:(1-eo(e))*30,s:lerp(1.2,1,eo(e))}),
+  wipe:e=>({sx:eio(e)})
+};
+function applyFx(el,st){
+  if(st.sx!=null){el.style.transform=`scaleX(${st.sx})`;return}
+  T(el,st);
+}
+const ANIMS=[];
+document.querySelectorAll('[data-a]').forEach(el=>{
+  const [fx,s,d,stg]=el.dataset.a.split(' ');
+  const scene=SC.find(x=>x.id===el.closest('.scene').id);
+  const targets=stg!=null?[...el.querySelectorAll('.w')].filter(w=>w.closest('[data-a]')===el||w.parentElement.closest('[data-a]')===el):[el];
+  targets.forEach((tg,i)=>ANIMS.push({el:tg,fx,s:+s+(stg?i*+stg:0),d:+d,scene}));
+});
+
+/* background particles */
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const PTS=[];for(let i=0;i<28;i++){const d=document.createElement('div');d.className='pt';const sz=4+rnd()*10;
+  Object.assign(d.style,{width:sz+'px',height:sz+'px',left:rnd()*1080+'px'});d.style.opacity=.15+rnd()*.35;
+  if(i%4==0)d.style.background='#3FD1C6';$('pts').appendChild(d);PTS.push({d,y0:rnd()*2100,sp:30+rnd()*90,ph:rnd()*6});}
+
+const bez=(e,p)=>{const u=1-e;return{x:u*u*u*p[0][0]+3*u*u*e*p[1][0]+3*u*e*e*p[2][0]+e*e*e*p[3][0],y:u*u*u*p[0][1]+3*u*u*e*p[1][1]+3*u*e*e*p[2][1]+e*e*e*p[3][1]}};
+const S2P=[[540,715],[330,800],[330,920],[540,1010]];
+
+/* ---------- per-scene custom animation ---------- */
+const CUSTOM={
+ s1(lt){
+  $('s1ring').style.transform=`rotate(${-lt*75}deg)`;
+  const k=lt>1.25&&lt<1.95?Math.sin(lt*70)*12*(1-(lt-1.25)/0.7):0;
+  T($('s1box'),{x:k,y:Math.sin(lt*3)*8,r:k*.7});
+  [[-35,1.35],[195,1.7],[-145,2.05]].forEach(([ang,st],i)=>{
+    const e=P(lt,st,1.6),a=ang*PI/180,dd=eo(e)*270;
+    const o=e<=0?0:e<.12?e/.12:1-cl((e-.55)/.45);
+    T($('l'+i),{x:Math.cos(a)*dd,y:Math.sin(a)*dd-e*80,s:bo(cl(e*3))*1,o});
+  });
+  const g=(lt>1.15&&lt<1.45)||(lt>3.3&&lt<3.5);const j=g?Math.round(Math.sin(lt*90)*10):0;
+  $('s1w').style.textShadow=g?`${j}px 0 #BBE8EC, ${-j}px 0 #053B42`:'none';
+ },
+ s2(lt){
+  const pr=P(lt,1.2,.3);$('s2btn').style.transform=`scale(${1-.1*Math.sin(pr*PI)})`;
+  const rp=P(lt,1.3,.6);T($('s2rip'),{s:eo(rp)*9,o:rp>0?.8*(1-rp):0});
+  $('s2path').style.strokeDashoffset=1-eio(P(lt,1.5,.8));
+  const a=P(lt,1.4,.4),e=eio(P(lt,1.85,.85)),pt=bez(e,S2P);
+  const sc=bo(a)*(e<.7?1:lerp(1,.15,(e-.7)/.3));
+  T($('s2ord'),{x:pt.x,y:lerp(600,pt.y,cl(a*1.5)),s:sc,o:a<=0?0:e<.88?1:1-(e-.88)/.12,r:Math.sin(e*PI)*-10});
+  const bump=Math.sin(P(lt,2.65,.35)*PI);$('s2hub').style.transform=`scale(${1+.16*bump})`;
+  for(let i=0;i<3;i++){const r=P(lt,2.65+i*.18,1);T($('r'+i),{s:lerp(1,2.5,eo(r)),o:r>0&&r<1?.75*(1-r):0});}
+  for(let i=0;i<4;i++){const on=lt>2.9;const e2=((lt-2.9)/1.0+i*.25)%1;const p=bez(on?e2:0,S2P);
+    T($('fd'+i),{x:p.x,y:p.y,o:on?Math.sin(e2*PI)*cl((lt-2.9)*3):0});}
+  $('s2cnt').textContent=lt<2.65?0:1+Math.floor(26*eio(P(lt,2.7,1.9)));
+ },
+ s3(lt){
+  const sh=eo(P(lt,1.1,.6))*96;
+  ['rA','rB'].forEach((id,i)=>{const o=P(lt,.7+i*.12,.4);$(id).style.transform=`translateY(${sh}px)`;$(id).style.opacity=o;});
+  const e=eo(P(lt,1.2,.7));T($('rN'),{x:lerp(-700,0,e),o:cl(e*2)});
+  $('rNhl').style.opacity=.08+.32*(1-P(lt,1.7,1.4));
+  const f1=eio(P(lt,2.45,.18)),f2=P(lt,2.6,.4);
+  $('bNew').style.transform=`perspective(500px) rotateX(${f1*90}deg)`;$('bNew').style.opacity=f1<1?1:0;
+  $('bConf').style.transform=`perspective(500px) rotateX(${lerp(-90,0,bo(f2))}deg) scale(${1+.15*Math.sin(P(lt,2.75,.4)*PI)})`;$('bConf').style.opacity=f2>0?1:0;
+  const c1=eio(P(lt,1.55,.75)),c2=eio(P(lt,2.85,.6));
+  const cx=lerp(lerp(760,118,c1),360,c2),cy=lerp(lerp(560,214,c1),620,c2);
+  const ck=1-.22*Math.sin(PI*P(lt,2.3,.18));
+  T($('s3cur'),{x:cx,y:cy,s:ck,o:cl((lt-1.45)*5)*(1-P(lt,3.05,.3))});
+  $('s3cur').style.transformOrigin='0 0';
+  const cp=P(lt,2.38,.45);T($('s3click'),{s:lerp(.3,1.8,eo(cp)),o:cp>0&&cp<1?1-cp:0});
+  const gw=.5*Math.sin(PI*P(lt,3.35,1.1));
+  $('cW').style.background=`rgba(63,209,198,${gw})`;
+  $('s3wil').style.boxShadow=`0 0 0 ${gw*16}px rgba(63,209,198,${gw*.8})`;
+  $('v1').textContent=fmt(Math.round(3900*eo(P(lt,3.2,.9))/10)*10);
+  $('v2').textContent=fmt(Math.round(600*eo(P(lt,3.45,.9))/10)*10);
+  $('v3').textContent=fmt(Math.round(4500*eo(P(lt,3.8,1))/10)*10);
+ },
+ s4(lt){
+  const a=P(lt,.25,.45),e=eio(P(lt,1.0,.8));
+  T($('s4card'),{x:lerp(540,615,e),y:lerp(660,975,e)-Math.sin(e*PI)*230,s:Math.max(0,bo(a))*lerp(1,.2,e),r:lerp(0,-14,e),o:a<=0?0:e<.85?1:1-(e-.85)/.15});
+  const bump=Math.sin(PI*P(lt,1.78,.3));
+  const tx=lerp(760,0,eo(P(lt,.15,.9)));
+  T($('s4truck'),{x:tx,y:-bump*16+(lt>1.9?Math.sin(lt*38)*2.5:0)});
+  const off=lt<1.8?lt*180:324+(lt-1.8)*1300;
+  $('road').style.backgroundPosition=`${off}px 0`;
+  const ang=-(off+tx)/44*180/PI;
+  $('wh1').setAttribute('transform',`rotate(${ang} 110 238)`);$('wh2').setAttribute('transform',`rotate(${ang} 440 238)`);
+  for(let i=0;i<3;i++){const sl=$('sl'+i);const ph=((lt*2.2+i*.37)%1);sl.style.transform=`translateX(${ph*260}px) scaleX(${1-ph*.5})`;sl.style.opacity=cl((lt-1.85)*3)*(1-ph);}
+  for(let i=0;i<4;i++)$('cl'+i).style.strokeDashoffset=1-eio(P(lt,1.95+i*.13,.45));
+  for(let i=0;i<4;i++)$('k'+i).style.transform=`scale(${Math.max(0,bo(P(lt,2.75+i*.13,.4)))})`;
+  const s='YAL-58213',n=Math.floor(P(lt,3.55,.8)*s.length);
+  $('trk').textContent=s.slice(0,n)+(lt>3.4&&(n<s.length||Math.floor(lt*3)%2==0)?'|':'');
+ },
+ s5(lt){
+  const AR=[1.0,2.05,3.1];let rot=0;
+  AR.forEach(ti=>{if(lt>ti)rot+=Math.exp(-(lt-ti)*6)*Math.sin((lt-ti)*30)*1.6});
+  $('s5ph').style.transform=`rotate(${rot}deg)`;
+  AR.forEach((ti,i)=>{const b=$('bb'+i);b.style.display=lt>=ti?'block':'none';const p=P(lt,ti,.45);
+    b.style.transform=`scale(${Math.max(0,bo(p))})`;b.style.opacity=cl(p*4);
+    $('st'+i).classList.toggle('on',lt>=ti);});
+  const TW=[[.35,1.0],[1.45,2.05],[2.5,3.1]];const typ=$('typ');const tw=TW.find(([a,b])=>lt>=a&&lt<b);
+  typ.style.display=tw?'flex':'none';
+  if(tw){[...typ.children].forEach((d,i)=>d.style.transform=`translateY(${-Math.max(0,Math.sin(lt*14-i*.9))*10}px)`);typ.style.transform=`scale(${bo(P(lt,tw[0],.3))})`;typ.style.transformOrigin='100% 0';}
+  $('s5fill').style.width=(440*(.5*eo(P(lt,2.05,.5))+.5*eo(P(lt,3.1,.5))))+'px';
+ },
+ s6(lt){
+  $('s6num').textContent=Math.round(lerp(35,8,eio(P(lt,.7,1.8))))+'%';
+  const H=[.98,.8,.62,.46,.32,.2];
+  H.forEach((h,i)=>{$('b'+i).style.height=(340*h*eo(P(lt,.45+i*.09,.7)))+'px';});
+  $('s6line').style.strokeDashoffset=1-eio(P(lt,1.15,.9));
+  $('s6arr').style.opacity=P(lt,1.95,.15);
+ },
+ s7(lt){
+  T($('s7burst'),{s:lerp(.2,1,eo(P(lt,0,1.2)))*(1+.04*Math.sin(lt*3)),o:cl(lt*2)});
+  for(let i=0;i<2;i++){const r=((lt+i*.9)/1.8)%1;T($('s7r'+i),{s:lerp(.6,2.2,r),o:(1-r)*.8*cl(lt*2)});}
+  const sp=P(lt,2.7,.7);$('shine').style.left=lerp(-160,820,sp)+'px';$('shine').style.opacity=sp>0&&sp<1?1:0;
+ }
+};
+
+const BOUND=SC.slice(1).map(s=>s.a);
+function render(t){
+  /* background */
+  $('grid').style.transform=`translate(${(t*14)%90}px,${(t*30)%90}px)`;
+  T($('bl1'),{x:lerp(-200,500,(Math.sin(t*.35)+1)/2),y:200+Math.sin(t*.5)*300});
+  T($('bl2'),{x:300+Math.cos(t*.3)*350,y:1100+Math.sin(t*.4)*250});
+  PTS.forEach(p=>{p.d.style.top=(((p.y0-t*p.sp)%2100)+2100)%2100-90+'px';p.d.style.transform=`translateX(${Math.sin(t+p.ph)*30}px)`});
+  /* scenes */
+  SC.forEach((s,idx)=>{
+    const el=$(s.id),last=idx===SC.length-1;
+    const vis=t>=s.a&&(t<s.b||last);
+    el.style.visibility=vis?'visible':'hidden';
+    if(!vis)return;
+    const lt=t-s.a,len=s.b-s.a;
+    const ein=eo(P(lt,0,.8)),eout=last?0:ei(P(t,s.b-.42,.42));
+    const sc=lerp(.86,1,ein)*(1+.035*lt/len)*lerp(1,1.16,eout);
+    el.style.transform=`scale(${sc}) rotate(${lerp(-1.5,0,ein)+eout*1.5}deg)`;
+    const bl=(1-ein)*10+eout*12;el.style.filter=bl>.3?`blur(${bl}px)`:'none';
+    CUSTOM[s.id](lt);
+  });
+  ANIMS.forEach(a=>{if(t<a.scene.a||t>=a.scene.b+.01&&a.scene.id!=='s7')return;applyFx(a.el,FX[a.fx](P(t-a.scene.a,a.s,a.d)));});
+  /* transition bars (whip sweep right -> left) */
+  const b=BOUND.find(x=>Math.abs(t-x)<.6);
+  [['tb0',-.5,.8],['tb1',-.42,.8],['tb2',-.34,.8]].forEach(([id,o,d])=>{
+    const el=$(id);if(b==null){el.style.display='none';return}
+    const e=P(t,b+o,d);el.style.display=e>0&&e<1?'block':'none';
+    const w=id==='tb0'?70:2400;const x=lerp(1250,-w-250,eio(e));
+    el.style.left=x+'px';el.style.transform='skewX(-12deg)';
+  });
+  /* HUD */
+  const si=SC.findIndex(s=>t>=s.a&&t<s.b);$('cnum').textContent='0'+((si<0?6:si)+1);
+  $('progf').style.width=(t/DUR*100)+'%';
+  const ho=1-P(t,31.4,.3);$('hud').style.opacity=ho;$('prog').style.opacity=ho;
+}
+window.render=render;window.DUR=DUR;window.SC=SC;
+window.ready=(async()=>{
+  await Promise.all(['800 40px Cairo','900 40px Cairo','600 40px Cairo','700 40px Tajawal','500 40px Tajawal'].flatMap(f=>[document.fonts.load(f,'ابت'),document.fonts.load(f,'Abc')]));
+  await document.fonts.ready;render(0);return true;
+})();
+const q=new URLSearchParams(location.search).get('t');if(q!=null)window.ready.then(()=>render(+q));
+</script>
+</body>
+</html>
