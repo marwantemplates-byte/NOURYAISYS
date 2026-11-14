@@ -222,7 +222,8 @@ html,body{height:100%;background:#053B42;overflow:hidden}
   const cv = $('#bgc'), cx = cv.getContext('2d');
   const P = Array.from({ length: 80 }, (_, i) => ({ x: Math.random() * W, y: Math.random() * H, z: [.25, .55, 1][i % 3], r: 2 + Math.random() * 5, s: 10 + Math.random() * 30, ph: Math.random() * 6 }));
   const PL = $$('.pl');
-  gsap.ticker.add((time) => {
+  const CAPTURE = location.hash === '#capture';
+  function frame(time) {
     const dx = Math.sin(time * .31) * 14, dy = Math.cos(time * .23) * 12, rot = Math.sin(time * .17) * .45;
     $('#cam').style.transform = `translate(${dx * .5}px,${dy * .5}px) rotate(${rot}deg)`;
     PL.forEach(p => { const d = +p.dataset.depth; p.style.transform = `translate(${dx * d}px,${dy * d}px)`; });
@@ -236,7 +237,8 @@ html,body{height:100%;background:#053B42;overflow:hidden}
       cx.shadowColor = '#3FD1C6'; cx.shadowBlur = p.z > .9 ? 18 : 6;
       cx.fill();
     }
-  });
+  }
+  if (!CAPTURE) gsap.ticker.add(frame);
 
   /* ---------- speed lines ---------- */
   const SPD = $('#speed'), R0 = [];
@@ -258,7 +260,7 @@ html,body{height:100%;background:#053B42;overflow:hidden}
   const tl = gsap.timeline({ repeat: -1, paused: true, defaults: { immediateRender: false } });
   const WIN = [['s1', 0, 4], ['s2', 4, 9], ['s3', 9, 14], ['s4', 14, 19], ['s5', 19, 25], ['s6', 25, 30]];
   const syncVis = () => { const t = tl.time(); WIN.forEach(([id, a, b]) => { $('#' + id).style.visibility = (t >= a && t < b) ? 'visible' : 'hidden'; }); };
-  tl.eventCallback('onUpdate', syncVis); gsap.ticker.add(syncVis);
+  tl.eventCallback('onUpdate', syncVis); if (!CAPTURE) gsap.ticker.add(syncVis);
 
   const F0 = 'blur(0px) drop-shadow(0px 0px 0px rgba(63,209,198,0)) drop-shadow(0px 0px 0px rgba(255,255,255,0))';
   const FP = 'blur(14px) drop-shadow(6px 0px 0px rgba(63,209,198,0.9)) drop-shadow(-6px 0px 0px rgba(255,255,255,0.7))';
@@ -412,6 +414,11 @@ html,body{height:100%;background:#053B42;overflow:hidden}
   window.NOURYS_TL = tl;
   $('#replay').onclick = () => tl.restart();
   tl.play(0);
+  if (CAPTURE) {            // frame-exact recording: the recorder drives the clock
+    gsap.ticker.remove(gsap.updateRoot);
+    const t0 = tl.startTime();
+    window.NOURYS_RENDER = (t) => { gsap.updateRoot(t0 + t); frame(t); syncVis(); };
+  }
 })();
 </script>
 </body>
