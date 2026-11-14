@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NOURYS — Promo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=block" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+:root{--t1:#0C6873;--t2:#10808A;--deep:#053B42;--acc:#3FD1C6;--light:#BBE8EC}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#053B42;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1080px;height:1920px;transform-origin:50% 50%;overflow:hidden;
+  background:linear-gradient(165deg,#0C6873 0%,#10808A 100%);font-family:Cairo,sans-serif;font-weight:800;color:#fff}
+#bgc{position:absolute;inset:0;width:1080px;height:1920px}
+#vig{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 45%,rgba(5,59,66,0) 50%,rgba(5,59,66,.55) 100%);pointer-events:none}
+#shake,#cam{position:absolute;inset:0}
+.scene,.ghost{position:absolute;inset:0;visibility:hidden;will-change:transform,filter,opacity}
+.ghost{visibility:visible;pointer-events:none}
+.inner{position:absolute;inset:0}
+.pl{position:absolute;inset:0;will-change:transform}
+.abs{position:absolute}
+.acc{color:var(--acc)}
+.lt{color:var(--light)}
+.w{display:inline-block;will-change:transform,filter,opacity}
+.mask{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .08em .06em}
+.mi{display:inline-block;will-change:transform}
+.center{left:0;right:0;text-align:center}
+.kick{font-weight:600;font-size:34px;color:var(--light);letter-spacing:0}
+.title{font-size:84px;line-height:1.25}
+/* overlays */
+#speed{position:absolute;left:540px;top:960px;width:0;height:0;pointer-events:none}
+.ray{position:absolute;left:0;top:0;width:0;height:0}
+.ray i{position:absolute;left:0;top:-3px;width:300px;height:6px;border-radius:6px;transform-origin:0 50%;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95) 60%,rgba(63,209,198,.9));opacity:0;will-change:transform,opacity}
+#flash{position:absolute;inset:-200px;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at 50% 50%,#FFFFFF 0%,rgba(255,255,255,.95) 22%,rgba(63,209,198,.9) 48%,rgba(63,209,198,0) 75%)}
+#replay{position:fixed;left:14px;bottom:14px;z-index:9;width:38px;height:38px;border-radius:50%;border:0;cursor:pointer;
+  background:rgba(5,59,66,.55);color:#BBE8EC;font-size:18px;opacity:.18;transition:opacity .2s}
+#replay:hover{opacity:1}
+/* phone */
+.phone{position:absolute;width:600px;height:1200px;border-radius:86px;background:#053B42;
+  box-shadow:0 0 0 10px #0C6873,0 0 0 13px rgba(187,232,236,.35),0 70px 140px rgba(5,59,66,.7)}
+.scr{position:absolute;inset:16px;border-radius:72px;overflow:hidden;background:#053B42}
+.notch{position:absolute;left:50%;top:22px;width:160px;height:36px;margin-left:-80px;border-radius:20px;background:#053B42;z-index:3;box-shadow:0 0 0 2px rgba(187,232,236,.12)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:14px;background:var(--acc);color:var(--deep);border-radius:22px;font-weight:800}
+/* card */
+.ocard{position:absolute;left:130px;top:880px;width:820px;padding:40px 52px 44px;border-radius:44px;background:#053B42;
+  box-shadow:0 0 0 3px #3FD1C6,0 50px 110px rgba(5,59,66,.7)}
+.orow{display:flex;justify-content:space-between;align-items:center;height:78px;border-bottom:2px solid rgba(187,232,236,.12);font-size:40px}
+.orow span:first-child{font-weight:600;color:var(--light);font-size:34px}
+/* sheet */
+.sheetWrap{position:absolute;left:50px;top:600px;width:980px;perspective:1700px}
+.sheet{width:980px;border-radius:30px;background:rgba(5,59,66,.94);transform:rotateX(12deg);transform-origin:50% 0;
+  box-shadow:0 0 0 2px rgba(187,232,236,.18),0 60px 120px rgba(5,59,66,.6);overflow:hidden}
+.row{display:flex;height:100px;border-bottom:2px solid rgba(187,232,236,.10);position:relative}
+.c{display:flex;align-items:center;justify-content:center;font-weight:600;font-size:34px;white-space:nowrap;position:relative}
+.hdr{background:var(--acc)} .hdr .c{color:var(--deep);font-weight:800}
+.chip{display:inline-block;padding:6px 22px;border-radius:999px;font-size:28px;font-weight:800;direction:ltr}
+.ch-new{background:rgba(187,232,236,.18);color:var(--light)}
+.ch-ok{background:var(--acc);color:var(--deep)}
+.ch-cb{border:2px solid var(--light);color:var(--light)}
+/* chat */
+.bub{align-self:flex-start;background:#FFFFFF;color:#053B42;border-radius:8px 30px 30px 30px;padding:16px 28px 10px;font-size:38px;font-weight:800;line-height:1.4;
+  box-shadow:0 10px 26px rgba(5,59,66,.45);transform-origin:100% 0;max-width:470px}
+.bub small{display:block;text-align:left;direction:ltr;font-size:20px;font-weight:600;color:#0C6873}
+.typing{align-self:flex-start;background:#FFFFFF;border-radius:8px 30px 30px 30px;padding:22px 30px;display:flex;gap:12px;direction:ltr;transform-origin:100% 0}
+.typing i{width:16px;height:16px;border-radius:50%;background:#0C6873;display:block}
+.pill{display:inline-flex;align-items:center;gap:18px;background:var(--acc);color:var(--deep);border-radius:999px;padding:22px 60px;font-size:56px;font-weight:800;position:relative;overflow:hidden;
+  box-shadow:0 30px 70px rgba(5,59,66,.55)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="bgc" width="1080" height="1920"></canvas>
+  <div id="vig"></div>
+  <div id="shake"><div id="cam">
+
+    <!-- ============ SCENE 1 : HOOK ============ -->
+    <section class="scene" id="s1"><div class="inner">
+      <div class="abs center" style="top:300px"><span class="mask"><span class="mi kick" id="s1k">NOURYS · نظام متابعة الطلبيات</span></span></div>
+      <div class="abs center" style="top:640px;font-size:150px;line-height:1.2;white-space:nowrap" id="s1a"><span class="w">طلبيات</span> <span class="w acc">بزاف؟</span></div>
+      <div class="abs center" style="top:900px;font-size:104px;line-height:1.2;white-space:nowrap" id="s1b"><span class="w">وما</span> <span class="w">تلحقش</span> <span class="w">تتبعهم<span id="p1" class="acc" style="display:inline-block">؟</span></span></div>
+      <div class="pl" data-depth="1.6"><div class="abs" style="left:120px;top:1320px;width:840px;height:6px;border-radius:6px;background:rgba(187,232,236,.18)"><i id="s1bar" style="position:absolute;inset:0;border-radius:6px;background:#3FD1C6;transform-origin:100% 50%;display:block"></i></div></div>
+    </div></section>
+
+    <!-- ============ SCENE 2 : ORDER ARRIVES ============ -->
+    <section class="scene" id="s2"><div class="inner">
+      <div class="abs center title" style="top:150px"><span class="mask"><span class="mi">طلبية جديدة…</span></span> <span class="mask"><span class="mi acc">وصلت!</span></span></div>
+      <div class="pl" data-depth=".6"><div class="phone" id="ph2" style="left:240px;top:380px">
+        <div class="scr">
+          <div class="notch"></div>
+          <div style="height:150px;background:#0C6873;display:flex;align-items:flex-end;justify-content:space-between;padding:0 44px 24px">
+            <span style="font-size:40px">متجري</span><span style="font-size:36px">🛒</span></div>
+          <div style="margin:36px 40px 0;height:440px;border-radius:40px;background:linear-gradient(150deg,#10808A,#0C6873);display:flex;align-items:center;justify-content:center">
+            <svg width="240" height="240" viewBox="0 0 100 100"><rect x="31" y="6" width="38" height="88" rx="12" fill="#053B42"/><circle cx="50" cy="50" r="27" fill="#053B42" stroke="#3FD1C6" stroke-width="5"/><path d="M50 35V50L61 58" stroke="#BBE8EC" stroke-width="5" fill="none" stroke-linecap="round"/></svg></div>
+          <div style="padding:30px 44px 0">
+            <div style="font-size:52px">ساعة ذكية</div>
+            <div style="font-size:48px;color:#3FD1C6">4500 دج</div>
+            <div style="font-size:26px;font-weight:600;color:#BBE8EC;margin-top:6px">🚚 التوصيل لـ 58 ولاية</div>
+            <div class="btn" id="buy" style="width:100%;height:96px;font-size:42px;margin-top:30px;position:relative;overflow:hidden">اطلب الآن
+              <i id="rip" style="position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px;border-radius:50%;background:rgba(255,255,255,.6);display:block"></i></div>
+          </div>
+        </div>
+      </div></div>
+      <div class="abs" id="tap" style="left:510px;top:1390px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.85);box-shadow:0 0 0 10px rgba(255,255,255,.25)"></div>
+      <div class="ocard" id="ord">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <span style="font-size:50px">🛒 طلبية جديدة</span><span class="chip ch-new" style="font-size:30px">#2041</span></div>
+        <div class="orow"><span>الاسم</span><span>أمين ب.</span></div>
+        <div class="orow"><span>الولاية</span><span>تبسة</span></div>
+        <div class="orow"><span>المنتج</span><span>ساعة ذكية</span></div>
+        <div class="orow" style="border:0"><span>السعر</span><span class="acc" style="font-size:56px">4500 دج</span></div>
+      </div>
+    </div></section>
+
+    <!-- ============ SCENE 3 : GOOGLE SHEET ============ -->
+    <section class="scene" id="s3"><div class="inner">
+      <div class="abs center title" style="top:200px"><span class="mask"><span class="mi">تتسجل وحدها</span></span><br><span class="mask"><span class="mi acc" dir="ltr">Google Sheet</span></span> <span class="mask"><span class="mi">في</span></span></div>
+      <div class="pl" data-depth=".8"><div class="sheetWrap"><div class="sheet" id="sheet">
+        <div style="height:84px;display:flex;align-items:center;gap:16px;padding:0 32px;background:#0C6873">
+          <svg width="44" height="44" viewBox="0 0 40 40"><rect x="4" y="4" width="32" height="32" rx="7" fill="#3FD1C6"/><path d="M4 15H36M4 25H36M16 4V36" stroke="#053B42" stroke-width="3"/></svg>
+          <span dir="ltr" style="font-size:32px">Google Sheet</span><span style="font-size:30px;font-weight:600;color:#BBE8EC">· الطلبيات</span></div>
+        <div class="row hdr"><div class="c" style="width:200px">الاسم</div><div class="c" style="width:170px">الولاية</div><div class="c" style="width:210px">المنتج</div><div class="c" style="width:200px" dir="ltr">Total</div><div class="c" style="width:200px">الحالة</div></div>
+        <div class="row" style="opacity:.6"><div class="c" style="width:200px">سارة م.</div><div class="c" style="width:170px">وهران</div><div class="c" style="width:210px">حقيبة</div><div class="c" style="width:200px">3900 دج</div><div class="c" style="width:200px"><span class="chip ch-cb">Call back</span></div></div>
+        <div class="row" style="opacity:.6"><div class="c" style="width:200px">ياسين ك.</div><div class="c" style="width:170px">سطيف</div><div class="c" style="width:210px">سماعات</div><div class="c" style="width:200px">2800 دج</div><div class="c" style="width:200px"><span class="chip ch-ok">Confirmée</span></div></div>
+        <div class="row" id="rowN" style="background:rgba(63,209,198,.12)">
+          <i id="rowFlash" style="position:absolute;inset:0;background:#3FD1C6;opacity:0;display:block"></i>
+          <div class="c" style="width:200px" id="cN"></div><div class="c" style="width:170px" id="cW"></div><div class="c" style="width:210px" id="cP"></div>
+          <div class="c acc" style="width:200px"><span id="cT"></span></div>
+          <div class="c" style="width:200px"><span class="chip ch-new abs" id="chN">Nouvelle</span><span class="chip ch-ok abs" id="p3">Confirmée ✓</span></div>
+        </div>
+        <div class="row" style="border:0;height:70px"></div>
+      </div></div></div>
+      <div class="abs center" style="top:1250px;font-size:40px;font-weight:600;color:#BBE8EC"><span class="mask"><span class="mi" id="s3note">4500 + توصيل تبسة 700 = <b class="acc" style="font-weight:800">5200 دج</b></span></span></div>
+      <svg id="cur" class="abs" width="70" height="70" viewBox="0 0 32 32" style="left:0;top:0"><path d="M4 2 L4 26 L10 20 L14 30 L18 28 L14 18 L23 18 Z" fill="#FFFFFF" stroke="#053B42" stroke-width="2" stroke-linejoin="round"/></svg>
+    </div></section>
+
+    <!-- ============ SCENE 4 : DELIVERY ============ -->
+    <section class="scene" id="s4"><div class="inner">
+      <div class="abs" style="left:90px;top:330px;width:900px;height:1260px">
+        <div class="abs pc" style="left:0;top:0;width:450px;height:630px;background:#053B42;border-radius:48px 0 0 0"></div>
+        <div class="abs pc" style="left:450px;top:0;width:450px;height:630px;background:#053B42;border-radius:0 48px 0 0"></div>
+        <div class="abs pc" style="left:0;top:630px;width:450px;height:630px;background:#053B42;border-radius:0 0 0 48px"></div>
+        <div class="abs pc" style="left:450px;top:630px;width:450px;height:630px;background:#053B42;border-radius:0 0 48px 0"></div>
+        <div class="abs" id="cardEdge" style="inset:0;border-radius:48px;box-shadow:0 0 0 3px #3FD1C6,0 60px 120px rgba(5,59,66,.6);opacity:0"></div>
+        <svg id="p4" class="abs" style="left:300px;top:60px" width="300" height="190" viewBox="0 0 300 190" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path class="dr" pathLength="1" d="M110 30 H270 V130 H110 Z" stroke="#3FD1C6" stroke-width="9"/>
+          <path class="dr" pathLength="1" d="M110 60 H62 L28 100 V130 H110" stroke="#BBE8EC" stroke-width="9"/>
+          <path class="dr" pathLength="1" d="M70 68 H100 V96 H50" stroke="#BBE8EC" stroke-width="7"/>
+          <circle class="dr" pathLength="1" cx="70" cy="140" r="22" stroke="#FFFFFF" stroke-width="9"/>
+          <circle class="dr" pathLength="1" cx="225" cy="140" r="22" stroke="#FFFFFF" stroke-width="9"/>
+          <path class="dr" pathLength="1" d="M8 40 H60 M0 70 H34" stroke="#3FD1C6" stroke-width="6"/>
+        </svg>
+        <div class="abs center" style="top:280px;font-size:52px"><span class="mask"><span class="mi">تسجلت عند شركة التوصيل ✅</span></span></div>
+        <div class="abs center" style="top:370px;font-size:36px;font-weight:600;color:#BBE8EC"><span class="mask"><span class="mi" id="trkL">رقم التتبع: <b id="trk" dir="ltr" style="color:#3FD1C6;font-weight:800;display:inline-block;min-width:240px;text-align:left"></b></span></span></div>
+        <svg class="abs" style="left:100px;top:470px" width="700" height="720" viewBox="0 0 400 410">
+          <path id="dz" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="M46 66 L118 42 L212 30 L296 24 L330 40 L338 118 L362 168 L372 258 L312 330 L242 384 L188 372 L92 282 L30 222 L22 144 Z" fill="rgba(63,209,198,.06)" stroke="#BBE8EC" stroke-width="3" stroke-linejoin="round"/>
+          <defs><mask id="rm"><path id="rmask" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="M92 62 C 150 110, 230 105, 318 74" stroke="#fff" stroke-width="12" fill="none"/></mask></defs>
+          <path id="route" d="M92 62 C 150 110, 230 105, 318 74" stroke="#3FD1C6" stroke-width="5" stroke-dasharray="2 12" stroke-linecap="round" fill="none" mask="url(#rm)"/>
+          <circle cx="92" cy="62" r="8" fill="#BBE8EC"/>
+          <circle id="dest" cx="318" cy="74" r="11" fill="#3FD1C6"/>
+          <circle id="dot" r="10" fill="#FFFFFF" cx="92" cy="62"/>
+          <text id="destL" x="300" y="112" fill="#FFFFFF" font-family="Cairo" font-weight="800" font-size="24" text-anchor="middle">تبسة</text>
+        </svg>
+      </div>
+    </div></section>
+
+    <!-- ============ SCENE 5 : WHATSAPP ============ -->
+    <section class="scene" id="s5"><div class="inner">
+      <div class="abs center title" style="top:130px"><span class="mask"><span class="mi">والزبون يتابع</span></span> <span class="mask"><span class="mi acc">في واتساب</span></span></div>
+      <div class="pl" data-depth=".6"><div class="phone" id="ph5" style="left:240px;top:330px">
+        <div class="scr" style="background:#053B42;background-image:radial-gradient(rgba(187,232,236,.07) 3px,transparent 3.5px);background-size:44px 44px">
+          <div class="notch"></div>
+          <div style="height:170px;background:#0C6873;display:flex;align-items:flex-end;gap:20px;padding:0 36px 26px">
+            <div style="width:84px;height:84px;border-radius:50%;background:#3FD1C6;color:#053B42;display:flex;align-items:center;justify-content:center;font-size:48px">N</div>
+            <div><div dir="ltr" style="font-size:40px;line-height:1.2">NOURYS</div><div style="font-size:26px;font-weight:600;color:#BBE8EC" id="st5">متصل</div></div></div>
+          <div id="chat" style="padding:40px 30px;display:flex;flex-direction:column;gap:26px">
+            <div class="bub" id="m1">تأكدت طلبيتك ✅<small>10:24 ✓✓</small></div>
+            <div class="bub" id="m2">طلبيتك في الطريق 🚚<small>14:02 ✓✓</small></div>
+            <div class="bub" id="p5">وصلتك؟ يعطيك الصحة 🎉<small>17:45 ✓✓</small></div>
+            <div class="typing" id="typ"><i></i><i></i><i></i></div>
+          </div>
+        </div>
+      </div></div>
+    </div></section>
+
+    <!-- ============ SCENE 6 : OUTRO ============ -->
+    <section class="scene" id="s6"><div class="inner" id="s6in">
+      <div class="abs center" style="top:600px;direction:ltr;font-size:230px;line-height:1.1;letter-spacing:4px" id="logo"><span class="w">N</span><span class="w">O</span><span class="w">U</span><span class="w">R</span><span class="w">Y</span><span class="w">S</span><span class="w acc">.</span></div>
+      <div class="abs center" style="top:880px;font-size:54px;font-weight:600;color:#BBE8EC"><span class="mask"><span class="mi">نظام متابعة الطلبيات</span></span></div>
+      <div class="abs center" style="top:1060px;font-size:84px"><span class="mask"><span class="mi">كل طلبية تتبّع <span class="acc">وحدها.</span></span></span></div>
+      <div class="abs center" style="top:1330px"><span class="pill" id="p6">
+        <svg width="60" height="60" viewBox="0 0 40 40"><path d="M20 4C11 4 4 10.5 4 18.5c0 4.3 2 8 5.3 10.7L8 36l7.4-3.7c1.5.4 3 .6 4.6.6 9 0 16-6.5 16-14.4S29 4 20 4Z" fill="#053B42"/></svg>
+        راسلنا في واتساب
+        <i id="shine" style="position:absolute;top:-30px;bottom:-30px;left:0;width:130px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);transform:skewX(-20deg);display:block;opacity:0"></i></span></div>
+    </div></section>
+
+  </div></div>
+  <div id="speed"></div>
+  <div id="flash"></div>
+</div>
+<button id="replay" title="Replay" aria-label="Replay">↻</button>
+
+<script>
+(async () => {
+  const W = 1080, H = 1920, LOOP = 30;
+  const stage = document.getElementById('stage');
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  /* ---------- fit the 1080x1920 stage to the window ---------- */
+  let SC = 1;
+  function fit() { SC = Math.min(innerWidth / W, innerHeight / H); stage.style.transform = `translate(-50%,-50%) scale(${SC})`; }
+  fit(); addEventListener('resize', fit);
+
+  await document.fonts.load('800 40px Cairo', 'ابت'); await document.fonts.load('600 40px Cairo', 'ابت'); await document.fonts.ready;
+
+  /* ---------- background: depth particles (3 layers) + camera drift ---------- */
+  const cv = $('#bgc'), cx = cv.getContext('2d');
+  const P = Array.from({ length: 80 }, (_, i) => ({ x: Math.random() * W, y: Math.random() * H, z: [.25, .55, 1][i % 3], r: 2 + Math.random() * 5, s: 10 + Math.random() * 30, ph: Math.random() * 6 }));
+  const PL = $$('.pl');
+  gsap.ticker.add((time) => {
+    const dx = Math.sin(time * .31) * 14, dy = Math.cos(time * .23) * 12, rot = Math.sin(time * .17) * .45;
+    $('#cam').style.transform = `translate(${dx * .5}px,${dy * .5}px) rotate(${rot}deg)`;
+    PL.forEach(p => { const d = +p.dataset.depth; p.style.transform = `translate(${dx * d}px,${dy * d}px)`; });
+    cx.clearRect(0, 0, W, H);
+    for (const p of P) {
+      const y = ((p.y - time * p.s * p.z) % (H + 100) + H + 100) % (H + 100) - 50;
+      const x = p.x + Math.sin(time * .5 + p.ph) * 20 * p.z - dx * p.z * 2;
+      const rad = p.r * (p.z * 2.2);
+      cx.beginPath(); cx.arc(x, y - dy * p.z * 2, rad, 0, Math.PI * 2);
+      cx.fillStyle = p.z > .9 ? 'rgba(187,232,236,.16)' : `rgba(63,209,198,${.25 + p.z * .35})`;
+      cx.shadowColor = '#3FD1C6'; cx.shadowBlur = p.z > .9 ? 18 : 6;
+      cx.fill();
+    }
+  });
+
+  /* ---------- speed lines ---------- */
+  const SPD = $('#speed'), R0 = [];
+  for (let i = 0; i < 46; i++) {
+    const r = document.createElement('div'); r.className = 'ray'; r.style.transform = `rotate(${(i / 46) * 360 + Math.random() * 6}deg)`;
+    const b = document.createElement('i'); b.style.width = (180 + Math.random() * 260) + 'px'; r.appendChild(b); SPD.appendChild(r); R0.push(60 + Math.random() * 260);
+  }
+  const BARS = $$('#speed i');
+
+  /* ---------- measure portal centres (stage coords) with scenes at rest ---------- */
+  const SCENES = $$('.scene');
+  const PORTAL = { s1: '#p1', s2: '#ord', s3: '#p3', s4: '#p4', s5: '#p5', s6: '#p6' };
+  SCENES.forEach(s => s.style.visibility = 'visible');
+  const sr = stage.getBoundingClientRect(), ORG = {};
+  for (const id in PORTAL) { const r = $(PORTAL[id]).getBoundingClientRect(); ORG[id] = { x: (r.left + r.width / 2 - sr.left) / SC, y: (r.top + r.height / 2 - sr.top) / SC }; }
+  SCENES.forEach(s => s.style.visibility = 'hidden');
+
+  /* ---------- master timeline ---------- */
+  const tl = gsap.timeline({ repeat: -1, paused: true, defaults: { immediateRender: false } });
+  const WIN = [['s1', 0, 4], ['s2', 4, 9], ['s3', 9, 14], ['s4', 14, 19], ['s5', 19, 25], ['s6', 25, 30]];
+  const syncVis = () => { const t = tl.time(); WIN.forEach(([id, a, b]) => { $('#' + id).style.visibility = (t >= a && t < b) ? 'visible' : 'hidden'; }); };
+  tl.eventCallback('onUpdate', syncVis); gsap.ticker.add(syncVis);
+
+  const F0 = 'blur(0px) drop-shadow(0px 0px 0px rgba(63,209,198,0)) drop-shadow(0px 0px 0px rgba(255,255,255,0))';
+  const FP = 'blur(14px) drop-shadow(6px 0px 0px rgba(63,209,198,0.9)) drop-shadow(-6px 0px 0px rgba(255,255,255,0.7))';
+  const FL = 'blur(18px) drop-shadow(6px 0px 0px rgba(63,209,198,0.6)) drop-shadow(-6px 0px 0px rgba(255,255,255,0.5))';
+  const GL0 = 'drop-shadow(0px 0px 0px rgba(63,209,198,0))', GL1 = 'drop-shadow(0px 0px 26px rgba(63,209,198,1))';
+
+  /* ghost copies trailing the punch (fake radial motion blur) */
+  function ghosts(sc, o) {
+    for (let i = 1; i <= 3; i++) {
+      const g = sc.cloneNode(true); g.removeAttribute('id'); g.classList.remove('scene'); g.classList.add('ghost');
+      $$('[id]', g).forEach(e => e.removeAttribute('id'));
+      sc.parentNode.insertBefore(g, sc);
+      gsap.fromTo(g, { scale: .94, x: 0, y: 0, opacity: [.42, .26, .14][i - 1], transformOrigin: `${o.x}px ${o.y}px`, filter: 'blur(4px)' },
+        { scale: 18, x: W / 2 - o.x, y: H / 2 - o.y, opacity: 0, filter: 'blur(22px)', duration: .35, delay: i * .045, ease: 'expo.in', onComplete: () => g.remove() });
+    }
+  }
+  /* THE transition: Zoom-Through Punch (anticipate -> punch -> flash -> land) */
+  function punchOut(id, B) {
+    const sc = $('#' + id), o = ORG[id], portal = $(PORTAL[id]);
+    tl.fromTo(sc, { scale: 1, x: 0, y: 0, transformOrigin: `${o.x}px ${o.y}px` }, { scale: .94, duration: .15, ease: 'power4.out' }, B - .58);
+    tl.fromTo(portal, { filter: GL0 }, { filter: GL1, duration: .15, ease: 'power4.out' }, B - .58);
+    tl.fromTo(sc, { scale: .94, x: 0, y: 0 }, { scale: 18, x: W / 2 - o.x, y: H / 2 - o.y, duration: .35, ease: 'expo.in' }, B - .43);
+    tl.fromTo(sc, { filter: F0 }, { filter: FP, duration: .35, ease: 'expo.in' }, B - .43);
+    tl.call(ghosts, [sc, o], B - .43);
+    tl.fromTo(BARS, { x: i => R0[i], scaleX: .1, opacity: 0 }, { x: i => R0[i] + 1300, scaleX: 1.7, opacity: .95, duration: .42, ease: 'expo.in', stagger: { each: .003, from: 'random' } }, B - .56);
+    tl.fromTo('#flash', { opacity: 0, scale: .5 }, { opacity: 1, scale: 1.15, duration: .08, ease: 'power4.in' }, B - .08);
+  }
+  function landIn(id, B) {
+    const sc = $('#' + id);
+    tl.fromTo(sc, { scale: 2.2, x: 0, y: 0, transformOrigin: '50% 50%', filter: FL }, { scale: 1.03, filter: F0, duration: .3, ease: 'expo.out' }, B);
+    tl.fromTo(sc, { scale: 1.03 }, { scale: 1, duration: .15, ease: 'power4.out' }, B + .3);
+    tl.fromTo('#flash', { opacity: 1, scale: 1.15 }, { opacity: 0, duration: .3, ease: 'power4.out' }, B);
+    tl.fromTo(BARS, { opacity: .95 }, { opacity: 0, duration: .12, ease: 'power4.out' }, B);
+    tl.fromTo('#shake', { x: 0, y: 0 }, { keyframes: [{ x: 6, y: -5, duration: .07 }, { x: -6, y: 4, duration: .08 }, { x: 5, y: -3, duration: .08 }, { x: -3, y: 2, duration: .08 }, { x: 0, y: 0, duration: .09 }], ease: 'power4.out' }, B + .03);
+  }
+  const mask = (els, at, st = .12) => tl.fromTo(els, { yPercent: 115 }, { yPercent: 0, duration: .7, ease: 'expo.out', stagger: st }, at);
+  const slam = (els, at, st = .2) => {
+    tl.fromTo(els, { scale: 2.6, opacity: 0, y: -30, filter: 'blur(16px)' }, { keyframes: [{ scale: .94, opacity: 1, y: 0, filter: 'blur(0px)', duration: .32, ease: 'expo.out' }, { scale: 1, duration: .2, ease: 'power4.out' }], stagger: st }, at);
+  };
+  const typeIn = (el, str, at, dur) => { const arr = [...str], o = { n: 0 }; tl.fromTo(o, { n: 0 }, { n: arr.length, duration: dur, ease: 'power4.out', onUpdate: () => el.textContent = arr.slice(0, Math.round(o.n)).join('') }, at); };
+  const countUp = (el, to, at, dur, suf) => { const o = { v: 0 }; tl.fromTo(o, { v: 0 }, { v: to, duration: dur, ease: 'expo.out', onUpdate: () => el.textContent = Math.round(o.v / 10) * 10 + suf }, at); };
+  const pop = (el, at, s0 = 0) => tl.fromTo(el, { scale: s0, opacity: 0 }, { keyframes: [{ scale: 1.12, opacity: 1, duration: .26, ease: 'expo.out' }, { scale: .97, duration: .12, ease: 'power4.inOut' }, { scale: 1, duration: .14, ease: 'power4.out' }] }, at);
+  const microShake = (at, a = 4) => tl.fromTo('#shake', { x: 0, y: 0 }, { keyframes: [{ x: a, y: -a * .6, duration: .05 }, { x: -a * .7, y: a * .5, duration: .06 }, { x: 0, y: 0, duration: .08 }], ease: 'power4.out' }, at);
+
+  /* ---- loop seam: S6 punches into S1 at t=30 == t=0 ---- */
+  landIn('s1', 0);
+
+  /* ---- Scene 1: hook ---- */
+  mask('#s1k', .25);
+  slam($$('#s1a .w'), .45, .22);
+  microShake(.5); microShake(.72);
+  slam($$('#s1b .w'), 1.35, .2);
+  microShake(1.4); microShake(1.6); microShake(1.8, 6);
+  tl.fromTo('#s1bar', { scaleX: 0 }, { scaleX: 1, duration: 1.2, ease: 'expo.out' }, 2.0);
+  tl.fromTo('#p1', { scale: 1 }, { keyframes: [{ scale: 1.25, duration: .3, ease: 'power4.out' }, { scale: 1, duration: .45, ease: 'power4.inOut' }, { scale: 1.2, duration: .3, ease: 'power4.out' }, { scale: 1, duration: .35, ease: 'power4.inOut' }] }, 2.2);
+  punchOut('s1', 4);
+
+  /* ---- Scene 2: order arrives ---- */
+  landIn('s2', 4);
+  mask($$('#s2 .title .mi'), 4.25);
+  tl.fromTo('#tap', { scale: 0, opacity: 0, x: 140, y: 220 }, { scale: 1, opacity: 1, x: 0, y: 0, duration: .55, ease: 'expo.out' }, 4.8);
+  tl.to('#tap', { scale: .7, duration: .12, ease: 'power4.in' }, 5.38);
+  tl.to('#tap', { scale: 2.2, opacity: 0, duration: .45, ease: 'expo.out' }, 5.5);
+  tl.fromTo('#buy', { scale: 1 }, { keyframes: [{ scale: .92, duration: .1, ease: 'power4.in' }, { scale: 1, duration: .3, ease: 'expo.out' }] }, 5.4);
+  tl.fromTo('#rip', { scale: 0, opacity: .9 }, { scale: 14, opacity: 0, duration: .7, ease: 'expo.out' }, 5.45);
+  // order card flies out of the phone towards the camera (with trailing ghosts)
+  const ORD = $('#ord'), ordGhosts = [1, 2, 3].map(i => { const g = ORD.cloneNode(true); g.removeAttribute('id'); g.style.opacity = 0; ORD.parentNode.insertBefore(g, ORD); return g; });
+  const ordFrom = { x: 0, y: 420, scale: .22, rotationX: 50, opacity: 0, filter: 'blur(10px)', transformPerspective: 1400 };
+  const ordTo = (d, op) => ({ keyframes: [{ x: 0, y: -40, scale: 1.08, rotationX: -6, opacity: op, filter: 'blur(0px)', duration: .55, ease: 'expo.out' }, { y: 0, scale: 1, rotationX: 0, duration: .3, ease: 'power4.out' }] });
+  ordGhosts.forEach((g, i) => { tl.fromTo(g, { ...ordFrom }, { ...ordTo(0, [.35, .2, .1][i]) }, 5.62 + (i + 1) * .045); tl.to(g, { opacity: 0, duration: .2, ease: 'power4.out' }, 6.2 + i * .04); });
+  tl.fromTo(ORD, { ...ordFrom }, { ...ordTo(0, 1) }, 5.62);
+  tl.fromTo('#ph2', { filter: 'blur(0px) brightness(1)' }, { filter: 'blur(7px) brightness(0.7)', duration: .6, ease: 'power4.out' }, 5.65);
+  microShake(5.95, 5);
+  tl.fromTo($$('#ord .orow'), { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: .5, ease: 'expo.out', stagger: .09 }, 5.95);
+  tl.fromTo(ORD, { rotationY: 0 }, { rotationY: -5, duration: 2, ease: 'power4.inOut' }, 6.6);
+  punchOut('s2', 9);
+
+  /* ---- Scene 3: google sheet ---- */
+  landIn('s3', 9);
+  mask($$('#s3 .title .mi'), 9.25);
+  tl.fromTo('#rowN', { y: -260, scale: 1.35, opacity: 0, filter: 'blur(10px)' }, { keyframes: [{ y: 8, scale: 1, opacity: 1, filter: 'blur(0px)', duration: .45, ease: 'expo.out' }, { y: 0, duration: .2, ease: 'power4.out' }] }, 9.55);
+  tl.fromTo('#rowFlash', { opacity: .7 }, { opacity: 0, duration: .8, ease: 'power4.out' }, 9.9);
+  typeIn($('#cN'), 'أمين ب.', 10.05, .4); typeIn($('#cW'), 'تبسة', 10.45, .3); typeIn($('#cP'), 'ساعة ذكية', 10.8, .4);
+  countUp($('#cT'), 5200, 11.2, .9, ' دج');
+  mask('#s3note', 11.35);
+  pop('#chN', 11.95);
+  tl.set('#p3', { scale: 0, opacity: 0 }, 0);
+  tl.fromTo('#cur', { x: 820, y: 1500, opacity: 0 }, { x: 175, y: 1010, opacity: 1, duration: .6, ease: 'expo.inOut' }, 12.1);
+  tl.to('#cur', { keyframes: [{ scale: .8, duration: .08, ease: 'power4.in' }, { scale: 1, duration: .2, ease: 'expo.out' }] }, 12.72);
+  tl.to('#chN', { scale: 0, opacity: 0, duration: .16, ease: 'power4.in' }, 12.78);
+  pop('#p3', 12.9);
+  tl.fromTo('#p3', { filter: GL0 }, { filter: 'drop-shadow(0px 0px 18px rgba(63,209,198,0.9))', duration: .3, ease: 'power4.out' }, 12.95);
+  tl.to('#cur', { x: 420, y: 1500, opacity: 0, duration: .6, ease: 'expo.in' }, 13.2);
+  microShake(12.92, 4);
+  punchOut('s3', 14);
+
+  /* ---- Scene 4: delivery ---- */
+  landIn('s4', 14);
+  const PCS = $$('#s4 .pc');
+  tl.fromTo(PCS, { x: i => [-420, 420, -420, 420][i], y: i => [-360, -360, 360, 360][i], rotation: i => [-18, 14, 12, -16][i], opacity: 0, filter: 'blur(12px)' },
+    { x: 0, y: 0, rotation: 0, opacity: 1, filter: 'blur(0px)', duration: .6, ease: 'expo.out', stagger: .05 }, 14.2);
+  tl.fromTo('#cardEdge', { opacity: 0 }, { opacity: 1, duration: .3, ease: 'power4.out' }, 14.75);
+  microShake(14.8, 5);
+  tl.fromTo($$('#p4 .dr'), { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .8, ease: 'power4.inOut', stagger: .08 }, 14.75);
+  mask($$('#s4 .mi'), 15.25, .2);
+  typeIn($('#trk'), 'DHD…7784', 15.75, .7);
+  tl.fromTo('#dz', { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.1, ease: 'power4.inOut' }, 15.6);
+  tl.fromTo('#rmask', { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.1, ease: 'power4.inOut' }, 16.4);
+  const ROUTE = $('#route'), RL = ROUTE.getTotalLength(), dot = $('#dot'), dO = { p: 0 };
+  tl.fromTo(dO, { p: 0 }, { p: 1, duration: 1.1, ease: 'power4.inOut', onUpdate: () => { const q = ROUTE.getPointAtLength(dO.p * RL); dot.setAttribute('cx', q.x); dot.setAttribute('cy', q.y); } }, 16.4);
+  tl.fromTo('#dest', { attr: { r: 11 } }, { keyframes: [{ attr: { r: 22 }, duration: .25, ease: 'expo.out' }, { attr: { r: 11 }, duration: .35, ease: 'power4.inOut' }] }, 17.45);
+  tl.fromTo('#destL', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: .5, ease: 'expo.out' }, 17.45);
+  tl.fromTo('#p4', { y: 0 }, { keyframes: [{ y: -10, duration: .35, ease: 'power4.out' }, { y: 0, duration: .35, ease: 'power4.in' }] }, 17.7);
+  punchOut('s4', 19);
+
+  /* ---- Scene 5: whatsapp ---- */
+  landIn('s5', 19);
+  mask($$('#s5 .title .mi'), 19.25);
+  tl.set(['#m1', '#m2', '#p5'], { scale: 0, opacity: 0 }, 0);
+  const TYP = $('#typ'), DOTS = $$('#typ i');
+  [[19.65, 20.35], [20.85, 21.55], [22.05, 22.75]].forEach(([a, b]) => {
+    tl.fromTo(TYP, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: .25, ease: 'expo.out' }, a);
+    tl.fromTo(DOTS, { y: 0 }, { keyframes: [{ y: -10, duration: .14, ease: 'power4.out' }, { y: 0, duration: .14, ease: 'power4.in' }], stagger: { each: .09, repeat: 1 } }, a + .05);
+    tl.to(TYP, { scale: 0, opacity: 0, duration: .1, ease: 'power4.in' }, b - .1);
+    tl.call(() => { $('#st5').textContent = 'يكتب…'; }, null, a); tl.call(() => { $('#st5').textContent = 'متصل'; }, null, b);
+  });
+  tl.set(TYP, { display: 'none' }, 22.8);
+  [['#m1', 20.35], ['#m2', 21.55], ['#p5', 22.75]].forEach(([m, at]) => {
+    pop(m, at);
+    tl.fromTo('#ph5', { y: 0, rotation: 0 }, { keyframes: [{ y: -22, rotation: -1.5, duration: .12, ease: 'power4.out' }, { y: 6, rotation: 1, duration: .14, ease: 'power4.inOut' }, { y: 0, rotation: 0, duration: .2, ease: 'power4.out' }] }, at);
+  });
+  tl.set(TYP, { display: 'flex' }, 19.0);
+  punchOut('s5', 25);
+
+  /* ---- Scene 6: outro ---- */
+  landIn('s6', 25);
+  const L = $$('#logo .w');
+  tl.fromTo(L, { x: () => gsap.utils.random(-500, 500), y: () => gsap.utils.random(-700, 700), rotation: () => gsap.utils.random(-120, 120), scale: () => gsap.utils.random(.3, 2.4), opacity: 0, filter: 'blur(14px)' },
+    { x: 0, y: 0, rotation: 0, scale: 1, opacity: 1, filter: 'blur(0px)', duration: 1.0, ease: 'expo.out', stagger: { each: .06, from: 'random' } }, 25.3);
+  microShake(26.05, 5);
+  mask($$('#s6 .mi'), 26.25, .25);
+  pop('#p6', 27.2);
+  tl.fromTo('#shine', { x: -200, opacity: 1 }, { x: 760, duration: .8, ease: 'power4.inOut' }, 27.9);
+  tl.fromTo('#shine', { x: -200 }, { x: 760, duration: .8, ease: 'power4.inOut' }, 28.8);
+  tl.fromTo('#s6in', { scale: 1 }, { scale: 1.07, duration: 4.3, ease: 'power4.inOut' }, 25.4);
+  punchOut('s6', 30);
+  tl.set({}, {}, LOOP);
+
+  // initialise every tween once, then rewind -> identical state on every loop
+  tl.progress(1, true).progress(0, true);
+  window.NOURYS_TL = tl;
+  $('#replay').onclick = () => tl.restart();
+  tl.play(0);
+})();
+</script>
+</body>
+</html>
