@@ -20,14 +20,14 @@ async function getStats() {
 }
 
 export default async function Stats() {
-  const stats = await getStats();
+  const stats = (await getStats()).filter((s) => !(s.label === "شريك" && PARTNERS_COUNT <= 0));
   return (
     <section aria-labelledby="stats-title" className="py-20 md:py-24">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <h2 id="stats-title" className="sr-only">
           الحاضنة بالأرقام
         </h2>
-        <ul className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+        <ul className={`grid grid-cols-2 gap-4 md:gap-6 ${stats.length === 3 ? "md:grid-cols-3" : "md:grid-cols-4"}`}>
           {stats.map((s) => (
             <li key={s.label} className="rounded-2xl border border-gold/30 bg-white px-4 py-8 text-center shadow-sm">
               <p className="font-heading text-4xl font-bold text-emerald md:text-5xl">

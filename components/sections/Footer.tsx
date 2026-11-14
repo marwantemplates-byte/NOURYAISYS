@@ -22,12 +22,15 @@ export default function Footer() {
                 <span dir="ltr">{CONTACT.email}</span>
               </a>
             </li>
+            {CONTACT.phone && (
             <li>
               <a href={CONTACT.phoneHref} className="inline-flex min-h-11 items-center gap-2 text-white/90 hover:text-gold-light">
                 <span className="text-gold-light">الهاتف:</span>
                 <span dir="ltr">{CONTACT.phone}</span>
               </a>
             </li>
+            )}
+            {CONTACT.facebook && (
             <li>
               <a
                 href={CONTACT.facebook}
@@ -39,6 +42,7 @@ export default function Footer() {
                 <span className="sr-only">(يفتح في نافذة جديدة)</span>
               </a>
             </li>
+            )}
           </ul>
         </div>
       </div>

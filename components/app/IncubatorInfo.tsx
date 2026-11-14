@@ -49,7 +49,7 @@ export default function IncubatorInfo({ withContact = false }: { withContact?: b
           <h2 id="contact-in" className="text-xl font-bold text-olive">تواصل معنا</h2>
           <ul className="mt-3 space-y-1">
             <li><a href={`mailto:${CONTACT.email}`} className="inline-flex min-h-11 items-center gap-2 hover:text-emerald">✉ <span dir="ltr">{CONTACT.email}</span></a></li>
-            <li><a href={CONTACT.phoneHref} className="inline-flex min-h-11 items-center gap-2 hover:text-emerald">☎ <span dir="ltr">{CONTACT.phone}</span></a></li>
+            {CONTACT.phone && <li><a href={CONTACT.phoneHref} className="inline-flex min-h-11 items-center gap-2 hover:text-emerald">☎ <span dir="ltr">{CONTACT.phone}</span></a></li>}
           </ul>
         </section>
       )}

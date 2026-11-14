@@ -1,13 +1,13 @@
-/** Site-wide placeholder content — replace with real values. */
+/** Site-wide contact info. Leave a field empty ("") to hide it. */
 export const CONTACT = {
-  email: "incubator@example.dz",
-  phone: "+213 00 00 00 00",
-  phoneHref: "tel:+21300000000",
-  facebook: "https://www.facebook.com/",
+  email: "incubator.emir@gmail.com",
+  phone: "",
+  phoneHref: "",
+  facebook: "",
 };
 
 /** Number of partners shown on the home page (not stored in the database). */
-export const PARTNERS_COUNT = 12;
+export const PARTNERS_COUNT = 0; // 0 = hide the "شريك" stat
 
 /** Fallback numbers — used only if Supabase is unreachable. */
 export const STATS = [
