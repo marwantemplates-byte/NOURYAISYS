@@ -65,3 +65,12 @@ npm run build   # بناء الإنتاج
 - `BREVO_SENDER_NAME` (اختياري)
 من غيرها، صفحة `/admin/emails` تعرض زر «نسخ كل الإيميلات» للإرسال من Gmail (Bcc).
 لتبديل المزوّد: عدّل دالة `sendEmail()` في `lib/email.ts` فقط.
+
+## الإيميلات الأوتوماتيكية
+- **ترحيب:** عند تأكيد الحساب (`/auth/confirm`) — مرة واحدة (`profiles.welcome_sent_at`).
+- **تأكيد الحضور:** بعد «نأكد مشاركتي» (`/api/rsvp-email`)، فيه التاريخ والمكان أو رابط Meet.
+- **إعلان دورة:** خانة «📢 إرسال إيميل إعلان» في فورم الدورة (`/api/admin/announce`)، يُسجَّل في سجل الحملات.
+- **تذكير:** Vercel Cron (`vercel.json`) يوميًا 17:00 UTC (18:00 بتوقيت الجزائر) → `/api/cron/reminders`
+  يذكّر المؤكَّدين بالدورات التي تبدأ خلال 30 ساعة، مرة واحدة (`rsvps.reminded_at`).
+  يحتاج: `supabase/007_auto_emails.sql` + متغير `CRON_SECRET` في Vercel **بنفس قيمة** `app_config.cron_secret`.
+  (خطة Vercel المجانية تسمح بـ Cron مرة في اليوم؛ في الخطة Pro يمكن جعله كل ساعة: `"0 * * * *"`.)

@@ -1,5 +1,6 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
-import { NextResponse, type NextRequest } from "next/server";
+import { after, NextResponse, type NextRequest } from "next/server";
+import { sendWelcomeOnce } from "@/lib/auto-emails";
 import { safeNext } from "@/lib/safe-next";
 import { createClient } from "@/lib/supabase/server";
 
@@ -25,5 +26,12 @@ export async function GET(request: NextRequest) {
   }
 
   if (!ok) return NextResponse.redirect(new URL("/login?error=link", origin));
+
+  // Account just confirmed → welcome email (in the background, once)
+  if (type !== "recovery") {
+    const { data } = await supabase.auth.getClaims();
+    const uid = data?.claims?.sub;
+    if (uid) after(() => sendWelcomeOnce(supabase, uid));
+  }
   return NextResponse.redirect(new URL(next, origin));
 }

@@ -44,6 +44,8 @@ export default function ItemForm({ item, meetingLink }: { item?: Item; meetingLi
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
   const [saving, setSaving] = useState<"draft" | "publish" | null>(null);
+  // Announcement email: proposed for new items (or items not yet published)
+  const [announce, setAnnounce] = useState(!item?.published);
 
   const set = <K extends keyof Values>(k: K, val: Values[K]) => setV((p) => ({ ...p, [k]: val }));
   const isPost = v.type === "post";
@@ -94,8 +96,22 @@ export default function ItemForm({ item, meetingLink }: { item?: Item; meetingLi
     const res = item
       ? await supabase.from("items").update(row).eq("id", item.id).select("id").single()
       : await supabase.from("items").insert(row).select("id").single();
+    if (res.error) {
+      setSaving(null);
+      return setError(arabicError(res.error.message));
+    }
+    if (publish && announce && res.data?.id) {
+      const r = await fetch("/api/admin/announce", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ item_id: res.data.id }),
+      }).catch(() => null);
+      if (!r || !r.ok) {
+        const j = r ? await r.json().catch(() => ({})) : {};
+        window.alert("تم النشر، لكن تعذّر إرسال إيميل الإعلان" + (j.error ? `: ${j.error}` : "."));
+      }
+    }
     setSaving(null);
-    if (res.error) return setError(arabicError(res.error.message));
     router.push("/admin/items");
     router.refresh();
   };
@@ -177,6 +193,14 @@ export default function ItemForm({ item, meetingLink }: { item?: Item; meetingLi
       </Field>
 
       {error && <Alert>{error}</Alert>}
+
+      <label className="flex min-h-12 cursor-pointer items-start gap-3 rounded-xl border-2 border-gold/40 bg-gold-light/20 p-3">
+        <input type="checkbox" checked={announce} onChange={(e) => setAnnounce(e.target.checked)} className="mt-1 h-5 w-5 shrink-0 accent-emerald" />
+        <span>
+          <span className="font-bold">📢 إرسال إيميل إعلان لكل الطلبة</span>
+          <span className="block text-sm text-ink/65">يُرسل عند الضغط على «حفظ ونشر» فقط (ليس مع المسودة).</span>
+        </span>
+      </label>
 
       <div className="flex flex-col gap-3 border-t border-olive/10 pt-5 sm:flex-row">
         <button

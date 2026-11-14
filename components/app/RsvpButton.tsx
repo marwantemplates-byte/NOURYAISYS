@@ -39,6 +39,15 @@ export default function RsvpButton(props: Props) {
     }
     if (data === "ok" || data === "already") {
       setConfirmed(true);
+      // Confirmation email (background, never blocks the UI)
+      if (data === "ok") {
+        fetch("/api/rsvp-email", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ item_id: props.itemId }),
+          keepalive: true,
+        }).catch(() => {});
+      }
       if (props.online) {
         const { data: l } = await supabase.rpc("get_meeting_link", { p_item_id: props.itemId });
         setLink((l as string | null) ?? null);
