@@ -13,6 +13,7 @@ const fs = require('fs');
   page.on('pageerror', (e) => console.error('PAGE ERROR', e.message));
   await page.goto('file://' + path.join(__dirname, process.env.PAGE || 'index.html'));
   await page.evaluate(() => window.ready);
+  for (let i = 0; i < 2; i++) { await page.evaluate((t) => window.render(t), +(process.argv[5] || process.argv[4] || 0) || 0); await page.screenshot(); }  // GPU warm-up
 
   if (mode === 'stills') {
     fs.mkdirSync(out, { recursive: true });
