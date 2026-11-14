@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NOURYS — نظام متابعة الطلبيات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&display=block" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#E9E7E3;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1080px;height:1920px;transform-origin:50% 50%;overflow:hidden;background:#F5F3EF;
+  font-family:Cairo,sans-serif;font-weight:800;color:#1C1C1C}
+.scene{position:absolute;inset:0;visibility:hidden;overflow:hidden;will-change:transform,filter}
+.bgA{background:radial-gradient(120% 80% at 50% 40%,#FBFAF7 0%,#F5F3EF 55%,#E9E7E3 100%)}
+.bgB{background:radial-gradient(120% 80% at 50% 40%,#F3F1EC 0%,#E9E7E3 60%,#DEDBD5 100%)}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .3  0 0 0 0 .24  0 0 0 .09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.inner{position:absolute;inset:0;will-change:transform}
+.pl{position:absolute;inset:0;will-change:transform}
+.abs{position:absolute}
+.center{left:0;right:0;text-align:center}
+.mask{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .06em .08em}
+.mi{display:inline-block;will-change:transform,opacity;opacity:0}
+.grey{color:#6B6B6B}
+.cap{font-size:72px;line-height:1.3}
+/* paper slips */
+.slip{position:absolute;width:220px;height:280px;background:#FFFFFF;border-radius:6px;box-shadow:0 18px 36px rgba(40,32,24,.16),0 2px 4px rgba(40,32,24,.08);padding:22px 20px}
+.slip b{display:block;font-size:22px;color:#1C1C1C;margin-bottom:12px}
+.slip i{display:block;height:8px;border-radius:4px;background:#E2DED7;margin:12px 0}
+/* phone */
+.phone{position:absolute;width:560px;height:1140px;border-radius:84px;background:#1C1C1C;
+  box-shadow:inset 0 0 0 3px #3A3A3A,0 2px 0 #000,0 60px 110px rgba(40,32,24,.28),0 20px 40px rgba(40,32,24,.18)}
+.phone .scr{position:absolute;inset:16px;border-radius:68px;overflow:hidden;background:#FFFFFF}
+.island{position:absolute;left:50%;top:18px;width:150px;height:40px;margin-left:-75px;border-radius:22px;background:#0A0A0A;z-index:3}
+.sbtn{position:absolute;right:-6px;width:6px;border-radius:3px;background:#2A2A2A}
+.btnDark{display:flex;align-items:center;justify-content:center;background:#1C1C1C;color:#FFFFFF;border-radius:20px;position:relative;overflow:hidden}
+/* order card */
+.ocard{position:absolute;left:150px;top:900px;width:780px;padding:34px 46px 38px;border-radius:30px;background:#FFFFFF;
+  box-shadow:0 40px 90px rgba(40,32,24,.24),0 8px 20px rgba(40,32,24,.10);opacity:0;will-change:transform,opacity,filter}
+.orow{display:flex;justify-content:space-between;align-items:center;height:74px;border-bottom:1px solid #ECEAE6;font-size:38px}
+.orow span:first-child{font-weight:600;color:#6B6B6B;font-size:32px}
+/* google sheet */
+.gsWrap{position:absolute;left:40px;top:640px;width:1000px;perspective:1800px}
+.gs{width:1000px;background:#FFFFFF;border-radius:14px;overflow:hidden;transform-origin:50% 0;
+  box-shadow:0 0 0 1px #DADCE0,0 50px 100px rgba(40,32,24,.20),0 12px 26px rgba(40,32,24,.10);will-change:transform}
+.gsTop{height:76px;display:flex;align-items:center;gap:16px;padding:0 24px;border-bottom:1px solid #E0E0E0}
+.gsTop .mn{font-weight:600;font-size:21px;color:#5F6368;margin-right:18px}
+.grow{display:flex;height:74px;border-bottom:1px solid #E0E0E0;position:relative}
+.gc{display:flex;align-items:center;justify-content:center;font-weight:600;font-size:25px;color:#202124;border-left:1px solid #E0E0E0;white-space:nowrap;position:relative}
+.rn{width:40px;flex:none;display:flex;align-items:center;justify-content:center;background:#F8F9FA;border-left:1px solid #E0E0E0;font-weight:600;font-size:19px;color:#80868B}
+.letters .gc{height:34px;background:#F8F9FA;font-size:18px;color:#80868B}
+.hd .gc{background:#F1F3F4;font-weight:800;font-size:23px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:3px 16px;border-radius:999px;font-weight:800;font-size:22px;direction:ltr;white-space:nowrap}
+.chip.n{background:#E8EAED;color:#3C4043}
+.chip.ok{background:#1E8E3E;color:#FFFFFF}
+.chip.cb{background:#FEEFC3;color:#7A4F01}
+.sel{position:absolute;border:3px solid #1A73E8;pointer-events:none;opacity:0}
+/* close-up */
+.big .gc{font-size:44px}
+.bigchip{display:inline-flex;align-items:center;gap:14px;padding:10px 34px;border-radius:999px;font-weight:800;font-size:46px;direction:ltr;white-space:nowrap}
+.menu{position:absolute;width:420px;padding:14px;border-radius:16px;background:#FFFFFF;box-shadow:0 18px 50px rgba(40,32,24,.25),0 0 0 1px #E0E0E0;transform-origin:50% 0;opacity:0}
+.mi2{height:84px;display:flex;align-items:center;padding:0 18px;border-radius:10px;direction:ltr}
+/* delivery card */
+.dcard{position:absolute;left:90px;top:520px;width:900px;height:1080px}
+.dpc{position:absolute;background:#FFFFFF;opacity:0;will-change:transform,opacity,filter}
+.step{display:flex;flex-direction:column;align-items:center;gap:14px;width:240px;font-weight:600;font-size:26px;color:#9A9A9A;direction:ltr}
+.step .dot{width:46px;height:46px;border-radius:50%;background:#FFFFFF;border:5px solid #CFCCC6;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px}
+/* transition bands */
+#bands{position:absolute;left:540px;top:960px;width:0;height:0;transform:rotate(-18deg);pointer-events:none;z-index:20}
+.band{position:absolute;left:-1000px;width:2000px;height:446px;will-change:transform;overflow:hidden}
+.band.g{filter:blur(8px)}
+.band s{position:absolute;left:0;right:0;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent)}
+.band.lt s{background:linear-gradient(90deg,transparent,rgba(43,43,43,.25),transparent)}
+#replay{position:fixed;left:12px;bottom:12px;z-index:9;width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;background:rgba(28,28,28,.35);color:#fff;font-size:17px;opacity:.12;transition:opacity .2s}
+#replay:hover{opacity:1}
+/* CTA */
+.s6bg{background:radial-gradient(120% 85% at 50% 40%,#10808A 0%,#0C6873 70%,#0A5A63 100%)}
+.slice{position:absolute;left:0;right:0;top:0;text-align:center;direction:ltr;font-size:220px;line-height:1.1;color:#FFFFFF;letter-spacing:6px;opacity:0;will-change:transform,opacity,filter}
+.pill{display:inline-flex;align-items:center;gap:16px;background:#3FD1C6;color:#FFFFFF;border-radius:999px;padding:22px 62px;font-size:54px;position:relative;overflow:hidden;
+  box-shadow:0 26px 60px rgba(5,40,45,.35);opacity:0}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- ===== SCENE 1 : HOOK ===== -->
+  <section class="scene bgA" id="s1"><div class="grain"></div><div class="inner">
+    <div class="pl" data-depth="1.8" id="slipsFar"></div>
+    <div class="abs center" style="top:700px;font-size:112px;line-height:1.2;white-space:nowrap"><span class="mask"><span class="mi">طلبيات</span></span> <span class="mask"><span class="mi">كثيرة؟</span></span></div>
+    <div class="abs center" style="top:890px;font-size:90px;line-height:1.25;white-space:nowrap"><span class="mask"><span class="mi">وتضيع</span></span> <span class="mask"><span class="mi">بين</span></span> <span class="mask"><span class="mi" id="wPaper">الأوراق؟</span></span></div>
+    <svg class="abs" id="scrib" width="420" height="200" viewBox="0 0 420 200" style="left:0;top:0;overflow:visible"><path id="scribP" pathLength="1" d="M30 110 C 30 30, 390 20, 395 95 C 400 170, 60 185, 25 120 C 5 80, 120 40, 230 45" fill="none" stroke="#1C1C1C" stroke-width="7" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1"/></svg>
+    <div class="pl" data-depth="3.2" id="slipsNear"></div>
+  </div></section>
+
+  <!-- ===== SCENE 2 : ORDER COMES IN ===== -->
+  <section class="scene bgB" id="s2"><div class="grain"></div><div class="inner">
+    <div class="abs center cap" style="top:140px"><span class="mask"><span class="mi">طلبية جديدة</span></span> <span class="mask"><span class="mi grey">وصلت…</span></span></div>
+    <div class="pl" data-depth=".7"><div class="phone" id="ph" style="left:260px;top:360px">
+      <i class="sbtn" style="top:240px;height:110px"></i>
+      <div class="scr">
+        <div class="island"></div>
+        <div style="height:86px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 50px 4px;font-size:22px;direction:ltr"><span>9:41</span><span style="letter-spacing:2px">▮▮▮</span></div>
+        <div style="height:80px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;border-bottom:1px solid #EEE"><span style="font-size:34px">متجري</span><span style="font-size:30px">🛒</span></div>
+        <div style="margin:28px 36px 0;height:420px;border-radius:30px;background:linear-gradient(160deg,#F4F4F4,#E6E6E6);display:flex;align-items:center;justify-content:center">
+          <svg width="230" height="230" viewBox="0 0 100 100"><rect x="33" y="6" width="34" height="88" rx="11" fill="#3B3B3B"/><circle cx="50" cy="50" r="26" fill="#1C1C1C" stroke="#BDBDBD" stroke-width="3.5"/><circle cx="50" cy="50" r="20" fill="#2A2A2A"/><path d="M50 38V50L59 56" stroke="#FFFFFF" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></div>
+        <div style="padding:26px 40px 0">
+          <div style="font-size:46px">ساعة ذكية</div>
+          <div style="font-size:24px;color:#F2A900;direction:ltr;text-align:right">★★★★★ <span style="color:#6B6B6B;font-weight:600">(128)</span></div>
+          <div style="font-size:44px;margin-top:4px">4500 دج</div>
+          <div class="btnDark" id="buy" style="height:92px;font-size:38px;margin-top:26px">اطلب الآن<i id="rip" style="position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px;border-radius:50%;background:rgba(255,255,255,.45);display:block;opacity:0"></i></div>
+        </div>
+      </div>
+    </div></div>
+    <div class="abs" id="tap" style="left:505px;top:1335px;width:74px;height:74px;border-radius:50%;background:rgba(28,28,28,.25);border:3px solid rgba(28,28,28,.4);opacity:0"></div>
+    <div class="ocard" id="ord">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-size:44px">طلبية جديدة</span><span class="chip n" style="font-size:26px">#2041</span></div>
+      <div class="orow"><span>الاسم</span><span>أمين ب.</span></div>
+      <div class="orow"><span>الولاية</span><span>تبسة</span></div>
+      <div class="orow"><span>المنتج</span><span>ساعة ذكية</span></div>
+      <div class="orow" style="border:0"><span>السعر</span><span style="font-size:50px">4500 دج</span></div>
+    </div>
+  </div></section>
+
+  <!-- ===== SCENE 3 : GOOGLE SHEET ===== -->
+  <section class="scene bgA" id="s3"><div class="grain"></div><div class="inner">
+    <div class="abs center cap" style="top:200px;font-size:70px"><span class="mask"><span class="mi">كل طلبية تتسجل وحدها،</span></span><br><span class="mask"><span class="mi grey">والحساب يصرا وحدو</span></span></div>
+    <div class="pl" data-depth=".8"><div class="gsWrap"><div class="gs" id="gs">
+      <div class="gsTop">
+        <svg width="34" height="44" viewBox="0 0 36 46"><path d="M0 4a4 4 0 0 1 4-4h20l12 12v30a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4Z" fill="#188038"/><path d="M8 20h20v16H8zM8 28h20M18 20v16" stroke="#fff" stroke-width="3" fill="none"/></svg>
+        <span style="font-size:28px">طلبيات المتجر</span><span class="mn">ملف  تعديل  عرض  إدراج</span>
+        <span style="margin-right:auto;background:#C2E7FF;color:#001D35;font-weight:600;font-size:21px;padding:5px 18px;border-radius:999px">مشاركة</span></div>
+      <div id="sbody" style="position:relative">
+        <div class="grow letters" style="height:34px"><div class="rn"></div><div class="gc" style="width:140px">A</div><div class="gc" style="width:110px">B</div><div class="gc" style="width:150px">C</div><div class="gc" style="width:120px">D</div><div class="gc" style="width:150px">E</div><div class="gc" style="width:140px">F</div><div class="gc" style="width:150px">G</div></div>
+        <div class="grow hd"><div class="rn">1</div><div class="gc" style="width:140px">الاسم</div><div class="gc" style="width:110px">الولاية</div><div class="gc" style="width:150px">المنتج</div><div class="gc" style="width:120px">السعر</div><div class="gc" style="width:150px;font-size:19px" dir="ltr">Frais livraison</div><div class="gc" style="width:140px" dir="ltr">Total</div><div class="gc" style="width:150px">الحالة</div></div>
+        <div class="grow"><div class="rn">2</div><div class="gc" style="width:140px">سارة م.</div><div class="gc" style="width:110px">وهران</div><div class="gc" style="width:150px">حقيبة</div><div class="gc" style="width:120px">3900</div><div class="gc" style="width:150px">600</div><div class="gc" style="width:140px">4500</div><div class="gc" style="width:150px"><span class="chip ok">Confirmée</span></div></div>
+        <div class="grow"><div class="rn">3</div><div class="gc" style="width:140px">ياسين ك.</div><div class="gc" style="width:110px">سطيف</div><div class="gc" style="width:150px">سماعات</div><div class="gc" style="width:120px">2800</div><div class="gc" style="width:150px">500</div><div class="gc" style="width:140px">3300</div><div class="gc" style="width:150px"><span class="chip cb">Call back</span></div></div>
+        <div class="grow" id="rowN" style="opacity:0"><div class="rn">4</div>
+          <div class="gc" style="width:140px" id="c0"></div><div class="gc" style="width:110px" id="c1"></div><div class="gc" style="width:150px" id="c2"></div><div class="gc" style="width:120px" id="c3"></div>
+          <div class="gc" style="width:150px" id="c4"></div><div class="gc" style="width:140px" id="c5"><i id="totHl" style="position:absolute;inset:4px;border-radius:6px;background:#E6F4EA;opacity:0;display:block"></i><b id="tot" style="position:relative;font-weight:800"></b></div>
+          <div class="gc" style="width:150px"><span class="chip n" id="chN3" style="opacity:0">Nouvelle ▾</span></div></div>
+        <div class="grow"><div class="rn">5</div></div><div class="grow" style="border:0"><div class="rn">6</div></div>
+        <div class="sel" id="sel"></div>
+      </div>
+    </div></div></div>
+  </div></section>
+
+  <!-- ===== SCENE 4 : ONE CLICK CONFIRM ===== -->
+  <section class="scene bgB" id="s4"><div class="grain"></div><div class="inner" id="s4in">
+    <div class="abs center cap" style="top:240px;font-size:96px"><span class="mask"><span class="mi">تأكيد بضغطة</span></span> <span class="mask"><span class="mi grey">وحدة</span></span></div>
+    <div class="pl" data-depth=".6"><div class="abs big" style="left:90px;top:620px;width:900px;background:#FFFFFF;border-radius:20px;overflow:visible;box-shadow:0 0 0 1px #DADCE0,0 50px 100px rgba(40,32,24,.20)">
+      <div class="grow hd" style="height:110px"><div class="gc" style="width:300px;border-radius:0 20px 0 0">الاسم</div><div class="gc" style="width:250px" dir="ltr">Total</div><div class="gc" style="width:350px;border-left:0;border-radius:20px 0 0 0">الحالة</div></div>
+      <div class="grow" style="height:150px;opacity:.45"><div class="gc" style="width:300px">ياسين ك.</div><div class="gc" style="width:250px">3300</div><div class="gc" style="width:350px;border-left:0"><span class="bigchip" style="background:#FEEFC3;color:#7A4F01;font-size:36px">Call back</span></div></div>
+      <div class="grow" style="height:170px;box-shadow:inset 0 0 0 3px #1A73E8"><div class="gc" style="width:300px">أمين ب.</div><div class="gc" style="width:250px">5200</div>
+        <div class="gc" style="width:350px;border-left:0">
+          <i id="ring" style="position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px;border-radius:50%;border:5px solid #1E8E3E;display:block;opacity:0"></i>
+          <span class="bigchip" id="bcN" style="background:#E8EAED;color:#3C4043;position:absolute">Nouvelle ▾</span>
+          <span class="bigchip" id="bcOK" style="background:#1E8E3E;color:#FFFFFF;position:absolute;opacity:0">Confirmée ✓</span></div></div>
+      <div class="grow" style="height:150px;opacity:.45;border:0"><div class="gc" style="width:300px">سارة م.</div><div class="gc" style="width:250px">4500</div><div class="gc" style="width:350px;border-left:0"><span class="bigchip" style="background:#1E8E3E;color:#fff;font-size:36px">Confirmée</span></div></div>
+      <div class="menu" id="menu" style="left:-30px;top:420px">
+        <div class="mi2" id="o0"><span class="bigchip" style="background:#E8EAED;color:#3C4043;font-size:34px;padding:6px 26px">Nouvelle</span></div>
+        <div class="mi2" id="o1"><span class="bigchip" style="background:#1E8E3E;color:#fff;font-size:34px;padding:6px 26px">Confirmée</span></div>
+        <div class="mi2" id="o2"><span class="bigchip" style="background:#FEEFC3;color:#7A4F01;font-size:34px;padding:6px 26px">Call back</span></div>
+        <div class="mi2" id="o3"><span class="bigchip" style="background:#FAD2CF;color:#8C1D18;font-size:34px;padding:6px 26px">Annulée</span></div>
+      </div>
+    </div></div>
+    <svg class="abs" id="cur" width="78" height="78" viewBox="0 0 32 32" style="left:0;top:0;opacity:0;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))"><path d="M4 2 L4 26 L10 20 L14 30 L18 28 L14 18 L23 18 Z" fill="#1C1C1C" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"/></svg>
+  </div></section>
+
+  <!-- ===== SCENE 5 : DELIVERY COMPANY ===== -->
+  <section class="scene bgA" id="s5"><div class="grain"></div><div class="inner">
+    <div class="pl" data-depth=".5"><div class="abs" style="left:90px;top:170px;width:900px;background:#FFFFFF;border-radius:16px;box-shadow:0 0 0 1px #DADCE0,0 24px 50px rgba(40,32,24,.14);overflow:hidden">
+      <div class="grow hd" style="height:70px"><div class="gc" style="width:280px">الاسم</div><div class="gc" style="width:280px">الحالة</div><div class="gc" style="width:340px;border-left:0" dir="ltr">Tracking</div></div>
+      <div class="grow" style="height:96px;border:0"><div class="gc" style="width:280px;font-size:32px">أمين ب.</div><div class="gc" style="width:280px"><span class="chip ok" style="font-size:26px">Confirmée</span></div>
+        <div class="gc" style="width:340px;border-left:0" id="trkCell"><i id="trkSel" class="sel" style="inset:3px;opacity:0"></i><b id="trkIn" dir="ltr" style="font-size:32px;color:#1C1C1C"></b></div></div>
+    </div></div>
+    <div class="dcard" id="dcard">
+      <div class="dpc" style="left:0;top:0;width:450px;height:540px;border-radius:36px 0 0 0"></div>
+      <div class="dpc" style="left:450px;top:0;width:450px;height:540px;border-radius:0 36px 0 0"></div>
+      <div class="dpc" style="left:0;top:540px;width:450px;height:540px;border-radius:0 0 0 36px"></div>
+      <div class="dpc" style="left:450px;top:540px;width:450px;height:540px;border-radius:0 0 36px 0"></div>
+      <div class="abs" id="dshadow" style="inset:0;border-radius:36px;box-shadow:0 50px 100px rgba(40,32,24,.22),0 0 0 1px rgba(0,0,0,.05);opacity:0"></div>
+      <div class="abs" id="dlabel" style="left:0;right:0;top:0;height:92px;border-radius:36px 36px 0 0;background:repeating-linear-gradient(-45deg,#F2A900 0 28px,#F5B92E 28px 56px);opacity:0;display:flex;align-items:center;justify-content:space-between;padding:0 40px;direction:ltr">
+        <span style="font-size:34px;color:#1C1C1C;letter-spacing:3px">LIVRAISON</span><span style="font-size:28px;color:#1C1C1C">58 ✦</span></div>
+      <svg id="truck" class="abs" style="left:300px;top:130px" width="300" height="180" viewBox="0 0 300 180" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path class="dr" pathLength="1" d="M110 24 H272 V124 H110 Z" stroke="#1C1C1C" stroke-width="9"/>
+        <path class="dr" pathLength="1" d="M110 54 H62 L28 94 V124 H110" stroke="#1C1C1C" stroke-width="9"/>
+        <path class="dr" pathLength="1" d="M70 62 H100 V90 H50" stroke="#6B6B6B" stroke-width="7"/>
+        <circle class="dr" pathLength="1" cx="70" cy="134" r="22" stroke="#1C1C1C" stroke-width="9"/>
+        <circle class="dr" pathLength="1" cx="226" cy="134" r="22" stroke="#1C1C1C" stroke-width="9"/>
+        <path class="dr" pathLength="1" d="M140 74 H240" stroke="#F2A900" stroke-width="9"/>
+      </svg>
+      <div class="abs center" style="top:350px;font-size:50px"><span class="mask"><span class="mi">تسجلت عند شركة التوصيل ✅</span></span></div>
+      <div class="abs center" style="top:450px;font-size:34px;font-weight:600;color:#6B6B6B"><span class="mask"><span class="mi">رقم التتبع</span></span></div>
+      <div class="abs center" style="top:500px"><span id="trkBox" style="display:inline-block;min-width:440px;padding:12px 30px;border-radius:16px;background:#F5F3EF;border:2px dashed #CFCCC6;font-size:56px;direction:ltr;opacity:0"><span id="trk"></span><i id="caret" style="display:inline-block;width:4px;height:52px;background:#1C1C1C;vertical-align:middle;margin-left:4px"></i></span></div>
+      <div class="abs" style="left:60px;right:60px;top:760px;height:200px" id="tline">
+        <div class="abs" style="left:120px;right:120px;top:21px;height:6px;border-radius:3px;background:#E3E0DA"></div>
+        <div class="abs" id="tfill" style="right:120px;top:21px;height:6px;width:540px;border-radius:3px;background:#1E8E3E;transform-origin:100% 50%;transform:scaleX(0)"></div>
+        <div style="position:relative;display:flex;justify-content:space-between">
+          <div class="step" id="st0"><span class="dot">✓</span><span>En préparation</span></div>
+          <div class="step" id="st1"><span class="dot">✓</span><span>En livraison</span></div>
+          <div class="step" id="st2"><span class="dot">✓</span><span>Livrée ✓</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="abs" id="fly" style="left:0;top:0;font-size:56px;direction:ltr;opacity:0;white-space:nowrap">DHD…7784</div>
+  </div></section>
+
+  <!-- ===== SCENE 6 : CTA — BRAND ===== -->
+  <section class="scene s6bg" id="s6"><div class="inner" id="s6in">
+    <div class="abs" style="left:0;right:0;top:560px;height:260px" id="logoBox"></div>
+    <div class="abs center" style="top:840px;font-size:44px;font-weight:600;color:#BBE8EC"><span class="mask"><span class="mi">نظام متابعة الطلبيات</span></span></div>
+    <div class="abs center" style="top:1000px;font-size:74px;line-height:1.35;color:#FFFFFF"><span class="mask"><span class="mi">طلبياتك منظمة…</span></span><br><span class="mask"><span class="mi">من الطلب حتى التوصيل.</span></span></div>
+    <div class="abs center" style="top:1330px"><span class="pill" id="pill">اطلب نظامك الآن
+      <i id="shine" style="position:absolute;top:-30px;bottom:-30px;left:0;width:130px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);transform:skewX(-20deg);display:block;opacity:0"></i></span></div>
+  </div></section>
+
+  <div id="bands"></div>
+  <svg width="0" height="0" style="position:absolute"><filter id="hb" x="-20%" y="-5%" width="140%" height="110%"><feGaussianBlur id="hbB" stdDeviation="0 0"/></filter></svg>
+</div>
+<button id="replay" title="Replay" aria-label="Replay">↻</button>
+
+<script>
+(async () => {
+  const W = 1080, H = 1920, LOOP = 30;
+  const stage = document.getElementById('stage');
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const CAPTURE = location.hash === '#capture';
+
+  let SC = 1;
+  const fit = () => { SC = Math.min(innerWidth / W, innerHeight / H); stage.style.transform = `translate(-50%,-50%) scale(${SC})`; };
+  fit(); addEventListener('resize', fit);
+  await document.fonts.load('800 40px Cairo', 'ابت'); await document.fonts.load('600 40px Cairo', 'ابت'); await document.fonts.ready;
+
+  /* ---------- paper slips (scene 1) ---------- */
+  const SLIPS = [];
+  [['#slipsFar', [[80, 220, -14, .8], [760, 320, 12, .75], [130, 1350, 9, .7], [820, 1500, -10, .8]]], ['#slipsNear', [[-70, 330, 18, 1.15], [870, 1150, -16, 1.2]]]].forEach(([sel, list]) => {
+    list.forEach(([x, y, r, s], i) => {
+      const d = document.createElement('div'); d.className = 'slip';
+      d.innerHTML = `<b>طلبية #${2030 + SLIPS.length}</b><i style="width:90%"></i><i style="width:70%"></i><i style="width:80%"></i><i style="width:55%"></i>`;
+      d.style.left = x + 'px'; d.style.top = y + 'px'; if (s > 1) d.style.filter = 'blur(3px)';
+      $(sel).appendChild(d); SLIPS.push({ d, r, s, ph: Math.random() * 6 });
+    });
+  });
+
+  /* ---------- camera drift (parallax) — never still ---------- */
+  const PL = $$('.pl');
+  function frame(time) {
+    const dx = Math.sin(time * .33) * 12, dy = Math.cos(time * .27) * 10;
+    PL.forEach(p => { const d = +p.dataset.depth; p.style.transform = `translate(${dx * d}px,${dy * d}px)`; });
+    SLIPS.forEach(s => { s.d.style.transform = `translateY(${Math.sin(time * 1.1 + s.ph) * 14}px) rotate(${s.r + Math.sin(time * .9 + s.ph) * 4}deg) scale(${s.s})`; });
+  }
+  if (!CAPTURE) gsap.ticker.add(frame);
+
+  /* ---------- transition bands ---------- */
+  const BAND_COL = ['#2B2B2B', '#FBFAF7', '#E2DFDA', '#2B2B2B', '#FBFAF7'];
+  const BW = $('#bands'), BANDS = [], GHOSTS = [];
+  for (let i = 0; i < 5; i++) {
+    const y = -1115 + i * 446;
+    [2, 1, 0].forEach(g => {           // ghost copies behind the band
+      const b = document.createElement('div'); b.className = 'band' + (g ? ' g' : '') + (BAND_COL[i] === '#2B2B2B' ? '' : ' lt');
+      b.style.top = y + 'px'; b.style.background = BAND_COL[i]; b.style.opacity = 0;
+      if (!g) for (let k = 0; k < 3; k++) { const s = document.createElement('s'); s.style.top = (60 + k * 140 + Math.random() * 40) + 'px'; b.appendChild(s); }
+      BW.appendChild(b);
+      if (g) (GHOSTS[i] = GHOSTS[i] || [])[g - 1] = b; else BANDS[i] = b;
+    });
+  }
+
+  /* ---------- measure positions with scenes at rest ---------- */
+  const SCN = $$('.scene'); SCN.forEach(s => s.style.visibility = 'visible');
+  const sr = stage.getBoundingClientRect();
+  const rel = (el) => { const r = el.getBoundingClientRect(); return { x: (r.left - sr.left) / SC, y: (r.top - sr.top) / SC, w: r.width / SC, h: r.height / SC }; };
+  const wp = rel($('#wPaper'));
+  gsap.set('#scrib', { x: wp.x - 50, y: wp.y - 22, scaleX: (wp.w + 100) / 420, scaleY: (wp.h + 40) / 200, transformOrigin: '0 0' });
+  const SB = $('#sbody'), cellBox = (id) => { const c = $('#' + id); return { x: c.offsetLeft, y: c.parentNode.offsetTop, w: c.offsetWidth, h: c.parentNode.offsetHeight }; };
+  const CB = [0, 1, 2, 3, 4, 5].map(i => cellBox('c' + i));
+  const flyFrom = rel($('#trkBox')), flyTo = rel($('#trkCell'));
+  const chipC = rel($('#bcN')), opt1 = rel($('#o1'));
+  SCN.forEach(s => s.style.visibility = 'hidden');
+
+  /* ---------- master timeline ---------- */
+  const tl = gsap.timeline({ repeat: -1, paused: true, defaults: { immediateRender: false } });
+  const CUT = 0.12;
+  const WIN = [['s1', 0, 4 + CUT], ['s2', 4 + CUT, 9 + CUT], ['s3', 9 + CUT, 15 + CUT], ['s4', 15 + CUT, 21 + CUT], ['s5', 21 + CUT, 26 + CUT], ['s6', 26 + CUT, 30]];
+  const syncVis = () => { const t = tl.time(); WIN.forEach(([id, a, b]) => $('#' + id).style.visibility = (t >= a && t < b) ? 'visible' : 'hidden'); };
+  tl.eventCallback('onUpdate', syncVis); if (!CAPTURE) gsap.ticker.add(syncVis);
+  const at = (t) => (t >= LOOP ? t - LOOP : t);      // wrap the loop seam
+
+  /* THE transition: Diagonal Slice Wipe */
+  function slice(B, dir, fromId, toId, teal) {
+    const from = $('#' + fromId), to = $('#' + toId), off = 2300 * dir;
+    // 1. anticipation — brace against the wipe
+    tl.fromTo(from, { x: 0 }, { x: -20 * dir, duration: .12, ease: 'power4.out' }, B - .57);
+    // band colours for this pass (teal only for the brand reveal)
+    tl.set([BANDS[4], ...GHOSTS[4]], { backgroundColor: teal ? '#0C6873' : BAND_COL[4] }, B - .46);
+    // 2. slice in — staggered bands with trailing ghosts
+    for (let i = 0; i < 5; i++) {
+      const t0 = B - .45 + i * .04;
+      tl.fromTo(BANDS[i], { x: -off, opacity: 1 }, { x: 0, opacity: 1, duration: .4, ease: 'power4.inOut' }, t0);
+      GHOSTS[i].forEach((g, k) => tl.fromTo(g, { x: -off, opacity: [.35, .15][k] }, { x: 0, opacity: [.35, .15][k], duration: .4, ease: 'power4.inOut' }, t0 + (k + 1) * .035));
+    }
+    // 3. cut — whip-pan the old scene out under the bands
+    tl.fromTo(from, { x: -20 * dir }, { x: 300 * dir, duration: .32, ease: 'power4.in' }, B - .2);
+    tl.set(from, { filter: 'url(#hb)' }, B - .2);
+    tl.fromTo('#hbB', { attr: { stdDeviation: '0 0' } }, { attr: { stdDeviation: '24 0' }, duration: .32, ease: 'power4.in' }, B - .2);
+    tl.set(from, { filter: 'none', x: 0 }, B + CUT - .001 > LOOP ? LOOP - .001 : B + CUT - .001);
+    // 4. reveal — bands exit the same way, reverse stagger; new scene slides in & settles
+    const c = at(B + CUT);
+    for (let i = 4; i >= 0; i--) {
+      const t0 = c + (4 - i) * .04;
+      tl.fromTo(BANDS[i], { x: 0 }, { x: off, duration: .45, ease: 'power4.inOut' }, t0);
+      GHOSTS[i].forEach((g, k) => tl.fromTo(g, { x: 0, opacity: [.35, .15][k] }, { x: off, opacity: 0, duration: .45, ease: 'power4.inOut' }, t0 - (k + 1) * .02 < 0 ? 0 : t0 - (k + 1) * .02));
+    }
+    tl.fromTo(to, { x: -300 * dir, scale: 1.04, filter: 'blur(16px)' }, { x: 0, scale: 1, filter: 'blur(0px)', duration: .6, ease: 'expo.out' }, c);
+    tl.set(to, { filter: 'none' }, c + .61);
+  }
+
+  /* helpers — every entrance is a mask reveal, a typed string, a pop or a draw */
+  const mask = (els, t, st = .1) => tl.fromTo(els, { yPercent: 110, opacity: 0 }, { keyframes: [{ yPercent: -7, opacity: 1, duration: .38, ease: 'expo.out' }, { yPercent: 0, duration: .22, ease: 'power4.out' }], stagger: st }, t);
+  const typeIn = (el, str, t, d) => { const a = [...str], o = { n: 0 }; tl.fromTo(o, { n: 0 }, { n: a.length, duration: d, ease: 'power4.out', onUpdate: () => el.textContent = a.slice(0, Math.round(o.n)).join('') }, t); };
+  const pop = (el, t) => tl.fromTo(el, { scale: 0, opacity: 0 }, { keyframes: [{ scale: 1.12, opacity: 1, duration: .25, ease: 'expo.out' }, { scale: .97, duration: .12, ease: 'power4.inOut' }, { scale: 1, duration: .14, ease: 'power4.out' }] }, t);
+
+  /* ---- loop seam: CTA slices back into the hook ---- */
+  /* ---- Scene 1 : hook ---- */
+  const S1 = $$('#s1 .mi');
+  mask(S1.slice(0, 2), .45, .18);
+  mask(S1.slice(2), 1.25, .16);
+  tl.fromTo('#scribP', { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .7, ease: 'power4.inOut' }, 2.0);
+  tl.fromTo('#s1 .inner', { scale: 1 }, { scale: 1.05, duration: 3.4, ease: 'power4.inOut' }, .3);
+  slice(4, 1, 's1', 's2');
+
+  /* ---- Scene 2 : order comes in ---- */
+  mask($$('#s2 .mi'), 4.35, .12);
+  tl.fromTo('#tap', { scale: 0, opacity: 0, x: 120, y: 200 }, { scale: 1, opacity: 1, x: 0, y: 0, duration: .55, ease: 'expo.out' }, 4.8);
+  tl.fromTo('#tap', { scale: 1 }, { scale: .72, duration: .12, ease: 'power4.in' }, 5.38);
+  tl.fromTo('#tap', { scale: .72, opacity: 1 }, { scale: 2.2, opacity: 0, duration: .45, ease: 'expo.out' }, 5.5);
+  tl.fromTo('#buy', { scale: 1 }, { keyframes: [{ scale: .93, duration: .1, ease: 'power4.in' }, { scale: 1, duration: .3, ease: 'expo.out' }] }, 5.4);
+  tl.fromTo('#rip', { scale: 0, opacity: .9 }, { scale: 14, opacity: 0, duration: .7, ease: 'expo.out' }, 5.45);
+  const ORD = $('#ord'), OG = [1, 2].map(() => { const g = ORD.cloneNode(true); g.removeAttribute('id'); ORD.parentNode.insertBefore(g, ORD); return g; });
+  const oFrom = { x: 0, y: 380, scale: .3, rotationX: 55, rotationY: -10, opacity: 0, filter: 'blur(10px)', transformPerspective: 1300 };
+  const oTo = (op) => ({ keyframes: [{ y: -50, scale: 1.08, rotationX: -8, rotationY: 6, opacity: op, filter: 'blur(0px)', duration: .6, ease: 'expo.out' }, { y: 0, scale: 1, rotationX: 0, rotationY: 0, duration: .35, ease: 'power4.out' }] });
+  OG.forEach((g, i) => { tl.fromTo(g, { ...oFrom }, oTo([.35, .15][i]), 5.65 + (i + 1) * .04); tl.fromTo(g, { opacity: [.35, .15][i] }, { opacity: 0, duration: .2, ease: 'power4.out' }, 6.3); });
+  tl.fromTo(ORD, { ...oFrom }, oTo(1), 5.65);
+  tl.fromTo('#ph', { filter: 'blur(0px)', scale: 1 }, { filter: 'blur(6px)', scale: .96, duration: .7, ease: 'power4.out' }, 5.7);
+  tl.fromTo($$('#ord .orow'), { x: -70, opacity: 0 }, { x: 0, opacity: 1, duration: .5, ease: 'expo.out', stagger: .08 }, 6.05);
+  tl.fromTo(ORD, { rotationY: 0, y: 0 }, { rotationY: -7, y: -18, duration: 2.2, ease: 'power4.inOut' }, 6.75);
+  slice(9, -1, 's2', 's3');
+
+  /* ---- Scene 3 : google sheet ---- */
+  mask($$('#s3 .mi'), 9.35, .2);
+  tl.fromTo('#gs', { rotationX: 12, rotationY: -7, transformPerspective: 1800 }, { rotationY: 7, duration: 5.6, ease: 'power4.inOut' }, 9.12);
+  tl.fromTo('#rowN', { y: -200, scale: 1.3, opacity: 0, filter: 'blur(8px)' }, { keyframes: [{ y: 6, scale: 1, opacity: 1, filter: 'blur(0px)', duration: .45, ease: 'expo.out' }, { y: 0, duration: .2, ease: 'power4.out' }] }, 9.7);
+  const SEL = $('#sel'), VALS = ['أمين ب.', 'تبسة', 'ساعة ذكية', '4500'];
+  VALS.forEach((v, i) => {
+    const t = 10.3 + i * .48, b = CB[i];
+    tl.fromTo(SEL, { x: i ? CB[i - 1].x : b.x, y: b.y, width: i ? CB[i - 1].w : b.w, height: b.h, opacity: 1 }, { x: b.x, y: b.y, width: b.w, height: b.h, opacity: 1, duration: .18, ease: 'power4.out' }, t - .18);
+    typeIn($('#c' + i), v, t, .3);
+  });
+  tl.fromTo(SEL, { x: CB[3].x, width: CB[3].w }, { x: CB[4].x, width: CB[4].w, duration: .2, ease: 'power4.out' }, 12.15);
+  const fee = { v: 0 }; tl.fromTo(fee, { v: 0 }, { v: 700, duration: .55, ease: 'expo.out', onUpdate: () => $('#c4').textContent = Math.round(fee.v / 10) * 10 }, 12.35);
+  tl.fromTo(SEL, { x: CB[4].x, width: CB[4].w }, { x: CB[5].x, width: CB[5].w, duration: .2, ease: 'power4.out' }, 12.95);
+  const tot = { v: 0 }; tl.fromTo(tot, { v: 0 }, { v: 5200, duration: 1.0, ease: 'expo.out', onUpdate: () => $('#tot').textContent = Math.round(tot.v / 10) * 10 + ' دج' }, 13.15);
+  tl.fromTo('#totHl', { opacity: 0, scale: .8 }, { opacity: 1, scale: 1, duration: .5, ease: 'expo.out' }, 13.2);
+  tl.fromTo('#c5', { scale: 1 }, { keyframes: [{ scale: 1.08, duration: .2, ease: 'power4.out' }, { scale: 1, duration: .3, ease: 'power4.inOut' }] }, 14.1);
+  pop('#chN3', 14.25);
+  slice(15, 1, 's3', 's4');
+
+  /* ---- Scene 4 : one-click confirm ---- */
+  mask($$('#s4 .mi'), 15.35, .14);
+  tl.fromTo('#s4in', { scale: 1 }, { scale: 1.06, duration: 5.3, ease: 'power4.inOut' }, 15.3);
+  const cTx = chipC.x + chipC.w * .55, cTy = chipC.y + chipC.h * .6, oTx = opt1.x + opt1.w * .4, oTy = opt1.y + opt1.h * .55;
+  tl.fromTo('#cur', { x: 900, y: 1650, opacity: 0 }, { x: cTx, y: cTy, opacity: 1, duration: .8, ease: 'expo.inOut' }, 16.0);
+  tl.fromTo('#cur', { scale: 1 }, { keyframes: [{ scale: .8, duration: .08, ease: 'power4.in' }, { scale: 1, duration: .2, ease: 'expo.out' }] }, 16.85);
+  tl.fromTo('#bcN', { scale: 1 }, { keyframes: [{ scale: .94, duration: .08, ease: 'power4.in' }, { scale: 1, duration: .2, ease: 'expo.out' }] }, 16.87);
+  tl.fromTo('#menu', { scaleY: .3, opacity: 0, y: -20 }, { scaleY: 1, opacity: 1, y: 0, duration: .4, ease: 'expo.out' }, 17.0);
+  tl.fromTo('#cur', { x: cTx, y: cTy }, { x: oTx, y: oTy, duration: .55, ease: 'expo.inOut' }, 17.45);
+  tl.fromTo('#o1', { backgroundColor: 'rgba(241,243,244,0)' }, { backgroundColor: 'rgba(232,234,237,1)', duration: .2, ease: 'power4.out' }, 17.8);
+  tl.fromTo('#cur', { scale: 1 }, { keyframes: [{ scale: .8, duration: .08, ease: 'power4.in' }, { scale: 1, duration: .2, ease: 'expo.out' }] }, 18.1);
+  tl.fromTo('#menu', { scaleY: 1, opacity: 1 }, { scaleY: .5, opacity: 0, duration: .2, ease: 'power4.in' }, 18.2);
+  tl.fromTo('#bcN', { opacity: 1, scale: 1 }, { opacity: 0, scale: .6, duration: .15, ease: 'power4.in' }, 18.3);
+  pop('#bcOK', 18.4);
+  tl.fromTo('#ring', { scale: .6, opacity: .9 }, { scale: 4.2, opacity: 0, duration: .9, ease: 'expo.out' }, 18.45);
+  tl.fromTo('#cur', { x: oTx, y: oTy, opacity: 1 }, { x: oTx + 260, y: oTy + 380, opacity: 0, duration: .7, ease: 'expo.in' }, 19.0);
+  slice(21, -1, 's4', 's5');
+
+  /* ---- Scene 5 : delivery company ---- */
+  const DP = $$('#dcard .dpc');
+  tl.fromTo(DP, { x: i => [-380, 380, -380, 380][i], y: i => [-320, -320, 320, 320][i], rotation: i => [-16, 12, 14, -12][i], opacity: 0, filter: 'blur(12px)' },
+    { x: 0, y: 0, rotation: 0, opacity: 1, filter: 'blur(0px)', duration: .55, ease: 'expo.out', stagger: .05 }, 21.3);
+  tl.fromTo('#dshadow', { opacity: 0 }, { opacity: 1, duration: .3, ease: 'power4.out' }, 21.8);
+  tl.fromTo('#dlabel', { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: .45, ease: 'expo.out' }, 21.75);
+  tl.fromTo($$('#truck .dr'), { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .7, ease: 'power4.inOut', stagger: .07 }, 21.8);
+  mask($$('#s5 .dcard .mi'), 22.15, .15);
+  tl.fromTo('#trkBox', { scale: .7, opacity: 0 }, { scale: 1, opacity: 1, duration: .35, ease: 'expo.out' }, 22.45);
+  typeIn($('#trk'), 'DHD…7784', 22.6, .6);
+  tl.fromTo('#caret', { opacity: 1 }, { keyframes: [{ opacity: 0, duration: .15 }, { opacity: 1, duration: .15 }, { opacity: 0, duration: .15 }], ease: 'power4.inOut' }, 23.2);
+  // tracking number flies back into the sheet (with ghost copies)
+  const FLY = $('#fly'), FG = [1, 2].map(() => { const g = FLY.cloneNode(true); g.removeAttribute('id'); FLY.parentNode.insertBefore(g, FLY); return g; });
+  const fx0 = flyFrom.x + flyFrom.w / 2 - 140, fy0 = flyFrom.y + 10, fx1 = flyTo.x + flyTo.w / 2 - 140, fy1 = flyTo.y + flyTo.h / 2 - 42;
+  [FLY, ...FG].forEach((el, k) => {
+    tl.fromTo(el, { x: fx0, y: fy0, scale: 1, opacity: [1, .35, .15][k], filter: k ? 'blur(6px)' : 'blur(0px)' }, { x: fx1, y: fy1, scale: .58, opacity: [1, .35, .15][k], filter: k ? 'blur(6px)' : 'blur(0px)', duration: .55, ease: 'expo.inOut' }, 23.4 + k * .04);
+    tl.fromTo(el, { opacity: [1, .35, .15][k] }, { opacity: 0, duration: .12, ease: 'power4.out' }, 23.95 + k * .04);
+  });
+  typeIn($('#trkIn'), 'DHD…7784', 23.92, .05);
+  tl.fromTo('#trkSel', { opacity: 1 }, { opacity: 0, duration: .8, ease: 'power4.inOut' }, 23.95);
+  tl.fromTo('#trkCell', { backgroundColor: 'rgba(230,244,234,1)' }, { backgroundColor: 'rgba(230,244,234,0)', duration: 1, ease: 'power4.out' }, 23.95);
+  [0, 1, 2].forEach(i => {
+    const t = 24.15 + i * .55;
+    tl.fromTo(`#st${i} .dot`, { backgroundColor: '#FFFFFF', borderColor: '#CFCCC6', scale: 1 }, { keyframes: [{ backgroundColor: '#1E8E3E', borderColor: '#1E8E3E', scale: 1.25, duration: .22, ease: 'expo.out' }, { scale: 1, duration: .2, ease: 'power4.out' }] }, t);
+    tl.fromTo(`#st${i}`, { color: '#9A9A9A' }, { color: '#1C1C1C', duration: .25, ease: 'power4.out' }, t);
+    if (i) tl.fromTo('#tfill', { scaleX: (i - 1) / 2 }, { scaleX: i / 2, duration: .4, ease: 'power4.inOut' }, t - .3);
+  });
+  slice(26, 1, 's5', 's6', true);
+
+  /* ---- Scene 6 : CTA — the brand arrives ---- */
+  const LB = $('#logoBox');
+  for (let i = 0; i < 5; i++) {
+    const s = document.createElement('div'); s.className = 'slice';
+    s.innerHTML = 'NOURYS<span style="color:#3FD1C6">.</span>';
+    const a = i * 20, b = (i + 1) * 20; s.style.clipPath = `polygon(0 ${a}%,100% ${a - 4}%,100% ${b - 4}%,0 ${b}%)`;
+    LB.appendChild(s);
+  }
+  const SL = $$('#logoBox .slice');
+  tl.fromTo(SL, { x: i => (i % 2 ? 700 : -700), opacity: 0, filter: 'blur(14px)' }, { x: 0, opacity: 1, filter: 'blur(0px)', duration: .7, ease: 'expo.out', stagger: .07 }, 26.45);
+  tl.fromTo(SL, { textShadow: '0 0 0px rgba(63,209,198,0)' }, { textShadow: '0 0 40px rgba(63,209,198,0.85)', duration: .5, ease: 'power4.out' }, 27.1);
+  tl.fromTo('#logoBox', { scale: 1 }, { keyframes: [{ scale: 1.04, duration: .12, ease: 'power4.out' }, { scale: 1, duration: .3, ease: 'power4.inOut' }] }, 27.08);
+  mask($$('#s6 .mi'), 27.25, .18);
+  pop('#pill', 28.0);
+  tl.fromTo('#shine', { x: -200, opacity: 1 }, { x: 760, duration: .8, ease: 'power4.inOut' }, 28.55);
+  tl.fromTo('#s6in', { scale: 1 }, { scale: 1.06, duration: 3.6, ease: 'power4.inOut' }, 26.2);
+  slice(29.88, -1, 's6', 's1');
+  tl.set({}, {}, LOOP);
+
+  tl.progress(1, true).progress(0, true);
+  window.NOURYS_TL = tl;
+  $('#replay').onclick = () => tl.restart();
+  tl.play(0);
+  if (CAPTURE) {                 // frame-exact recording hook
+    gsap.ticker.remove(gsap.updateRoot);
+    const t0 = tl.startTime();
+    window.NOURYS_RENDER = (t) => { gsap.updateRoot(t0 + t); frame(t); syncVis(); };
+  }
+})();
+</script>
+</body>
+</html>
