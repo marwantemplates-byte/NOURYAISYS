@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>حاضنة الأعمال — كلمات في الفضاء</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{--ink:#1E1E1E;--acc:#2F4A37;--gold:#8A6A24;
+  /* full brand (final logo only) — app/globals.css */
+  --olive:#1f3d2b;--brandGold:#c9a24b;--goldLight:#e8d5a3;--goldDark:#8a6a24}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#EEEAE3}
+#stage{position:absolute;inset:0;overflow:hidden;background:linear-gradient(180deg,#F4F1EC 0%,#F1EDE7 45%,#E9E4DC 100%);font-family:Cairo,sans-serif;color:var(--ink)}
+#drift{position:absolute;inset:0}
+#vp{position:absolute;inset:0;perspective:2000px;perspective-origin:50% 50%}
+#world{position:absolute;left:960px;top:540px;width:0;height:0;transform-style:preserve-3d}
+.o{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d}
+.fv{position:absolute}
+/* floor */
+.fl{position:absolute;background-color:#E7E1D7;
+  background-image:radial-gradient(1400px 900px at 50% 50%,rgba(255,253,248,.55),rgba(255,253,248,0) 70%);
+  background-size:3200px 3200px}
+.shd{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(70,52,30,.26),rgba(70,52,30,.09) 55%,rgba(70,52,30,0))}
+/* sentences */
+.txt{white-space:nowrap;text-align:center;font-family:Cairo;font-weight:900;font-size:112px;line-height:1.32;color:var(--ink)}
+.txt .w{display:inline-block;vertical-align:bottom}
+.txt .m{overflow:hidden;padding:0 .05em .16em;margin-bottom:-.16em}
+.acc{color:var(--acc)} .gold{color:var(--gold)}
+.num{display:inline-block;font-variant-numeric:tabular-nums;text-align:center}
+.sub{font-family:Tajawal;font-weight:700;font-size:44px;color:#5B5953;margin-top:6px}
+.stk{position:absolute;overflow:visible;filter:drop-shadow(0 14px 16px rgba(70,50,25,.20)) drop-shadow(0 2px 3px rgba(70,50,25,.18))}
+/* screen-space finish */
+#light{position:absolute;inset:-200px;pointer-events:none;mix-blend-mode:soft-light}
+#grain{position:absolute;inset:-60px;pointer-events:none;opacity:.055;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .3  0 0 0 0 .25  0 0 0 0 .18  0 0 0 1.7 -.4'/></filter><rect width='260' height='260' filter='url(%23n)'/></svg>")}
+#vign{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 100% at 50% 45%,rgba(0,0,0,0) 60%,rgba(70,55,35,.13) 100%)}
+#sweep{position:absolute;top:-200px;bottom:-200px;width:900px;left:0;pointer-events:none;opacity:0;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,253,248,.95) 50%,rgba(255,255,255,0))}
+</style>
+</head>
+<body>
+<div id="stage">
+ <div id="drift"><div id="vp"><div id="world">
+   <div class="o" id="items"></div>
+   <div class="o" id="wash"><div class="fv" id="washF" style="left:-6000px;top:-4000px;width:12000px;height:8000px;background:radial-gradient(closest-side,#FBF9F5 0%,#F4F1EC 60%,#EDE8E0 100%);opacity:0"></div></div>
+   <div class="o" id="logo">
+     <div class="fv" id="lgRow" style="left:-1000px;width:2000px;top:-300px;display:flex;justify-content:center;align-items:center;gap:44px;direction:rtl">
+       <span id="lgName" style="display:inline-block;font:700 176px/1.25 'Reem Kufi';color:var(--olive);white-space:nowrap">حاضنة الأعمال</span>
+       <i id="lgBadge" style="width:184px;height:184px;border-radius:46px;background:var(--olive);color:var(--goldLight);font:700 96px 'Reem Kufi';font-style:normal;display:flex;align-items:center;justify-content:center;box-shadow:0 28px 56px rgba(31,61,43,.26)">ح</i>
+     </div>
+     <div class="fv" id="lgRule" style="left:-115px;width:230px;top:-52px;height:6px;border-radius:3px;background:var(--brandGold)"></div>
+     <div class="fv" id="lgUni" style="left:-1000px;width:2000px;top:-20px;text-align:center;font:700 54px Tajawal;color:var(--goldDark);white-space:nowrap">جامعة الأمير عبد القادر للعلوم الإسلامية — قسنطينة</div>
+     <div class="fv" id="lgPill" style="left:-1000px;width:2000px;top:118px;display:flex;justify-content:center">
+       <div style="position:relative;overflow:hidden;display:inline-flex;align-items:center;background:var(--brandGold);color:#1a1a1a;border-radius:999px;padding:16px 70px;font:800 62px Cairo;box-shadow:0 24px 48px rgba(138,106,36,.28)">سجّل الآن على المنصة<i id="shine" style="position:absolute;top:-20px;bottom:-20px;width:150px;left:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg)"></i></div>
+     </div>
+   </div>
+ </div></div></div>
+ <div id="light"></div>
+ <div id="sweep"></div>
+ <div id="vign"></div>
+ <div id="grain"></div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
