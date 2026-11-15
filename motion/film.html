@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>حاضنة الأعمال — فيلم المنصة</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+:root{
+  --olive:#1f3d2b; --emerald:#2e6b4a; --gold:#c9a24b; --gold-light:#e8d5a3; --gold-dark:#8a6a24;
+  --ivory:#faf7f0; --ink:#1a1a1a; --panel:#f3f1ea;
+  --fh:"Reem Kufi","Tajawal",sans-serif; --fb:"Tajawal",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--ivory);overflow:hidden}
+body{font-family:var(--fb);color:var(--ink);-webkit-font-smoothing:antialiased}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--ivory);transform-origin:0 0}
+#cam{position:absolute;inset:0;perspective:2600px;perspective-origin:50% 50%}
+#world{position:absolute;left:0;top:0;width:2400px;height:1400px;transform-origin:0 0;direction:ltr}
+.abs{position:absolute}
+.h{font-family:var(--fh)}
+.rtl{direction:rtl;text-align:right}
+.ltr{direction:ltr;text-align:left}
+
+/* ---------- world décor ---------- */
+#glow{left:-600px;top:-500px;width:3300px;height:2300px;background:radial-gradient(closest-side at 50% 45%,rgba(232,213,163,.30),rgba(232,213,163,0) 70%)}
+.floorshadow{border-radius:50%;background:radial-gradient(closest-side,rgba(31,61,43,.22),rgba(31,61,43,0))}
+
+/* ---------- laptop ---------- */
+#lid{left:-24px;top:-24px;width:1488px;height:962px;border-radius:30px;background:linear-gradient(160deg,#2a2c2a,#141614 40%,#101210);box-shadow:0 0 0 2px #3a3c39 inset,0 40px 80px -30px rgba(31,61,43,.45),0 18px 30px -18px rgba(0,0,0,.35)}
+#lcamdot{left:716px;top:-15px;width:8px;height:8px;border-radius:50%;background:#2c3a30;box-shadow:0 0 0 2px #1d1f1d}
+#lscreen{left:0;top:0;width:1440px;height:900px;overflow:hidden;border-radius:6px;background:var(--olive)}
+#hinge{left:-4px;top:936px;width:1448px;height:16px;border-radius:0 0 6px 6px;background:linear-gradient(#0f100f,#2d2f2c)}
+#base{left:-170px;top:950px;width:1780px;height:34px;border-radius:2px 2px 40px 40px/2px 2px 30px 30px;background:linear-gradient(#f4f1ea,#dcd7cb 55%,#bdb8ab);box-shadow:0 2px 0 #fff inset}
+#notch{left:620px;top:950px;width:200px;height:12px;border-radius:0 0 14px 14px;background:linear-gradient(#cfcabd,#e6e2d8)}
+
+/* ---------- phone ---------- */
+#phone{left:1618px;top:38px;width:434px;height:888px;border-radius:68px;background:linear-gradient(150deg,#2a2c2a,#121412 45%,#0e100e);box-shadow:0 0 0 2px #3c3e3b inset,0 0 0 1px #000,0 40px 70px -26px rgba(31,61,43,.5),0 16px 26px -14px rgba(0,0,0,.35)}
+#pscreen{left:1640px;top:60px;width:390px;height:844px;border-radius:50px;overflow:hidden;background:var(--ivory)}
+#island{left:1780px;top:72px;width:110px;height:32px;border-radius:20px;background:#0b0c0b}
+.status{position:absolute;left:0;right:0;top:0;height:46px;display:flex;justify-content:space-between;align-items:center;padding:6px 34px 0;font:700 15px var(--fb);direction:ltr}
+.status .bars{display:flex;gap:5px;align-items:center}
+
+/* ---------- shared UI (Tailwind look of the platform) ---------- */
+.badge-h{display:inline-flex;align-items:center;justify-content:center;border-radius:9px;font-family:var(--fh)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;font-weight:700;white-space:nowrap}
+.btn-gold{background:var(--gold);color:var(--ink)}
+.btn-olive{background:var(--olive);color:#fff}
+.btn-em{background:var(--emerald);color:#fff}
+.btn-out{border:2px solid rgba(31,61,43,.25);color:var(--olive)}
+.lbl{display:block;font-weight:500;color:var(--ink);margin-bottom:5px}
+.req{color:var(--gold-dark)}
+.inp{position:relative;display:flex;align-items:center;width:100%;border:1px solid rgba(31,61,43,.2);background:#fff;border-radius:12px;padding:0 14px;color:var(--ink);white-space:nowrap;overflow:hidden}
+.inp.focus{border-color:var(--emerald);box-shadow:0 0 0 3px rgba(46,107,74,.22)}
+.inp .ph{color:rgba(26,26,26,.4)}
+.inp.area{align-items:flex-start;padding-top:11px;white-space:normal;line-height:1.6}
+.caret{display:inline-block;width:2px;height:1.15em;background:var(--emerald);vertical-align:-0.18em;margin:0 1px}
+.chev{position:absolute;left:14px;top:50%;width:10px;height:10px;border-left:2px solid #333;border-bottom:2px solid #333;transform:translateY(-70%) rotate(-45deg)}
+.card{background:#fff;border:1px solid rgba(31,61,43,.1);border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.pill{display:inline-flex;align-items:center;border-radius:999px;font-weight:700;white-space:nowrap}
+.muted{color:rgba(26,26,26,.6)}
+
+/* ---------- hero (laptop) ---------- */
+.hero-img{position:absolute;inset:0;background:url(assets/hero-desktop.jpg) center/cover no-repeat}
+.hero-g1{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.45),rgba(0,0,0,.15) 50%,rgba(12,26,18,.9))}
+.hero-g2{position:absolute;left:0;right:0;bottom:0;height:66%;background:linear-gradient(to top,rgba(12,26,18,.7),transparent)}
+.sway{position:absolute;inset:0;background:url(assets/hero-desktop.jpg) center/cover no-repeat;transform-origin:50% 100%}
+#swayL{-webkit-mask:linear-gradient(to right,#000 0,#000 26%,transparent 40%)}
+#swayR{-webkit-mask:linear-gradient(to left,#000 0,#000 18%,transparent 31%)}
+.hnav{position:absolute;left:176px;right:176px;top:18px;height:44px;display:flex;align-items:center;justify-content:space-between;color:#fff;direction:rtl}
+.hnav .logo{display:flex;align-items:center;gap:8px;font:700 24px var(--fh)}
+.hnav .logo i{width:36px;height:36px;font-style:normal;font-size:16px;color:var(--gold-light);background:rgba(255,255,255,.15);box-shadow:0 0 0 1px rgba(255,255,255,.3)}
+.hnav nav{display:flex;gap:28px;font:500 16px var(--fb)}
+.hnav .acts{display:flex;gap:8px}
+.hnav .acts .btn{height:44px;padding:0 20px;font-size:16px}
+.hnav .login{border:2px solid rgba(255,255,255,.6);color:#fff;font-weight:500}
+.hcopy{position:absolute;right:176px;top:452px;width:760px;color:#fff;direction:rtl;text-align:right}
+.hpill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(232,213,163,.4);background:rgba(0,0,0,.25);padding:6px 16px;font-size:16px;color:var(--gold-light)}
+.hpill b{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.htitle{font:700 72px/1.15 var(--fh);margin-top:16px;text-shadow:0 2px 12px rgba(0,0,0,.45)}
+.hsub{font-size:20px;line-height:1.65;margin-top:20px;color:rgba(255,255,255,.9);text-shadow:0 1px 8px rgba(0,0,0,.5);width:600px}
+.hbtns{display:flex;gap:16px;margin-top:32px}
+.hbtns .btn{height:48px;padding:0 32px;font-size:18px}
+#hcta{box-shadow:0 10px 15px -3px rgba(0,0,0,.2)}
+.hsec{border:2px solid rgba(255,255,255,.8);color:#fff;font-weight:500}
+.hscroll{position:absolute;left:708px;top:834px;width:24px;height:40px;border-radius:12px;border:2px solid rgba(255,255,255,.7)}
+.hscroll i{position:absolute;left:8px;top:8px;width:4px;height:8px;border-radius:2px;background:var(--gold-light)}
+
+/* ---------- admin (laptop) ---------- */
+#admin{position:absolute;inset:0;background:var(--panel);direction:rtl;box-shadow:0 -18px 40px -14px rgba(12,26,18,.45)}
+#side{position:absolute;right:0;top:0;bottom:0;width:256px;background:var(--olive);color:#fff}
+#side .top{height:64px;display:flex;align-items:center;gap:8px;padding:0 20px;border-bottom:1px solid rgba(255,255,255,.1)}
+#side .top i{width:36px;height:36px;background:var(--gold);color:var(--ink);font-style:normal;font-size:16px}
+#side nav{position:relative;padding:16px 12px}
+#sideHi{position:absolute;right:12px;width:232px;height:48px;border-radius:12px;background:var(--gold)}
+.sitem{position:relative;height:48px;display:flex;align-items:center;gap:12px;padding:0 12px;font-weight:500;font-size:16px;margin-bottom:4px;color:rgba(255,255,255,.9)}
+.sitem.on{color:var(--ink)}
+#side .foot{position:absolute;bottom:0;left:0;right:0;border-top:1px solid rgba(255,255,255,.1);padding:12px;font-size:15px;color:rgba(255,255,255,.8)}
+#main{position:absolute;right:256px;left:0;top:0;bottom:0;overflow:hidden}
+.view{position:absolute;inset:0;padding:40px;background:var(--panel)}
+.v-h1{font:700 30px var(--fh);color:var(--olive)}
+.v-p{margin-top:4px;color:rgba(26,26,26,.7);font-size:16px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}
+.tile{border-radius:16px;padding:20px;background:#fff;border:1px solid rgba(31,61,43,.1);box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.tile p{font-size:14px;font-weight:500;color:rgba(26,26,26,.6)}
+.tile .n{font:700 48px/1.15 var(--fh);margin-top:4px;color:var(--ink)}
+.tile.big{background:var(--olive);border-color:var(--olive)}
+.tile.big p{color:var(--gold-light)} .tile.big .n{color:#fff}
+.sec-h{font:700 18px var(--fh);color:var(--olive)}
+.ins{font-family:var(--fb)}
+
+/* ---------- phone views ---------- */
+.pv{position:absolute;inset:0;direction:rtl;text-align:right;overflow:hidden}
+.reg-bg{position:absolute;inset:0;background:url(assets/hero-mobile.jpg) center/cover}
+.reg-head{position:absolute;top:46px;left:18px;right:18px;height:52px;display:flex;align-items:center;justify-content:space-between;color:#fff}
+.reg-head .logo{display:flex;align-items:center;gap:7px;font:700 19px var(--fh)}
+.reg-head .logo i{width:32px;height:32px;font-style:normal;font-size:14px;color:var(--gold-light);background:rgba(255,255,255,.15);box-shadow:0 0 0 1px rgba(255,255,255,.3)}
+.reg-title{position:absolute;top:106px;right:18px;left:18px;color:#fff}
+.reg-title h1{font:700 27px var(--fh);text-shadow:0 2px 10px rgba(0,0,0,.5)}
+.reg-title p{font-size:14.5px;margin-top:4px;color:rgba(255,255,255,.92);text-shadow:0 1px 8px rgba(0,0,0,.55)}
+#regcard{position:absolute;top:184px;left:14px;right:14px;height:600px;border-radius:18px;background:rgba(255,255,255,.97);box-shadow:0 25px 50px -12px rgba(0,0,0,.35);overflow:hidden}
+.steps{position:absolute;top:18px;left:18px;right:18px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12.5px;font-weight:500}
+.steps .bar{height:6px;border-radius:3px;background:rgba(31,61,43,.15);overflow:hidden;position:relative}
+.steps .bar i{position:absolute;top:0;bottom:0;right:0;background:var(--emerald);border-radius:3px}
+.steps span{display:block;margin-top:6px}
+.rstep{position:absolute;top:66px;left:18px;right:18px}
+.rstep h2{font:700 19px var(--fh);color:var(--olive);margin-bottom:12px}
+.f{margin-bottom:11px}
+.f .lbl{font-size:14px;margin-bottom:4px}
+.f .inp{height:42px;font-size:15px}
+.rstep .btn{height:46px;font-size:16px}
+#regsuccess{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+#okc{width:92px;height:92px;border-radius:50%;background:var(--emerald);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px -10px rgba(46,107,74,.6)}
+#feed{background:var(--ivory)}
+.fhead{position:absolute;top:46px;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid rgba(31,61,43,.1);background:rgba(250,247,240,.95)}
+.fhead .logo{display:flex;align-items:center;gap:7px;font:700 18px var(--fh);color:var(--olive)}
+.fhead .logo i{width:32px;height:32px;font-style:normal;font-size:14px;color:var(--gold-light);background:var(--olive)}
+#flist{position:absolute;top:118px;left:16px;right:16px}
+.fcard{position:relative;overflow:hidden;margin-bottom:14px}
+.fimg{height:88px;background:linear-gradient(135deg,var(--olive),var(--emerald),var(--olive));position:relative;overflow:hidden}
+.fbody{padding:13px 15px 15px}
+.fbadges{display:flex;gap:7px}
+.fbadges .pill{font-size:12px;padding:3px 11px}
+.p-type{background:var(--gold);color:var(--ink)}
+.p-on{background:#fff;color:var(--emerald);box-shadow:0 0 0 1px rgba(46,107,74,.3)}
+.p-off{background:var(--olive);color:#fff}
+.ftitle{font:700 17px/1.35 var(--fh);color:var(--olive);margin-top:9px}
+.fmeta{margin-top:8px;font-size:13.5px;color:rgba(26,26,26,.75)}
+.fmeta div{display:flex;align-items:center;gap:7px;height:22px}
+.fmeta svg{color:var(--emerald);flex-shrink:0}
+.rsvp{position:relative;height:42px;margin-top:11px;overflow:hidden;font-size:15px}
+.rsvp .fill{position:absolute;top:0;bottom:0;right:0;background:var(--emerald)}
+.rsvp span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:6px}
+
+/* ---------- floating cards ---------- */
+#mail{left:1236px;top:600px;width:360px;padding:16px 18px;border-radius:18px;background:#fff;direction:rtl;text-align:right;display:flex;gap:14px;align-items:center;box-shadow:0 24px 50px -18px rgba(31,61,43,.45),0 0 0 1px rgba(31,61,43,.08)}
+#mail .ic{width:50px;height:50px;border-radius:14px;background:var(--olive);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.env{position:absolute;left:0;top:0;width:58px;height:40px;margin:-20px 0 0 -29px}
+#brand{left:212px;top:1030px;width:1620px;direction:rtl;text-align:center}
+#brand .row{display:flex;align-items:center;justify-content:center;gap:18px}
+#brand .row i{width:74px;height:74px;border-radius:18px;background:var(--olive);color:var(--gold-light);font:700 34px var(--fh);font-style:normal;display:flex;align-items:center;justify-content:center}
+#brand .name{font:700 72px var(--fh);color:var(--olive)}
+#brand .rule{width:90px;height:3px;background:var(--gold);margin:14px auto 12px;border-radius:2px}
+#brand .uni{font:500 28px var(--fb);color:var(--gold-dark)}
+
+/* ---------- guide leaf, cursor, ripples ---------- */
+#leaf{left:0;top:0;width:0;height:0}
+#leaf svg{position:absolute;left:-30px;top:-30px;overflow:visible}
+.ripple{position:absolute;left:0;top:0;border-radius:50%;border:2px solid var(--gold);opacity:0}
+#cursor{left:0;top:0;width:0;height:0}
+#cursor svg{position:absolute;left:-4px;top:-2px;overflow:visible}
+#cring{position:absolute;left:-22px;top:-22px;width:44px;height:44px;border-radius:50%;border:2px solid var(--gold-light);opacity:0}
+
+/* ---------- screen-space finish ---------- */
+#grain{position:absolute;inset:0;pointer-events:none;opacity:.06;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .3  0 0 0 0 .2  0 0 0 1.6 -.35'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>")}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,rgba(250,247,240,0) 62%,rgba(138,106,36,.10))}
+</style>
+</head>
+<body>
+<div id="stage">
+ <div id="cam">
+  <div id="world">
+   <div id="glow" class="abs"></div>
+   <div class="abs floorshadow" style="left:-120px;top:952px;width:1680px;height:90px"></div>
+   <div class="abs floorshadow" style="left:1600px;top:900px;width:470px;height:60px"></div>
+
+   <!-- ================= LAPTOP ================= -->
+   <div id="lid" class="abs"><div id="lcamdot" class="abs" style="left:740px;top:9px"></div></div>
+   <div id="hinge" class="abs"></div>
+   <div id="base" class="abs"></div>
+   <div id="notch" class="abs"></div>
+
+   <div id="lscreen" class="abs">
+     <!-- HERO -->
+     <div id="hero" class="abs" style="inset:0">
+       <div class="hero-img"></div>
+       <div id="swayL" class="sway"></div>
+       <div id="swayR" class="sway"></div>
+       <div class="hero-g1"></div><div class="hero-g2"></div>
+       <canvas id="heroLeaves" width="2880" height="1800" style="position:absolute;inset:0;width:1440px;height:900px"></canvas>
+       <div class="hnav">
+         <div class="logo"><i class="badge-h">ح</i>حاضنة الأعمال</div>
+         <nav><span>الرئيسية</span><span>من نحن</span><span>الأحداث</span><span>تواصل</span></nav>
+         <div class="acts"><div class="btn login">دخول</div><div class="btn btn-gold">سجّل الآن</div></div>
+       </div>
+       <div class="hcopy">
+         <div class="hpill"><b></b>جامعة الأمير عبد القادر للعلوم الإسلامية — قسنطينة</div>
+         <div class="htitle">حاضنة الأعمال</div>
+         <div class="hsub">من فكرة إلى مؤسسة: نرافق الطلبة في تحويل مشاريعهم إلى نماذج أولية ومؤسسات ناشئة</div>
+         <div class="hbtns"><div id="hcta" class="btn btn-gold" data-a="hero-cta">سجّل الآن</div><div class="btn hsec">الأحداث والدورات</div></div>
+       </div>
+       <div class="hscroll"><i id="hdot"></i></div>
+     </div>
+
+     <!-- ADMIN -->
+     <div id="admin">
+       <aside id="side">
+         <div class="top"><i class="badge-h">ح</i><div style="line-height:1.25"><p class="h" style="font-size:18px;font-weight:700">لوحة التحكم</p><p style="font-size:12px;color:rgba(255,255,255,.6)">حاضنة الأعمال</p></div></div>
+         <nav>
+           <div id="sideHi"></div>
+           <div class="sitem" id="si0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg>نظرة عامة</div>
+           <div class="sitem" id="si1" data-a="nav-students"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 21a8 8 0 0116 0"/></svg>الطلبة</div>
+           <div class="sitem" id="si2" data-a="nav-items"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v3M17 3v3M4 8h16M5 5h14v15H5z"/></svg>الدورات والأحداث</div>
+           <div class="sitem" id="si3" data-a="nav-emails"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4zM4 7l8 6 8-6"/></svg>الإيميل الجماعي</div>
+         </nav>
+         <div class="foot"><p style="font-size:14px;color:rgba(255,255,255,.6);padding:0 12px 8px">مدير الحاضنة</p><p style="padding:8px 12px">عرض الموقع</p><p style="padding:8px 12px">خروج</p></div>
+       </aside>
+       <div id="main">
+         <!-- overview -->
+         <section class="view" id="v0">
+           <h1 class="v-h1">مرحبًا، مدير الحاضنة</h1>
+           <p class="v-p">نظرة عامة على الحاضنة.</p>
+           <div class="tiles">
+             <div class="tile big" data-a="tile1"><p>عدد المسجلين</p><div class="n" id="n1">0</div></div>
+             <div class="tile" data-a="tile2"><p>المشاريع</p><div class="n" id="n2">0</div></div>
+             <div class="tile" data-a="tile3"><p>الدورات والأحداث</p><div class="n" id="n3">0</div></div>
+             <div class="tile" data-a="tile4"><p>نسبة الحضور العامة</p><div class="n" id="n4">0%</div></div>
+           </div>
+           <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:20px;margin-top:20px">
+             <section class="card" style="padding:20px 22px;height:470px;position:relative">
+               <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 class="sec-h">التسجيلات حسب الشهر</h2><span class="muted" style="font-size:14px">2026</span></div>
+               <div id="chart" style="position:absolute;left:24px;right:24px;top:70px;bottom:52px"></div>
+             </section>
+             <section class="card" style="padding:20px 22px;height:470px">
+               <div style="display:flex;justify-content:space-between;align-items:center"><h2 class="sec-h">الدورات القادمة</h2><div class="btn btn-gold" style="height:44px;padding:0 16px;font-size:16px" data-a="add-course">+ إضافة دورة</div></div>
+               <ul id="upc" style="list-style:none;margin-top:10px"></ul>
+             </section>
+           </div>
+         </section>
+
+         <!-- add course form -->
+         <section class="view" id="v1">
+           <p class="muted" style="font-size:14px">الدورات والأحداث ‹</p>
+           <h1 class="v-h1" style="margin-top:4px">دورة جديدة</h1>
+           <div class="card" style="margin-top:18px;padding:24px 26px;width:760px">
+             <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+               <div class="f"><span class="lbl">النوع <span class="req">*</span></span><div class="inp" style="height:46px;font-size:16px">دورة تكوينية<i class="chev"></i></div></div>
+               <div class="f"><span class="lbl">النمط <span class="req">*</span></span>
+                 <div class="inp" style="height:46px;font-size:16px;justify-content:space-between" data-a="f-toggle"><span id="modeTxt">حضوري</span>
+                   <span style="display:flex;align-items:center;gap:8px;direction:rtl"><span style="font-size:14px;color:rgba(26,26,26,.6)">أونلاين</span><span id="tg" style="position:relative;width:46px;height:26px;border-radius:13px;background:rgba(31,61,43,.18)"><i id="tgk" style="position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)"></i></span></span></div></div>
+             </div>
+             <div class="f"><span class="lbl">عنوان الدورة <span class="req">*</span></span><div class="inp" id="fTitle" style="height:46px;font-size:16px" data-a="f-title"></div></div>
+             <div class="f"><span class="lbl">الأستاذ المكوّن</span><div class="inp" id="fTrainer" style="height:46px;font-size:16px" data-a="f-trainer"></div></div>
+             <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+               <div class="f"><span class="lbl">التاريخ والساعة (البداية) <span class="req">*</span></span><div class="inp ltr" id="fDate" style="height:46px;font-size:16px;justify-content:flex-end" data-a="f-date"></div></div>
+               <div class="f"><span class="lbl">العدد الأقصى (اختياري)</span><div class="inp" style="height:46px;font-size:16px">40</div></div>
+             </div>
+             <div class="f" style="position:relative;height:96px">
+               <div id="fLoc" style="position:absolute;inset:0"><span class="lbl">المكان <span class="req">*</span></span><div class="inp" style="height:46px;font-size:16px"><span class="ph">مثال: قاعة المحاضرات الكبرى</span></div></div>
+               <div id="fMeetW" style="position:absolute;inset:0"><span class="lbl">رابط الدورة (Google Meet) <span class="req">*</span></span><div class="inp ltr" id="fMeet" style="height:46px;font-size:16px;justify-content:flex-start" data-a="f-meet"></div><p style="font-size:13.5px;color:rgba(26,26,26,.6);margin-top:4px">يظهر للطلبة فقط بعد تأكيد حضورهم.</p></div>
+             </div>
+             <div style="display:flex;gap:12px;align-items:flex-start;border:2px solid rgba(201,162,75,.4);background:rgba(232,213,163,.2);border-radius:12px;padding:12px;margin-top:2px">
+               <span style="width:20px;height:20px;border-radius:5px;background:var(--emerald);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+               <span><b>إرسال إيميل إعلان لكل الطلبة</b><span style="display:block;font-size:14px;color:rgba(26,26,26,.65)">يُرسل عند الضغط على «حفظ ونشر» فقط.</span></span>
+             </div>
+             <div style="display:flex;gap:12px;border-top:1px solid rgba(31,61,43,.1);padding-top:18px;margin-top:18px">
+               <div class="btn btn-gold" id="pubBtn" style="flex:1;height:50px;font-size:18px" data-a="f-publish">حفظ ونشر</div>
+               <div class="btn btn-out" style="height:50px;padding:0 24px;font-size:16px">حفظ كمسودة</div>
+             </div>
+           </div>
+         </section>
+
+         <!-- attendance -->
+         <section class="view" id="v2">
+           <p class="muted" style="font-size:14px">الدورات والأحداث ‹</p>
+           <h1 class="v-h1" style="margin-top:4px">التسويق الرقمي للمشاريع الناشئة</h1>
+           <p class="v-p">دورة تكوينية · الأربعاء 18 نوفمبر · 14:00 · قاعة المحاضرات الكبرى</p>
+           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px">
+             <div class="card" style="padding:14px;text-align:center"><p class="muted" style="font-size:14px">أكّدوا</p><p class="h" style="font-size:38px;font-weight:700;color:var(--olive)">24</p></div>
+             <div class="card" style="padding:14px;text-align:center"><p class="muted" style="font-size:14px">حضروا</p><p class="h" id="aCame" style="font-size:38px;font-weight:700;color:var(--emerald)">14</p></div>
+             <div class="card" style="padding:14px;text-align:center"><p class="muted" style="font-size:14px">غابوا</p><p class="h" style="font-size:38px;font-weight:700;color:var(--ink)">3</p></div>
+             <div class="card" style="padding:14px;text-align:center" data-a="att-rate"><p class="muted" style="font-size:14px">نسبة الحضور</p><p class="h" id="aRate" style="font-size:38px;font-weight:700;color:var(--ink)">82%</p></div>
+           </div>
+           <div style="display:flex;gap:12px;margin-top:18px">
+             <div class="btn btn-em" style="height:44px;padding:0 20px">⬇ تصدير Excel</div>
+             <div class="btn btn-out" style="height:44px;padding:0 20px">راسلهم بالإيميل</div>
+           </div>
+           <ul id="attList" class="card" style="list-style:none;margin-top:18px"></ul>
+         </section>
+
+         <!-- students -->
+         <section class="view" id="v3">
+           <h1 class="v-h1">الطلبة</h1>
+           <div class="card" style="margin-top:18px;padding:14px;display:flex;gap:12px;align-items:center">
+             <div class="inp" style="height:44px;flex:1;font-size:15px"><span class="ph">ابحث بالاسم أو الإيميل أو المشروع…</span></div>
+             <div class="btn btn-em" style="height:44px;padding:0 20px">⬇ تصدير Excel</div>
+           </div>
+           <p style="margin-top:12px;font-size:14px;color:rgba(26,26,26,.7)"><b style="color:var(--olive)">63</b> طالب</p>
+           <div class="card" style="margin-top:10px;overflow:hidden">
+             <table id="stTable" style="width:100%;border-collapse:collapse;font-size:14px"></table>
+           </div>
+         </section>
+
+         <!-- bulk email -->
+         <section class="view" id="v4">
+           <h1 class="v-h1">الإيميل الجماعي</h1>
+           <p class="v-p">راسل الطلبة دفعة واحدة.</p>
+           <div style="display:grid;grid-template-columns:1fr 360px;gap:22px;margin-top:20px">
+             <div class="card" style="padding:22px 24px">
+               <p style="font-weight:500;margin-bottom:8px">المستلمون</p>
+               <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+                 <div class="inp" style="height:48px;border:2px solid var(--emerald);background:rgba(46,107,74,.1);color:var(--olive);font-weight:500;gap:8px"><span style="width:20px;height:20px;border-radius:50%;border:2px solid var(--emerald);display:flex;align-items:center;justify-content:center"><i style="width:10px;height:10px;border-radius:50%;background:var(--emerald)"></i></span>كل الطلبة (63)</div>
+                 <div class="inp" style="height:48px;border-width:2px;font-weight:500;gap:8px"><span style="width:20px;height:20px;border-radius:50%;border:2px solid rgba(31,61,43,.3)"></span>تخصص معيّن</div>
+                 <div class="inp" style="height:48px;border-width:2px;font-weight:500;gap:8px"><span style="width:20px;height:20px;border-radius:50%;border:2px solid rgba(31,61,43,.3)"></span>الحاضرون في دورة</div>
+               </div>
+               <div class="f" style="margin-top:18px"><span class="lbl">الموضوع <span class="req">*</span></span><div class="inp" style="height:46px;font-size:16px">دورة جديدة: ريادة الأعمال الرقمية</div></div>
+               <div class="f"><span class="lbl">النص <span class="req">*</span></span><div class="inp area" style="height:150px;font-size:16px">السلام عليكم،<br>يسرّ حاضنة الأعمال دعوتكم إلى دورة «ريادة الأعمال الرقمية» يوم الأحد 6 ديسمبر عبر Google Meet. أكّدوا حضوركم من المنصة.</div></div>
+               <div id="sendOk" style="height:0;overflow:hidden"><div style="border:1px solid rgba(46,107,74,.3);background:rgba(46,107,74,.1);color:var(--olive);border-radius:12px;padding:12px 16px;font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span id="sendTxt">تم الإرسال إلى 0 طالب</span></div></div>
+               <div style="display:flex;gap:12px;border-top:1px solid rgba(31,61,43,.1);padding-top:18px;margin-top:14px">
+                 <div class="btn btn-gold" id="sendBtn" style="flex:1;height:52px;font-size:18px" data-a="send-all">إرسال إيميل للجميع</div>
+                 <div class="btn btn-out" style="height:52px;padding:0 20px;font-size:16px">إرسال تجريبي لبريدي</div>
+               </div>
+             </div>
+             <aside class="card" style="padding:16px;height:fit-content">
+               <p style="font-size:14px;font-weight:700;color:rgba(26,26,26,.6);margin-bottom:10px">معاينة</p>
+               <div style="border-radius:12px;overflow:hidden;border:1px solid rgba(31,61,43,.1)">
+                 <div style="background:var(--olive);color:#fff;padding:14px 16px;font:700 18px var(--fh)">حاضنة الأعمال</div>
+                 <div style="padding:14px 16px;font-size:14.5px;line-height:1.7;color:rgba(26,26,26,.85)"><b style="color:var(--olive)">دورة جديدة: ريادة الأعمال الرقمية</b><br>السلام عليكم، يسرّ حاضنة الأعمال دعوتكم إلى دورة «ريادة الأعمال الرقمية» يوم الأحد 6 ديسمبر عبر Google Meet.<div style="margin-top:12px;display:inline-block;background:var(--gold);border-radius:10px;padding:6px 14px;font-weight:700">أكّد حضورك</div></div>
+               </div>
+             </aside>
+           </div>
+         </section>
+       </div>
+     </div>
+     <div id="cursor" class="abs"><div id="cring"></div><svg width="34" height="40" viewBox="0 0 17 20"><path d="M1 1 L1 15.5 L4.6 12.3 L7.1 18.2 L9.6 17.1 L7.2 11.4 L12.2 11.4 Z" fill="#1a1a1a" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+   </div>
+
+   <div id="mail" class="abs">
+     <div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#e8d5a3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4zM4 7l8 6 8-6"/></svg></div>
+     <div>
+       <p style="font:700 19px var(--fh);color:var(--olive)">وصلك تأكيد في الإيميل</p>
+       <p style="font-size:14px;color:rgba(26,26,26,.72);margin-top:3px">تأكيد مشاركتك: التسويق الرقمي للمشاريع الناشئة</p>
+       <p style="font-size:12.5px;color:rgba(26,26,26,.5);margin-top:3px">حاضنة الأعمال · الآن</p>
+     </div>
+   </div>
+
+   <!-- ================= PHONE ================= -->
+   <div id="phone" class="abs"></div>
+   <div id="pscreen" class="abs">
+     <!-- feed (under) -->
+     <div class="pv" id="feed">
+       <div class="status" style="color:var(--ink)"><span>10:24</span><span class="bars"><svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="#1a1a1a"/><rect x="5" y="5" width="3" height="7" rx="1" fill="#1a1a1a"/><rect x="10" y="2.5" width="3" height="9.5" rx="1" fill="#1a1a1a"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#1a1a1a"/></svg><svg width="26" height="13" viewBox="0 0 26 13"><rect x=".5" y=".5" width="22" height="12" rx="3.5" fill="none" stroke="#1a1a1a" opacity=".5"/><rect x="2.5" y="2.5" width="16" height="8" rx="2" fill="#1a1a1a"/><rect x="23.5" y="4.5" width="2" height="4" rx="1" fill="#1a1a1a" opacity=".5"/></svg></span></div>
+       <div class="fhead">
+         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1f3d2b" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+         <div class="logo">حاضنة الأعمال<i class="badge-h">ح</i></div>
+       </div>
+       <div style="position:absolute;top:116px;right:16px;left:16px" id="fhdr">
+         <h1 class="h" style="font-size:23px;font-weight:700;color:var(--olive)">الدورات والأحداث</h1>
+         <p style="font-size:14px;color:rgba(26,26,26,.7);margin-top:2px">مرحبًا أمينة — هذه مواعيدك القادمة.</p>
+         <i class="abs" data-a="feed-rest" style="left:30px;top:20px;width:1px;height:1px"></i>
+       </div>
+       <div id="flist" style="top:184px"></div>
+     </div>
+     <!-- register (over) -->
+     <div class="pv" id="reg">
+       <div class="reg-bg"></div>
+       <div class="hero-g1"></div>
+       <canvas id="regLeaves" width="780" height="1688" style="position:absolute;inset:0;width:390px;height:844px"></canvas>
+       <div class="status" style="color:#fff"><span>10:24</span><span class="bars"><svg width="18" height="12" viewBox="0 0 18 12" fill="#fff"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="26" height="13" viewBox="0 0 26 13"><rect x=".5" y=".5" width="22" height="12" rx="3.5" fill="none" stroke="#fff" opacity=".6"/><rect x="2.5" y="2.5" width="16" height="8" rx="2" fill="#fff"/></svg></span></div>
+       <div class="reg-head"><div class="logo"><i class="badge-h">ح</i>حاضنة الأعمال</div><span style="font-size:15px;font-weight:500">الرئيسية</span></div>
+       <div class="reg-title"><h1>سجّل في الحاضنة</h1><p>أنشئ حسابك وعرّف بمشروعك في دقيقتين.</p></div>
+       <div id="regcard">
+         <div class="steps" id="steps">
+           <div><div class="bar"><i id="sb1" style="left:0"></i></div><span id="sl1" style="color:var(--olive)">1. الحساب</span></div>
+           <div><div class="bar"><i id="sb2" style="left:100%"></i></div><span id="sl2" style="color:rgba(26,26,26,.5)">2. المشروع</span></div>
+         </div>
+         <div class="rstep" id="step1">
+           <h2>معلومات الحساب</h2>
+           <div class="f"><span class="lbl">الاسم واللقب <span class="req">*</span></span><div class="inp" id="rName" data-a="reg-name"></div></div>
+           <div class="f"><span class="lbl">البريد الإلكتروني <span class="req">*</span></span><div class="inp ltr" id="rEmail" style="justify-content:flex-start" data-a="reg-email"></div></div>
+           <div class="f"><span class="lbl">رقم الهاتف <span class="req">*</span></span><div class="inp ltr" id="rPhone" style="justify-content:flex-start" data-a="reg-phone"></div></div>
+           <div class="f"><span class="lbl">كلمة السر <span class="req">*</span></span><div class="inp ltr" id="rPw" style="justify-content:flex-start;letter-spacing:3px"></div></div>
+           <div class="f"><span class="lbl">تأكيد كلمة السر <span class="req">*</span></span><div class="inp ltr" id="rPw2" style="justify-content:flex-start;letter-spacing:3px"></div></div>
+           <div class="btn btn-gold" id="rNext" style="margin-top:14px" data-a="reg-next">التالي: معلومات المشروع</div>
+         </div>
+         <div class="rstep" id="step2">
+           <h2>معلومات المشروع</h2>
+           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+             <div class="f"><span class="lbl">الكلية <span class="req">*</span></span><div class="inp" id="rFac" style="font-size:13.5px"></div></div>
+             <div class="f"><span class="lbl">المستوى <span class="req">*</span></span><div class="inp" id="rLvl"></div></div>
+           </div>
+           <div class="f"><span class="lbl">التخصص <span class="req">*</span></span><div class="inp" id="rSpec"></div></div>
+           <div class="f"><span class="lbl">عنوان المشروع <span class="req">*</span></span><div class="inp" id="rPTitle"></div></div>
+           <div class="f"><span class="lbl">فكرة المشروع <span class="req">*</span></span><div class="inp area" id="rIdea" style="height:84px" data-a="reg-idea"></div></div>
+           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:2px 0 14px">
+             <div class="inp" style="height:42px;justify-content:center;gap:8px;border-width:2px"><span style="width:18px;height:18px;border-radius:50%;border:2px solid rgba(31,61,43,.3)"></span>نعم</div>
+             <div class="inp" style="height:42px;justify-content:center;gap:8px;border:2px solid var(--emerald);background:rgba(46,107,74,.1);color:var(--olive)"><span style="width:18px;height:18px;border-radius:50%;border:2px solid var(--emerald);display:flex;align-items:center;justify-content:center"><i style="width:9px;height:9px;border-radius:50%;background:var(--emerald)"></i></span>لا</div>
+           </div>
+           <div style="display:flex;gap:10px">
+             <div class="btn btn-gold" id="rSubmit" style="flex:1" data-a="reg-submit">إنشاء الحساب</div>
+             <div class="btn btn-out" style="width:96px;height:46px;font-weight:500">رجوع</div>
+           </div>
+         </div>
+         <p id="regfoot" style="position:absolute;bottom:20px;left:0;right:0;text-align:center;font-size:14px;color:rgba(26,26,26,.7)">لديك حساب؟ <b style="color:var(--emerald);text-decoration:underline;text-underline-offset:4px">سجّل الدخول</b></p>
+         <div id="regsuccess">
+           <div id="okc"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path id="okpath" d="M5 12.5l4.5 4.5L19 7.5" stroke-dasharray="22" stroke-dashoffset="22"/></svg></div>
+           <i class="abs" data-a="reg-check" style="left:50%;top:50%;width:1px;height:1px;margin:-74px 0 0 46px"></i>
+           <h2 class="h" style="font-size:25px;color:var(--olive);margin-top:22px">مرحبا بك في الحاضنة</h2>
+           <p style="margin-top:8px;color:rgba(26,26,26,.7);font-size:15.5px">أهلًا أمينة، حسابك جاهز.</p>
+         </div>
+       </div>
+     </div>
+   </div>
+   <div id="island" class="abs"></div>
+
+   <!-- envelopes -->
+   <div id="envs" class="abs" style="left:0;top:0"></div>
+
+   <!-- brand -->
+   <div id="brand" class="abs">
+     <div class="row"><span class="name">حاضنة الأعمال</span><i>ح</i></div>
+     <div class="rule"></div>
+     <div class="uni">جامعة الأمير عبد القادر للعلوم الإسلامية — قسنطينة</div>
+   </div>
+
+   <!-- ripples + guide leaf -->
+   <div id="ripples" class="abs" style="left:0;top:0"></div>
+   <div id="leaf" class="abs"><svg width="60" height="60" viewBox="-30 -30 60 60"><defs><linearGradient id="lg" x1="-1" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="#b88a35"/><stop offset=".55" stop-color="#d8b45e"/><stop offset="1" stop-color="#e0c27a"/></linearGradient></defs><g id="leafg"><path d="M-25 0 C-17 -15 13 -14 27 0 C13 14 -17 15 -25 0 Z" fill="url(#lg)"/><path d="M-22 0 Q0 -1.2 25 0" stroke="rgba(255,255,240,.55)" stroke-width="1.6" fill="none"/><path d="M-4 -.4 L4 -7 M6 -.2 L13 -5.5 M-4 .4 L4 7 M6 .2 L13 5.5" stroke="rgba(255,255,240,.3)" stroke-width="1" fill="none"/><path d="M-25 0 L-31 1.5" stroke="#8a6a24" stroke-width="1.6" stroke-linecap="round"/></g></svg></div>
+  </div>
+ </div>
+ <div id="vig"></div>
+ <div id="grain"></div>
+</div>
+
+<script>
+/* =====================================================================
+   Deterministic film: every visual is a pure function of t (seconds).
+   window.seek(t) renders the frame. No timers, no transitions, no state.
+   ===================================================================== */
+const DUR = 35, FPS = 60, BEAT = 7 / 12;            // 102.86 BPM → 60 beats = 35 s exactly
+const B = (n) => n * BEAT;
+const PARAMS = new URLSearchParams(location.search);
+const VERT = PARAMS.get('v') === '9x16';
+const SW = VERT ? 1080 : 1920, SH = VERT ? 1920 : 1080;
+
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, u) => a + (b - a) * u;
+const prog = (t, a, b) => clamp((t - a) / (b - a), 0, 1);
+const ss = (u) => (u = clamp(u, 0, 1), u * u * (3 - 2 * u));
+const sm = (u) => (u = clamp(u, 0, 1), u * u * u * (u * (u * 6 - 15) + 10));
+const eo = (u) => 1 - Math.pow(1 - clamp(u, 0, 1), 3);
+const eio = (u) => (u = clamp(u, 0, 1), u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
+/** Closed-form damped spring step 0→1 (small overshoot ≈ 4%). */
+function spring(t, f = 3.2, z = 0.7) {
+  if (t <= 0) return 0;
+  const w = 2 * Math.PI * f, wd = w * Math.sqrt(1 - z * z);
+  return 1 - Math.exp(-z * w * t) * (Math.cos(wd * t) + (z * w / wd) * Math.sin(wd * t));
+}
+const springIn = (t, t0, f, z) => spring(t - t0, f, z);
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+function setHTML(el, h) { if (el._h !== h) { el._h = h; el.innerHTML = h; } }
+function setStyle(el, k, v) { if (el['_' + k] !== v) { el['_' + k] = v; el.style[k] = v; } }
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let r = Math.imul(seed ^ seed >>> 15, 1 | seed); r = r + Math.imul(r ^ r >>> 7, 61 | r) ^ r; return ((r ^ r >>> 14) >>> 0) / 4294967296; }; }
+
+/** Portion of `str` typed between t0 and t1 (+ caret while focused). */
+function typed(str, t, t0, t1) { const ch = Array.from(str); const n = Math.round(ch.length * prog(t, t0, t1)); return ch.slice(0, n).join(''); }
+function field(el, str, t, t0, t1, focusA, focusB, ph) {
+  const s = typed(str, t, t0, t1);
+  const focus = t >= focusA && t < focusB;
+  const caretOn = focus && (t < t1 + 0.05 || Math.floor((t - t1) * 2.2) % 2 === 0);
+  const body = s ? esc(s) : (ph ? `<span class="ph">${ph}</span>` : '');
+  setHTML(el, (s ? `<span>${body}</span>` : body) + (caretOn ? '<i class="caret"></i>' : ''));
+  el.classList.toggle('focus', focus);
+}
+
+/* ---------------- story data (invented, consistent everywhere) ---------------- */
+const STUDENT = { name: 'أمينة بن صالح', email: 'amina.bensalah@gmail.com', phone: '0661 24 58 13', fac: 'كلية الشريعة والاقتصاد', lvl: 'ماستر 1', spec: 'اقتصاد إسلامي', ptitle: 'سوق بلادي', idea: 'منصة لتسويق المنتجات المحلية' };
+const COURSE = 'التسويق الرقمي للمشاريع الناشئة';
+const NEWC = { title: 'ريادة الأعمال الرقمية', trainer: 'د. سمية حمادي', date: '06/12/2026  10:00', meet: 'meet.google.com/kfr-tqbn-xwd' };
+
+/* =====================================================================
+   BEAT MAP (beats of 0.5833 s; 60 beats = 35 s)
+   ===================================================================== */
+const T = {
+  cursorGo: B(2), cursorHover: B(3), click: B(4), leafOff: B(5),
+  name: B(9), email: B(10), phone: B(11), next: B(12), idea: B(14), submit: B(17), check: B(18),
+  toFeed: B(19), card1: B(20), card2: B(21), card3: B(22), rsvp: B(24), mail: B(26),
+  tile1: B(29), tile2: B(30), tile3: B(31), tile4: B(32), add: B(33),
+  fTitle: B(34), fTrainer: B(35), fDate: B(36), fToggle: B(37), fMeet: B(38), publish: B(39), newCard: B(40),
+  navItems: B(41), att: [B(42), B(43), B(44), B(45)], navStudents: B(46), details: B(47), note: B(48), noteAdd: B(49),
+  navEmails: B(50), send: B(51), burst: B(52), pull: B(55), merge: 34.3,
+};
+
+/* ---------------- anchors (measured once, in world space) ---------------- */
+const A = {};
+function measure() {
+  const w = $('world'), wr = w.getBoundingClientRect(), k = wr.width / w.offsetWidth;
+  document.querySelectorAll('[data-a]').forEach((el) => {
+    const r = el.getBoundingClientRect();
+    A[el.dataset.a] = { x: (r.left - wr.left) / k, y: (r.top - wr.top) / k, w: r.width / k, h: r.height / k, cx: (r.left + r.width / 2 - wr.left) / k, cy: (r.top + r.height / 2 - wr.top) / k };
+  });
+}
+/** Contact point for an anchor: fields are touched at their end side (left, typing grows toward the leaf). */
+const at = (name, mode = 'c', dx = 0, dy = 0) => () => {
+  const a = A[name];
+  if (mode === 'L') return { x: a.x + 34 + dx, y: a.cy + dy };
+  if (mode === 'R') return { x: a.x + a.w - 34 + dx, y: a.cy + dy };
+  return { x: a.cx + dx, y: a.cy + dy };
+};
+
+/* ---------------- guide leaf: drift in the hero (loop-safe) ---------------- */
+/** τ is time relative to the loop point (t, or t-35 at the end). */
+function drift(tau) {
+  return { x: 1012 + 24 * tau, y: 666 + 9 * Math.sin(1.2 * tau) + 3 * tau, r: -18 + 12 * Math.sin(0.9 * tau), sy: 0.8 + 0.2 * Math.cos(1.4 * tau + 0.5) };
+}
+
+/* contacts: t = touch time, p = point fn, dep = departure (optional) */
+let C = [];
+function buildContacts() {
+  C = [
+    { t: T.name, p: at('reg-name', 'L') },
+    { t: T.email, p: at('reg-email', 'R', 0) },
+    { t: T.phone, p: at('reg-phone', 'R') },
+    { t: T.next, p: at('reg-next', 'c', -96) },
+    { t: T.idea, p: at('reg-idea', 'L', 0, 4) },
+    { t: T.submit, p: at('reg-submit', 'c', -60) },
+    { t: T.check, p: at('reg-check') },
+    { t: B(19.6), p: at('feed-rest') },
+    { t: T.rsvp, p: at('rsvp1', 'c', -98) },
+    { t: B(26.6), p: at('mail-dot') },
+    { t: T.tile1, p: at('tile1', 'c', -70, 22), dep0: B(27) },
+    { t: T.tile2, p: at('tile2', 'c', -70, 22) },
+    { t: T.tile3, p: at('tile3', 'c', -70, 22) },
+    { t: T.tile4, p: at('tile4', 'c', -70, 22) },
+    { t: T.add, p: at('add-course', 'c', -40) },
+    { t: T.fTitle, p: at('f-title', 'L') },
+    { t: T.fTrainer, p: at('f-trainer', 'L') },
+    { t: T.fDate, p: at('f-date', 'R') },
+    { t: T.fToggle, p: at('f-toggle', 'L', 58) },
+    { t: T.fMeet, p: at('f-meet', 'R', 30) },
+    { t: T.publish, p: at('f-publish', 'c', -120) },
+    { t: T.navItems, p: at('nav-items', 'c', -60), dep0: B(39.9) },
+    { t: T.att[0], p: at('att0', 'c', -44) }, { t: T.att[1], p: at('att1', 'c', -44) }, { t: T.att[2], p: at('att2', 'c', -44) }, { t: T.att[3], p: at('att4', 'c', -44) },
+    { t: T.navStudents, p: at('nav-students', 'c', -60) },
+    { t: T.details, p: at('st-details') },
+    { t: T.note, p: at('st-note', 'L') },
+    { t: T.noteAdd, p: at('st-add') },
+    { t: T.navEmails, p: at('nav-emails', 'c', -60) },
+    { t: T.send, p: at('send-all', 'c', -150) },
+  ];
+  // departures: explicit for long flights, otherwise a short hop before the next touch
+  for (let i = 0; i < C.length; i++) {
+    const next = C[i + 1];
+    if (!next) { C[i].dep = T.pull; break; }
+    const P0 = C[i].p(), P1 = next.p(), d = Math.hypot(P1.x - P0.x, P1.y - P0.y);
+    const want = clamp(0.3 + d / 1800, 0.32, 0.9);
+    C[i].dep = next.dep0 ?? Math.max(C[i].t + 0.16, next.t - Math.min(want, (next.t - C[i].t) * 0.72));
+  }
+}
+
+function bez(p0, p1, p2, p3, u) { const v = 1 - u; return v * v * v * p0 + 3 * v * v * u * p1 + 3 * v * u * u * p2 + u * u * u * p3; }
+/** Flight from P0 to P1, progress p∈[0,1]: arc + sway, returns {x,y,r,sy}. */
+function fly(P0, P1, p, lift) {
+  const dx = P1.x - P0.x, dy = P1.y - P0.y, d = Math.hypot(dx, dy) || 1;
+  lift = lift ?? Math.min(240, 26 + d * 0.3);
+  const u = eio(p);
+  const c1 = { x: P0.x + dx * .22, y: P0.y + dy * .22 - lift }, c2 = { x: P0.x + dx * .78, y: P0.y + dy * .78 - lift * .85 };
+  const nx = -dy / d, ny = dx / d, waves = Math.max(1, Math.round(d / 520)), amp = Math.min(34, d * .045);
+  const sw = amp * Math.sin(Math.PI * u) * Math.sin(2 * Math.PI * waves * u);
+  const x = bez(P0.x, c1.x, c2.x, P1.x, u) + nx * sw, y = bez(P0.y, c1.y, c2.y, P1.y, u) + ny * sw;
+  const u2 = clamp(u + 0.01, 0, 1);
+  const tx = bez(P0.x, c1.x, c2.x, P1.x, u2) - bez(P0.x, c1.x, c2.x, P1.x, u), ty = bez(P0.y, c1.y, c2.y, P1.y, u2) - bez(P0.y, c1.y, c2.y, P1.y, u);
+  const ang = Math.atan2(ty, tx) * 180 / Math.PI;
+  const env = Math.sin(Math.PI * p);
+  const r = lerp(-22, clamp(ang * .35, -40, 40), env) + 26 * env * Math.sin(2 * Math.PI * 1.3 * p * waves);
+  const sy = 1 - 0.55 * env * (0.5 + 0.5 * Math.cos(2 * Math.PI * (waves + .5) * p));
+  return { x, y, r, sy, dirx: dx / d, diry: dy / d };
+}
+
+/** Guide leaf state at time t. */
+function leafAt(t) {
+  const first = C[0];
+  if (t < T.leafOff) { const d = drift(t); return { ...d, sx: 1, s: 1 }; }
+  if (t < first.t) {                                       // hero → phone: the long first flight
+    const p = prog(t, T.leafOff, first.t), P0 = drift(T.leafOff), f = fly(P0, first.p(), p, 300);
+    return { ...f, sx: 1, s: 1 };
+  }
+  for (let i = 0; i < C.length; i++) {
+    const c = C[i], n = C[i + 1];
+    if (t < c.dep) {                                        // resting on contact i (landing spring + squash)
+      const P = c.p(), tau = t - c.t;
+      const prev = i === 0 ? drift(T.leafOff) : C[i - 1].p();
+      const dx = P.x - prev.x, dy = P.y - prev.y, d = Math.hypot(dx, dy) || 1;
+      const k = Math.exp(-tau * 8) * Math.sin(tau * 22);
+      const bob = Math.sin(2 * Math.PI * 0.9 * tau) * 2.2 * ss(tau / 0.4);
+      return { x: P.x + dx / d * 9 * k, y: P.y + dy / d * 9 * k + bob, r: -22 + 14 * k + 3 * Math.sin(tau * 3), sy: 1 - 0.2 * Math.exp(-tau * 9) * Math.cos(tau * 18), sx: 1 + 0.14 * Math.exp(-tau * 9) * Math.cos(tau * 18), s: 1 };
+    }
+    if (n && t < n.t) { const f = fly(c.p(), n.p(), prog(t, c.dep, n.t)); return { ...f, sx: 1, s: 1 }; }
+    if (!n) {                                                // final flight back into the hero, merging into the drift
+      const tauEnd = T.merge - DUR;
+      if (t >= T.merge) { const d = drift(t - DUR); return { ...d, sx: 1, s: 1 }; }
+      const p = prog(t, c.dep, T.merge), f = fly(c.p(), drift(tauEnd), p, 520), d = drift(t - DUR), m = ss(prog(p, .7, 1));
+      return { x: lerp(f.x, d.x, m), y: lerp(f.y, d.y, m), r: lerp(f.r, d.r, m), sy: lerp(f.sy, d.sy, m), sx: 1, s: 1 };
+    }
+  }
+}
+
+/* ---------------- camera ---------------- */
+// z = zoom for 16:9; z9 = zoom for 9:16. cx,cy = world point at frame centre. fx/fy = follow-the-leaf weight.
+const HERO = { z: 1.2, z9: 0.74, cx: 720, cy: 449 };
+const CAM = [
+  { t: 0, ...HERO, fx: 0, fy: 0 },
+  { t: T.leafOff - 0.1, ...HERO, fx: 0, fy: 0 },
+  { t: 4.15, z: 0.86, z9: 0.5, cx: 1270, cy: 520, fx: .35, fy: .2 },
+  { t: T.name - 0.1, z: 1.55, z9: 1.62, cx: 1835, cy: 420, fx: 0, fy: .55 },
+  { t: T.check + 0.3, z: 1.55, z9: 1.62, cx: 1835, cy: 470, fx: 0, fy: .55 },
+  { t: T.card1, z: 1.24, z9: 1.6, cx: 1835, cy: 470, fx: 0, fy: .15 },
+  { t: T.rsvp + 0.4, z: 1.3, z9: 1.6, cx: 1835, cy: 500, fx: 0, fy: .2 },
+  { t: T.mail + 0.5, z: 1.18, z9: 1.05, cx: 1690, cy: 560, fx: 0, fy: 0 },
+  { t: B(27.9), z: 0.92, z9: 0.62, cx: 1250, cy: 450, fx: .3, fy: .1 },
+  { t: T.tile1 - 0.05, z: 1.36, z9: 0.95, cx: 690, cy: 400, fx: 0, fy: 0 },
+  { t: T.add - 0.25, z: 1.36, z9: 0.95, cx: 690, cy: 410, fx: 0, fy: 0 },
+  { t: T.fTitle - 0.05, z: 1.5, z9: 1.05, cx: 740, cy: 400, fx: 0, fy: .5 },
+  { t: T.publish - 0.15, z: 1.5, z9: 1.05, cx: 740, cy: 470, fx: 0, fy: .5 },
+  { t: T.newCard + 0.15, z: 0.98, z9: 0.52, cx: 1150, cy: 470, fx: 0, fy: 0 },
+  { t: T.navItems + 0.25, z: 1.0, z9: 0.52, cx: 1100, cy: 470, fx: 0, fy: 0 },
+  { t: T.att[0], z: 1.36, z9: 0.95, cx: 660, cy: 420, fx: .15, fy: .3 },
+  { t: T.att[3] + .3, z: 1.36, z9: 0.95, cx: 660, cy: 430, fx: .15, fy: .3 },
+  { t: T.details, z: 1.36, z9: 0.95, cx: 660, cy: 410, fx: .15, fy: .3 },
+  { t: T.noteAdd + .3, z: 1.36, z9: 0.95, cx: 660, cy: 430, fx: .15, fy: .3 },
+  { t: T.send, z: 1.36, z9: 0.95, cx: 640, cy: 450, fx: 0, fy: 0 },
+  { t: T.burst + 0.5, z: 1.0, z9: 0.62, cx: 660, cy: 380, fx: 0, fy: 0 },
+  { t: T.pull, z: 1.0, z9: 0.62, cx: 660, cy: 380, fx: 0, fy: 0 },
+  { t: T.pull + 1.0, z: 0.8, z9: 0.43, cx: 1012, cy: 560, fx: 0, fy: 0 },
+  { t: 33.45, z: 0.8, z9: 0.43, cx: 1012, cy: 560, fx: 0, fy: 0 },
+  { t: 34.45, ...HERO, fx: 0, fy: 0 },
+  { t: DUR, ...HERO, fx: 0, fy: 0 },
+];
+function leafSmooth(t) {
+  let x = 0, y = 0, ws = 0;
+  for (let k = -4; k <= 4; k++) { const w = Math.exp(-(k * k) / 8), L = leafAt(clamp(t + k * 0.07, 0, DUR - 1e-6)); x += L.x * w; y += L.y * w; ws += w; }
+  return { x: x / ws, y: y / ws };
+}
+function camBase(t) {
+  let i = 0; while (i < CAM.length - 2 && t >= CAM[i + 1].t) i++;
+  const a = CAM[i], b = CAM[i + 1], u = sm(prog(t, a.t, b.t));
+  const za = VERT ? a.z9 : a.z, zb = VERT ? b.z9 : b.z;
+  const L = leafSmooth(t);
+  const fx = lerp(a.fx, b.fx, u), fy = lerp(a.fy, b.fy, u);
+  const bx = lerp(a.cx, b.cx, u), by = lerp(a.cy, b.cy, u);
+  return { z: Math.exp(lerp(Math.log(za), Math.log(zb), u)), cx: bx + (L.x - bx) * fx, cy: by + (L.y - by) * fy };
+}
+function camAt(t) {
+  const c = camBase(t), a = camBase(Math.max(0, t - 1 / 30)), b = camBase(Math.min(DUR, t + 1 / 30));
+  const vx = (b.cx - a.cx) * 15 * c.z, vy = (b.cy - a.cy) * 15 * c.z;  // screen px / s
+  c.ry = clamp(-vx * 0.0011, -2.6, 2.6); c.rx = clamp(vy * 0.0009, -1.8, 1.8);
+  return c;
+}
+
+/* ---------------- hero leaves (35 s periodic, like components/hero/leaves.ts) ---------------- */
+const GREENS = ['#4F7D3A', '#2E6B4A', '#6E9440', '#86A84B', '#3F6B33'], GOLDS = ['#C9A24B', '#D8B45E', '#B88A35', '#E0C27A'];
+const SHAPES = [
+  (c) => { c.moveTo(-1, 0); c.quadraticCurveTo(0, -.32, 1, 0); c.quadraticCurveTo(0, .32, -1, 0); },
+  (c) => { c.moveTo(-.9, 0); c.bezierCurveTo(-.6, -.6, .5, -.55, 1, 0); c.bezierCurveTo(.5, .55, -.6, .6, -.9, 0); },
+  (c) => { c.moveTo(-.8, 0); c.bezierCurveTo(-1, -.55, -.1, -.7, 1, 0); c.bezierCurveTo(-.1, .7, -1, .55, -.8, 0); },
+  (c) => { c.moveTo(-1, .1); c.bezierCurveTo(-.4, -.35, .4, -.4, 1, -.12); c.bezierCurveTo(.4, .05, -.4, .3, -1, .1); },
+];
+function makeField(n, w, h, seed, topBand) {
+  const r = rng(seed), L = [];
+  for (let i = 0; i < n; i++) {
+    const gold = r() < .3, pal = gold ? GOLDS : GREENS, depth = r(), blurred = depth > .87 || depth < .1;
+    const wrap = w + 120 + r() * 520;
+    L.push({ shape: SHAPES[i % 4], color: pal[Math.floor(r() * pal.length)], size: (8 + depth * 11 + (blurred && depth > .5 ? 5 : 0)) * (w < 500 ? .8 : 1), blur: blurred ? 1.5 + r() * 1.3 : 0,
+      x0: r() * wrap, wrap, v: wrap / DUR, lane: topBand && i >= n * .6 ? .03 + r() * .3 : Math.min(.9, ((i + .5) / n) * .86 + .03 + (r() - .5) * .03),
+      amp: 10 + r() * 16, freq: .006 + r() * .006, ph: r() * 6.283, rot0: r() * 6.283, rotK: (3 + Math.floor(r() * 4)) * (r() < .5 ? -1 : 1), flip0: r() * 6.283, flipK: 5 + Math.floor(r() * 5), alpha: blurred ? .7 : .8 + r() * .15 });
+  }
+  return L;
+}
+function drawField(cv, L, w, h, t) {
+  const c = cv.getContext('2d'), dpr = cv.width / w;
+  c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, cv.width, cv.height);
+  for (const l of L) {
+    const x = ((l.x0 + l.v * t) % l.wrap) - 60, y = l.lane * h + Math.sin(x * l.freq + l.ph) * l.amp;
+    if (x < -40 || x > w + 40) continue;
+    const slope = Math.cos(x * l.freq + l.ph) * l.amp * l.freq, rot = l.rot0 + 2 * Math.PI * l.rotK * t / DUR, flip = Math.cos(l.flip0 + 2 * Math.PI * l.flipK * t / DUR);
+    c.setTransform(dpr, 0, 0, dpr, 0, 0); c.translate(x, y); c.rotate(rot * .5 + Math.atan(slope));
+    c.scale(l.size, l.size * (flip < 0 ? Math.min(-.15, flip) : Math.max(.15, flip)));
+    c.globalAlpha = l.alpha * (.75 + .25 * Math.abs(flip));
+    c.filter = l.blur ? `blur(${(l.blur * dpr / l.size).toFixed(3)}px)` : 'none';
+    c.beginPath(); l.shape(c); c.closePath(); c.fillStyle = l.color; c.fill();
+    c.filter = 'none'; c.beginPath(); c.moveTo(-.85, 0); c.quadraticCurveTo(0, -.04, .9, 0); c.lineWidth = .06; c.strokeStyle = 'rgba(255,255,240,.35)'; c.stroke();
+  }
+  c.globalAlpha = 1;
+}
+const HF = makeField(40, 1440, 900, 7, false), RF = makeField(16, 390, 844, 11, true);
+
+/* ---------------- build data-driven UI ---------------- */
+const ICON = { cal: 'M7 3v3M17 3v3M4 8h16M5 5h14v15H5z', pin: 'M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11zm0-8.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z', user: 'M12 12a4 4 0 100-8 4 4 0 000 8zm-7 9a7 7 0 0114 0', vid: 'M4 6h11v12H4zM15 10l5-3v10l-5-3' };
+const ic = (d) => `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg>`;
+const PATTERN = `<svg style="position:absolute;inset:0;width:100%;height:100%;color:rgba(201,162,75,.25)"><defs><pattern id="pp" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M14 2l12 12-12 12L2 14z" fill="none" stroke="currentColor" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(#pp)"/></svg>`;
+const FEED = [
+  { id: 'fc0', type: 'دورة تكوينية', mode: 'on', title: NEWC.title, date: 'الأحد 6 ديسمبر · 10:00', place: 'عن بُعد عبر Google Meet', trainer: NEWC.trainer, isNew: true },
+  { id: 'fc1', type: 'دورة تكوينية', mode: 'off', title: COURSE, date: 'الأربعاء 18 نوفمبر · 14:00', place: 'قاعة المحاضرات الكبرى', trainer: 'أ. كريم بوزيد', rsvp: true },
+  { id: 'fc2', type: 'حدث', mode: 'off', title: 'لقاء مع رواد أعمال من قسنطينة', date: 'السبت 21 نوفمبر · 10:00', place: 'المكتبة المركزية', trainer: 'نادي المقاولاتية' },
+  { id: 'fc3', type: 'دورة تكوينية', mode: 'on', title: 'من الفكرة إلى نموذج العمل', date: 'الثلاثاء 24 نوفمبر · 18:00', place: 'عن بُعد عبر Google Meet', trainer: 'د. سمية حمادي' },
+];
+function buildFeed() {
+  $('flist').innerHTML = FEED.map((c) => `
+    <div class="fwrap" id="${c.id}w" style="${c.isNew ? 'height:0' : ''}">
+    <article class="card fcard" id="${c.id}">
+      <div class="fimg">${PATTERN}</div>
+      <div class="fbody">
+        <div class="fbadges"><span class="pill p-type">${c.type}</span><span class="pill ${c.mode === 'on' ? 'p-on' : 'p-off'}">${c.mode === 'on' ? 'أونلاين' : 'حضوري'}</span></div>
+        <h2 class="ftitle">${c.title}</h2>
+        <div class="fmeta"><div>${ic(ICON.cal)}${c.date}</div><div>${ic(c.mode === 'on' ? ICON.vid : ICON.pin)}${c.place}</div><div>${ic(ICON.user)}${c.trainer}</div></div>
+        <div class="btn btn-gold rsvp" ${c.rsvp ? 'data-a="rsvp1"' : ''}><div class="fill" id="${c.id}fill" style="width:0"></div><span id="${c.id}a">تأكيد الحضور</span><span id="${c.id}b" style="color:#fff;opacity:0">تم تأكيد حضورك ✓</span></div>
+      </div>
+    </article></div>`).join('');
+  // mail anchor
+  $('mail').insertAdjacentHTML('beforeend', '<i class="abs" data-a="mail-dot" style="left:26px;top:20px;width:1px;height:1px"></i>');
+  // upcoming list (overview)
+  const up = [[COURSE, 'دورة تكوينية · الأربعاء 18 نوفمبر', '24 / 30 مؤكَّد'], ['لقاء مع رواد أعمال من قسنطينة', 'حدث · السبت 21 نوفمبر', '31 مؤكَّد'], ['من الفكرة إلى نموذج العمل', 'دورة تكوينية · الثلاثاء 24 نوفمبر', '17 / 40 مؤكَّد'], ['الاقتصاد الإسلامي والتمويل التشاركي', 'دورة تكوينية · الإثنين 30 نوفمبر', '12 / 30 مؤكَّد']];
+  $('upc').innerHTML = up.map(([a, b, c], i) => `<li style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:13px 0;${i ? 'border-top:1px solid rgba(31,61,43,.1)' : ''}"><div><p style="font-weight:700;font-size:15.5px">${a}</p><p style="font-size:13.5px;color:rgba(26,26,26,.55);margin-top:2px">${b}</p></div><span class="pill" style="background:rgba(46,107,74,.1);color:var(--emerald);padding:4px 12px;font-size:13.5px">${c}</span></li>`).join('');
+  // chart
+  const M = [['جوان', 3], ['جويلية', 5], ['أوت', 2], ['سبتمبر', 17], ['أكتوبر', 21], ['نوفمبر', 15]];
+  let g = '';
+  for (let k = 0; k <= 4; k++) g += `<div style="position:absolute;left:0;right:0;bottom:${k * 25}%;border-top:1px ${k ? 'dashed' : 'solid'} rgba(31,61,43,${k ? .1 : .2})"></div>`;
+  $('chart').innerHTML = g + `<div style="position:absolute;inset:0;display:flex;justify-content:space-around;align-items:flex-end">` + M.map(([m, v], i) => `<div style="position:relative;width:13%;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center"><span id="cv${i}" style="font:700 17px var(--fh);color:var(--olive);margin-bottom:6px">0</span><div id="cb${i}" style="width:100%;border-radius:8px 8px 3px 3px;background:${i === 5 ? 'var(--gold)' : 'var(--emerald)'};height:0" data-v="${v}"></div><span style="position:absolute;bottom:-30px;font-size:14px;color:rgba(26,26,26,.65)">${m}</span></div>`).join('') + `</div>`;
+  // attendance rows
+  const R = [[STUDENT.name, STUDENT.email, STUDENT.spec, STUDENT.lvl], ['يوسف مرابط', 'youcef.merabet@gmail.com', 'مالية إسلامية', 'ليسانس 3'], ['خديجة بوعلام', 'khadidja.boualem@gmail.com', 'إعلام واتصال', 'ماستر 2'], ['إسحاق زروقي', 'ishak.zerrouki@gmail.com', 'شريعة وقانون', 'ليسانس 2'], ['مريم قاسمي', 'meriem.kacimi@gmail.com', 'اقتصاد إسلامي', 'ماستر 1'], ['سليم حداد', 'salim.haddad@gmail.com', 'أصول الدين', 'ليسانس 3']];
+  $('attList').innerHTML = R.map(([n, e, s, l], i) => `<li style="display:flex;align-items:center;gap:12px;padding:14px 18px;${i ? 'border-top:1px solid rgba(31,61,43,.1)' : ''}"><div style="flex:1;min-width:0"><p style="font-weight:700;font-size:16px"><span style="color:rgba(26,26,26,.4)">${i + 1}. </span>${n}</p><p style="font-size:14px;color:rgba(26,26,26,.6)"><span dir="ltr">${e}</span> · ${s} · ${l}</p></div>
+    <div class="btn" id="ap${i}" data-a="att${i}" style="height:44px;padding:0 16px;font-size:15px;border:2px solid rgba(46,107,74,.3);color:var(--emerald)">حاضر ✓</div>
+    <div class="btn" id="ab${i}" style="height:44px;padding:0 16px;font-size:15px;${i === 3 ? 'background:rgba(26,26,26,.72);color:#fff;border:2px solid transparent' : 'border:2px solid rgba(26,26,26,.18);color:rgba(26,26,26,.6)'}">غائب ✗</div></li>`).join('');
+  // students table
+  const th = 'style="padding:12px;text-align:right;font-weight:700;color:rgba(26,26,26,.8);white-space:nowrap;background:rgba(31,61,43,.05)"', td = 'style="padding:12px;vertical-align:top;color:rgba(26,26,26,.85)"';
+  const S = [[STUDENT.name, STUDENT.email, STUDENT.spec, STUDENT.lvl, STUDENT.ptitle, false, '1 / 1', '100%'], ['يوسف مرابط', 'youcef.merabet@gmail.com', 'مالية إسلامية', 'ليسانس 3', 'تمويل تشاركي للحرفيين', true, '4 / 5', '80%'], ['خديجة بوعلام', 'khadidja.boualem@gmail.com', 'إعلام واتصال', 'ماستر 2', 'بودكاست ريادة', false, '3 / 3', '100%'], ['إسحاق زروقي', 'ishak.zerrouki@gmail.com', 'شريعة وقانون', 'ليسانس 2', 'استشارات العقود', false, '2 / 4', '50%'], ['مريم قاسمي', 'meriem.kacimi@gmail.com', 'اقتصاد إسلامي', 'ماستر 1', 'تطبيق الزكاة الذكي', true, '5 / 5', '100%']];
+  $('stTable').innerHTML = `<thead><tr><th ${th}>#</th><th ${th}>الاسم واللقب</th><th ${th}>التخصص</th><th ${th}>المستوى</th><th ${th}>المشروع</th><th ${th}>نموذج أولي</th><th ${th}>حضر</th><th ${th}>نسبة الحضور</th><th ${th}></th></tr></thead><tbody>` +
+    S.map(([n, e, s, l, p, proto, att, rate], i) => `<tr style="border-top:1px solid rgba(31,61,43,.1);${i % 2 ? 'background:rgba(250,247,240,.5)' : ''}"><td ${td}><span style="color:rgba(26,26,26,.5)">${i + 1}</span></td><td ${td}><b>${n}</b><span dir="ltr" style="display:block;font-size:12px;color:rgba(26,26,26,.6)">${e}</span></td><td ${td}>${s}</td><td ${td}>${l}</td><td ${td}><b style="font-weight:500">${p}</b></td><td ${td}>${proto ? '<span class="pill" style="background:rgba(46,107,74,.1);color:var(--emerald);padding:2px 9px;font-weight:500">نعم</span>' : '<span style="color:rgba(26,26,26,.5)">لا</span>'}</td><td ${td}><b style="color:var(--olive)">${att.split(' / ')[0]}</b><span style="color:rgba(26,26,26,.5)"> / ${att.split(' / ')[1]}</span></td><td ${td}><b>${rate}</b></td><td ${td}><span class="btn" ${i === 0 ? 'id="detBtn" data-a="st-details"' : ''} style="height:34px;padding:0 10px;border:1px solid rgba(31,61,43,.2);color:var(--olive);font-weight:500;border-radius:8px">تفاصيل</span></td></tr>` +
+      (i === 0 ? `<tr><td colspan="9" style="padding:0"><div id="det" style="overflow:hidden"><div style="border-top:1px dashed rgba(31,61,43,.12);background:rgba(232,213,163,.15);padding:16px 18px;display:grid;grid-template-columns:1fr 1.25fr;gap:22px">
+        <div><p style="font-weight:700;color:var(--olive)">فكرة المشروع</p><p style="margin-top:4px;line-height:1.7">${STUDENT.idea}</p><p style="font-weight:700;color:var(--olive);margin-top:10px">الكلية</p><p style="margin-top:2px">${STUDENT.fac}</p></div>
+        <div><p style="font-weight:700;color:var(--olive);margin-bottom:6px">ملاحظات المدير</p><div class="inp area" id="stNote" style="height:70px;font-size:15px" data-a="st-note"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><span id="noteSaved" style="font-size:13px;color:var(--emerald);font-weight:700;opacity:0">✓ حُفظت الملاحظة</span><span class="btn btn-olive" id="noteBtn" data-a="st-add" style="height:38px;padding:0 16px;font-size:14px">إضافة الملاحظة</span></div></div>
+      </div></div></td></tr>` : '')).join('') + '</tbody>';
+  // envelopes
+  let ev = '';
+  for (let i = 0; i < 18; i++) ev += `<svg class="env" id="env${i}" viewBox="0 0 58 40" style="opacity:0"><rect x="1" y="1" width="56" height="38" rx="5" fill="#fff" stroke="#c9a24b" stroke-width="2"/><path d="M3 4 L29 23 L55 4" fill="none" stroke="#c9a24b" stroke-width="2" stroke-linejoin="round"/><circle cx="29" cy="25" r="5" fill="#1f3d2b"/></svg>`;
+  $('envs').innerHTML = ev;
+  let rp = '';
+  for (let i = 0; i < 3; i++) rp += `<div class="ripple" id="rp${i}"></div>`;
+  $('ripples').innerHTML = rp;
+}
+
+/* ---------------- per-scene renderers ---------------- */
+const VIEWS = ['v0', 'v1', 'v2', 'v3', 'v4'];
+const VIEW_AT = [[0, 'v0'], [T.add + 0.06, 'v1'], [T.navItems + 0.06, 'v2'], [T.navStudents + 0.06, 'v3'], [T.navEmails + 0.06, 'v4']];
+const NAV_AT = [[0, 0], [T.add + 0.06, 2], [T.navStudents + 0.06, 1], [T.navEmails + 0.06, 3]];
+
+function renderLaptop(t) {
+  // hero ↔ admin curtain (admin slides up over the pinned hero, like the site's curtain reveal)
+  const up = sm(prog(t, 15.75, 16.55)), down = sm(prog(t, T.pull + 0.25, T.pull + 1.15));
+  const adminY = t < 24 ? (1 - up) * 100 : -down * 100;
+  setStyle($('admin'), 'transform', `translateY(${adminY.toFixed(3)}%)`);
+  setStyle($('admin'), 'visibility', (adminY >= 100 || adminY <= -100) ? 'hidden' : 'visible');
+  const heroVis = adminY > -100 && adminY < 100 ? (adminY === 0 ? 'hidden' : 'visible') : 'visible';
+  setStyle($('hero'), 'visibility', heroVis);
+  if (heroVis === 'visible') renderHero(t);
+
+  // admin view stack
+  let cur = 0; VIEW_AT.forEach(([tt], i) => { if (t >= tt) cur = i; });
+  VIEWS.forEach((v, i) => {
+    const tIn = VIEW_AT[i][0], p = i === 0 ? 1 : eo(prog(t, tIn, tIn + 0.38));
+    const vis = i === cur || (i === cur - 1 && t < VIEW_AT[cur][0] + 0.38);
+    const el = $(v);
+    setStyle(el, 'visibility', vis ? 'visible' : 'hidden');
+    if (i === cur) { setStyle(el, 'opacity', p.toFixed(3)); setStyle(el, 'transform', `translateX(${(-(1 - p) * 36).toFixed(2)}px)`); }
+    else { setStyle(el, 'opacity', '1'); setStyle(el, 'transform', 'none'); }
+  });
+  // sidebar highlight slides between items
+  let n0 = 0, n1 = 0, nt = 0; NAV_AT.forEach(([tt, k]) => { if (t >= tt) { n0 = n1; n1 = k; nt = tt; } });
+  const np = eo(prog(t, nt, nt + 0.3)), ny = 16 + 52 * lerp(n0, n1, np);
+  setStyle($('sideHi'), 'top', ny.toFixed(2) + 'px');
+  for (let k = 0; k < 4; k++) $('si' + k).classList.toggle('on', Math.abs(lerp(n0, n1, np) - k) < 0.5);
+
+  // overview: count-ups (each tile on its beat) + chart
+  const cnt = (v, t0, d = 0.5) => Math.round(v * eo(prog(t, t0, t0 + d)));
+  setHTML($('n1'), String(cnt(63, T.tile1)));
+  setHTML($('n2'), String(cnt(41, T.tile2)));
+  setHTML($('n3'), String(cnt(12, T.tile3, .45)));
+  setHTML($('n4'), cnt(86, T.tile4) + '%');
+  for (let i = 0; i < 6; i++) {
+    const b = $('cb' + i), v = +b.dataset.v, t0 = T.tile1 + 0.25 + i * BEAT / 2, g = clamp(springIn(t, t0, 2.2, .72), 0, 1.04);
+    setStyle(b, 'height', (v / 21 * 92 * g).toFixed(2) + '%');
+    setHTML($('cv' + i), String(Math.round(v * clamp(g, 0, 1))));
+    setStyle($('cv' + i), 'opacity', ss(prog(t, t0, t0 + .2)).toFixed(3));
+  }
+  // add button press
+  pressFx($('v0').querySelector('[data-a="add-course"]'), t, T.add);
+
+  // form
+  field($('fTitle'), NEWC.title, t, T.fTitle + .04, T.fTitle + .5, T.fTitle - .05, T.fTrainer - .05);
+  field($('fTrainer'), NEWC.trainer, t, T.fTrainer + .04, T.fTrainer + .45, T.fTrainer - .05, T.fDate - .05);
+  field($('fDate'), NEWC.date, t, T.fDate + .04, T.fDate + .4, T.fDate - .05, T.fToggle - .05);
+  const tg = ss(prog(t, T.fToggle + .02, T.fToggle + .2));
+  setStyle($('tg'), 'background', tg > .5 ? 'var(--emerald)' : 'rgba(31,61,43,.18)');
+  setStyle($('tgk'), 'transform', `translateX(${(-20 * tg).toFixed(2)}px)`);
+  setHTML($('modeTxt'), tg > .5 ? 'أونلاين (Google Meet)' : 'حضوري');
+  const rv = ss(prog(t, T.fToggle + .12, T.fToggle + .42));
+  setStyle($('fLoc'), 'opacity', (1 - rv).toFixed(3)); setStyle($('fLoc'), 'transform', `translateY(${(-8 * rv).toFixed(2)}px)`);
+  setStyle($('fMeetW'), 'opacity', rv.toFixed(3)); setStyle($('fMeetW'), 'transform', `translateY(${(10 * (1 - rv)).toFixed(2)}px)`);
+  field($('fMeet'), NEWC.meet, t, T.fMeet + .04, T.fMeet + .45, T.fMeet - .05, T.publish - .05);
+  pressFx($('pubBtn'), t, T.publish);
+
+  // attendance (rate updates live on each check)
+  let came = 14, absent = 3;
+  [0, 1, 2, 4].forEach((r, k) => {
+    const tt = T.att[k], on = t >= tt + 0.04, el = $('ap' + r);
+    if (on) { came++; }
+    setStyle(el, 'background', on ? 'var(--emerald)' : 'transparent');
+    setStyle(el, 'color', on ? '#fff' : 'var(--emerald)');
+    setStyle(el, 'borderColor', on ? 'var(--emerald)' : 'rgba(46,107,74,.3)');
+    const s = 1 + (on ? 0.07 * Math.exp(-(t - tt) * 9) * Math.sin((t - tt) * 30) : 0) - (t > tt - .06 && t < tt + .05 ? .04 : 0);
+    setStyle(el, 'transform', `scale(${s.toFixed(4)})`);
+  });
+  setHTML($('aCame'), String(came));
+  setHTML($('aRate'), Math.round(came / (came + absent) * 100) + '%');
+
+  // students: details expand + director's note typed + saved
+  const dp = sm(prog(t, T.details + .03, T.details + .4));
+  const det = $('det'); if (det._full == null) det._full = det.scrollHeight;
+  setStyle(det, 'height', (det._full * dp).toFixed(2) + 'px');
+  const NOTE = 'فكرة واعدة — نرافقها في دورة التسويق الرقمي.';
+  field($('stNote'), NOTE, t, T.note + .04, T.noteAdd - .06, T.note - .05, T.noteAdd);
+  pressFx($('noteBtn'), t, T.noteAdd);
+  setStyle($('noteSaved'), 'opacity', ss(prog(t, T.noteAdd + .1, T.noteAdd + .3)).toFixed(3));
+  pressFx($('detBtn'), t, T.details);
+
+  // bulk email
+  pressFx($('sendBtn'), t, T.send);
+  const okp = eo(prog(t, T.burst + .25, T.burst + .6));
+  setStyle($('sendOk'), 'height', (58 * okp).toFixed(2) + 'px');
+  setStyle($('sendOk'), 'marginTop', (12 * okp).toFixed(2) + 'px');
+  setHTML($('sendTxt'), `تم الإرسال إلى ${Math.round(63 * eo(prog(t, T.burst + .32, T.burst + 1.6)))} طالب`);
+}
+
+function pressFx(el, t, tt) {
+  const d = t - tt;
+  const s = d > -0.07 && d < 0.06 ? 0.965 : d >= 0.06 ? 1 - 0.035 * Math.exp(-(d - .06) * 14) * Math.cos((d - .06) * 22) : 1;
+  setStyle(el, 'transform', `scale(${s.toFixed(4)})`);
+  setStyle(el, 'filter', d > -0.07 && d < 0.18 ? 'brightness(1.06)' : 'none');
+}
+
+function renderHero(t) {
+  drawField($('heroLeaves'), HF, 1440, 900, t);
+  const sw = (ph, k) => Math.sin(2 * Math.PI * k * t / DUR + ph);
+  $('swayL').style.transform = `skewX(${(0.45 * sw(0, 6) + 0.15 * sw(1.3, 13)).toFixed(4)}deg)`;
+  $('swayR').style.transform = `skewX(${(-0.4 * sw(.8, 7) + 0.12 * sw(2.1, 15)).toFixed(4)}deg)`;
+  const dp = (t * 1.8 / 1.8) % 1; // scroll dot (periodic, 35 = integer multiple of 1)
+  const dot = $('hdot'); dot.style.transform = `translateY(${(14 * dp).toFixed(2)}px)`; dot.style.opacity = (dp < .3 ? dp / .3 : 1 - (dp - .3) / .7).toFixed(3);
+  // CTA: hover → press → release (loop-safe: normal at t≈0 and t≈35)
+  const hov = ss(prog(t, T.cursorHover - .1, T.cursorHover + .1)) * (1 - ss(prog(t, T.leafOff + .6, T.leafOff + 1.2)));
+  const cta = $('hcta');
+  cta.style.background = `color-mix(in srgb, var(--gold-light) ${(hov * 100).toFixed(1)}%, var(--gold))`;
+  pressFx(cta, t, T.click);
+}
+
+function renderCursor(t) {
+  const Q0 = { x: 905, y: 812 }, Q1 = { x: 1188, y: 736 };
+  const m = sm(prog(t, T.cursorGo, T.cursorHover));
+  const arc = Math.sin(Math.PI * m) * -26;
+  const x = lerp(Q0.x, Q1.x, m), y = lerp(Q0.y, Q1.y, m) + arc;
+  const fadeOut = 1 - ss(prog(t, T.leafOff + .3, T.leafOff + .9)), fadeIn = ss(prog(t, 33.9, 34.5));
+  const op = t < 20 ? fadeOut : fadeIn;
+  const d = t - T.click, press = d > -0.07 && d < 0.07 ? 0.88 : 1;
+  const c = $('cursor');
+  c.style.transform = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) scale(${press})`;
+  c.style.opacity = op.toFixed(3);
+  c.style.visibility = op > 0.001 ? 'visible' : 'hidden';
+  const rr = prog(t, T.click, T.click + .5);
+  $('cring').style.opacity = (rr > 0 && rr < 1 ? 0.9 * (1 - rr) : 0).toFixed(3);
+  $('cring').style.transform = `scale(${(0.4 + 1.4 * eo(rr)).toFixed(3)})`;
+}
+
+function renderPhone(t) {
+  // register is shown until the feed curtain; it is reset off-camera at the loop end
+  const toFeed = sm(prog(t, T.toFeed + .05, T.toFeed + .6));
+  const reset = t > 34.6;
+  const regY = reset ? 0 : -toFeed * 100;
+  setStyle($('reg'), 'transform', `translateY(${regY.toFixed(3)}%)`);
+  setStyle($('reg'), 'visibility', regY <= -100 ? 'hidden' : 'visible');
+  setStyle($('feed'), 'visibility', regY === 0 ? 'hidden' : 'visible');
+  const R = reset ? 0 : t;
+  if (regY > -100) drawField($('regLeaves'), RF, 390, 844, t);
+
+  // step 1 fields (filled in sync with the leaf's touches)
+  field($('rName'), STUDENT.name, R, T.name + .04, T.name + .48, T.name - .05, T.email - .05);
+  field($('rEmail'), STUDENT.email, R, T.email + .04, T.email + .5, T.email - .05, T.phone - .05);
+  field($('rPhone'), STUDENT.phone, R, T.phone + .04, T.phone + .36, T.phone - .05, T.next - .05);
+  setHTML($('rPw'), '•'.repeat(Math.round(10 * prog(R, T.phone + .3, T.phone + .45))));
+  setHTML($('rPw2'), '•'.repeat(Math.round(10 * prog(R, T.phone + .42, T.phone + .56))));
+  pressFx($('rNext'), R, T.next);
+  // progress bar 1 → 2
+  const sp = sm(prog(R, T.next + .05, T.next + .5));
+  $('sb2').style.left = ((1 - sp) * 100).toFixed(2) + '%';
+  $('sl1').style.color = sp > .5 ? 'rgba(26,26,26,.5)' : 'var(--olive)';
+  $('sl2').style.color = sp > .5 ? 'var(--olive)' : 'rgba(26,26,26,.5)';
+  const s1 = $('step1'), s2 = $('step2');
+  s1.style.transform = `translateX(${(sp * 60).toFixed(2)}px)`; s1.style.opacity = (1 - ss(sp * 1.6)).toFixed(3);
+  s2.style.transform = `translateX(${(-(1 - sp) * 60).toFixed(2)}px)`; s2.style.opacity = ss((sp - .3) / .7).toFixed(3);
+  // step 2: selects cascade, idea typed
+  const cas = (el, s, k) => setHTML(el, R >= T.next + .55 + k * .1 ? esc(s) : '');
+  cas($('rFac'), STUDENT.fac, 0); cas($('rLvl'), STUDENT.lvl, 1); cas($('rSpec'), STUDENT.spec, 2); cas($('rPTitle'), STUDENT.ptitle, 3);
+  field($('rIdea'), STUDENT.idea, R, T.idea + .05, T.idea + 1.35, T.idea - .05, T.submit - .05);
+  pressFx($('rSubmit'), R, T.submit);
+  // success
+  const ok = prog(R, T.check - .12, T.check + .2);
+  const succ = R >= T.check - .12;
+  const fadeForm = succ ? (1 - ss(ok * 2)).toFixed(3) : '1';
+  $('steps').style.opacity = fadeForm; $('regfoot').style.opacity = fadeForm;
+  if (succ) s2.style.opacity = fadeForm;
+  $('regsuccess').style.visibility = succ ? 'visible' : 'hidden';
+  const pop = clamp(springIn(R, T.check - .05, 2.6, .62), 0, 1.2);
+  $('okc').style.transform = `scale(${pop.toFixed(4)})`;
+  $('okpath').style.strokeDashoffset = (22 * (1 - eo(prog(R, T.check + .05, T.check + .35)))).toFixed(2);
+  const st = ss(prog(R, T.check + .05, T.check + .35));
+  $('regsuccess').querySelectorAll('h2,p').forEach((e) => { e.style.opacity = st.toFixed(3); e.style.transform = `translateY(${(10 * (1 - st)).toFixed(2)}px)`; });
+
+  // feed: cards arrive one per beat; new course appears at the top after publish
+  [['fc1', T.card1], ['fc2', T.card2], ['fc3', T.card3]].forEach(([id, tt]) => {
+    const p = clamp(springIn(t, tt, 2.4, .74), 0, 1.1), el = $(id);
+    el.style.opacity = ss(prog(t, tt, tt + .25)).toFixed(3);
+    el.style.transform = `translateY(${(46 * (1 - p)).toFixed(2)}px)`;
+  });
+  const nw = $('fc0w'); if (nw._full == null) { nw.style.height = 'auto'; nw._full = nw.scrollHeight; }
+  const np = sm(prog(t, T.newCard - .02, T.newCard + .45));
+  nw.style.height = (nw._full * np).toFixed(2) + 'px';
+  const nc = $('fc0'); nc.style.clipPath = `inset(0 0 ${(nw._full * (1 - np)).toFixed(2)}px 0 round 16px)`; nc.style.opacity = ss(prog(t, T.newCard + .1, T.newCard + .45)).toFixed(3);
+  const glow = t > T.newCard ? Math.exp(-(t - T.newCard - .4) * 1.2) : 0;
+  nc.style.boxShadow = `0 0 0 ${(3 * clamp(glow, 0, 1)).toFixed(2)}px rgba(201,162,75,${(.7 * clamp(glow, 0, 1)).toFixed(3)})`;
+  // RSVP fills green
+  const rp = eo(prog(t, T.rsvp + .03, T.rsvp + .35));
+  $('fc1fill').style.width = (rp * 100).toFixed(2) + '%';
+  $('fc1a').style.opacity = (1 - ss(prog(t, T.rsvp + .08, T.rsvp + .2))).toFixed(3);
+  $('fc1b').style.opacity = ss(prog(t, T.rsvp + .18, T.rsvp + .32)).toFixed(3);
+  pressFx($('fc1').querySelector('.rsvp'), t, T.rsvp);
+}
+
+function renderMail(t) {
+  const p = clamp(springIn(t, T.mail - .25, 1.9, .78), 0, 1.06), out = ss(prog(t, 16.3, 16.8));
+  const m = $('mail');
+  m.style.transform = `translateX(${(340 * (1 - p)).toFixed(2)}px) scale(${(0.92 + .08 * clamp(p, 0, 1)).toFixed(4)})`;
+  m.style.opacity = (ss(prog(t, T.mail - .25, T.mail + .05)) * (1 - out)).toFixed(3);
+  m.style.visibility = t > T.mail - .3 && t < 16.85 ? 'visible' : 'hidden';
+}
+
+function renderEnvelopes(t) {
+  // b51 one envelope pops above the button → b52 it multiplies into a fan → each copy leaves on a clean arc
+  const S = A['send-all'], O = { x: S.cx, y: S.cy - 96 }, N = 16;
+  const pop = clamp(springIn(t, T.send + .05, 2.4, .68), 0, 1.1);
+  for (let i = 0; i < 18; i++) {
+    const el = $('env' + i);
+    if (i >= N || t < T.send + .04) { el.style.visibility = 'hidden'; continue; }
+    const a = (-162 + i * (144 / (N - 1))) * Math.PI / 180;             // fan angle (upper half-circle)
+    const F = { x: O.x + Math.cos(a) * 190, y: O.y + Math.sin(a) * 120 };
+    const t0 = T.burst + .34 + Math.abs(i - (N - 1) / 2) * .03, t1 = t0 + 1.0;
+    let x, y, r = 0, sc, o = 1;
+    if (t < T.burst) { if (i) { el.style.visibility = 'hidden'; continue; } x = O.x; y = O.y + 96 * (1 - clamp(pop, 0, 1)); sc = 1.25 * pop; }
+    else if (t < t0) { const f = clamp(springIn(t, T.burst, 2.6, .7), 0, 1.06); x = lerp(O.x, F.x, f); y = lerp(O.y, F.y, f); sc = 1.25 - .2 * clamp(f, 0, 1); r = (a * 180 / Math.PI + 90) * .3 * f; }
+    else if (t < t1) {
+      // every copy leaves along its own fan ray with the same gentle curl → one clean, symmetric arc burst
+      const u = Math.pow(prog(t, t0, t1), 1.7), R = 1500 * u, b = a - 0.35 * u;
+      x = F.x + Math.cos(b) * R; y = F.y + Math.sin(b) * R * 0.8;
+      r = (b * 180 / Math.PI + 90) * .3; sc = 1.05 - .25 * u; o = 1 - ss(prog(u, .7, 1));
+    } else { el.style.visibility = 'hidden'; continue; }
+    el.style.visibility = 'visible';
+    el.style.transform = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) rotate(${r.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+    el.style.opacity = o.toFixed(3);
+  }
+}
+
+function renderLeaf(t) {
+  const L = leafAt(t), cam = camBase(t);
+  const vis = clamp(1.26 / cam.z, 1, 1.55);               // keeps the leaf readable when the camera pulls back
+  $('leaf').style.transform = `translate(${L.x.toFixed(2)}px,${L.y.toFixed(2)}px) rotate(${L.r.toFixed(2)}deg) scale(${(vis * L.sx).toFixed(4)},${(vis * clamp(L.sy, .2, 1.2)).toFixed(4)})`;
+  // ripples on each touch
+  const act = C.filter((c) => t >= c.t && t < c.t + .55).slice(-3);
+  for (let i = 0; i < 3; i++) {
+    const el = $('rp' + i), c = act[i];
+    if (!c) { el.style.opacity = 0; continue; }
+    const P = c.p(), u = prog(t, c.t, c.t + .55), r = 8 + 40 * eo(u);
+    el.style.width = el.style.height = 2 * r + 'px';
+    el.style.transform = `translate(${(P.x - r).toFixed(2)}px,${(P.y - r).toFixed(2)}px)`;
+    el.style.opacity = (0.65 * (1 - u)).toFixed(3);
+  }
+}
+
+function renderBrand(t) {
+  const p = ss(prog(t, T.pull + .3, T.pull + 1.1)), o = 1 - ss(prog(t, 33.6, 34.1));
+  $('brand').style.opacity = (p * o).toFixed(3);
+  $('brand').style.transform = `translateY(${(24 * (1 - p)).toFixed(2)}px)`;
+}
+
+function renderCamera(t) {
+  const c = camAt(t);
+  const rot = Math.abs(c.rx) > .02 || Math.abs(c.ry) > .02 ? ` rotateX(${c.rx.toFixed(3)}deg) rotateY(${c.ry.toFixed(3)}deg)` : '';
+  $('world').style.transform = `translate(${SW / 2}px,${SH / 2}px)${rot} scale(${c.z.toFixed(5)}) translate(${(-c.cx).toFixed(3)}px,${(-c.cy).toFixed(3)}px)`;
+}
+
+/* ---------------- public API ---------------- */
+window.seek = (t) => {
+  t = ((t % DUR) + DUR) % DUR;
+  renderCamera(t); renderLaptop(t); renderCursor(t); renderPhone(t); renderMail(t); renderEnvelopes(t); renderLeaf(t); renderBrand(t);
+};
+window.FILM = { DUR, FPS, BEAT, T, C: () => C, A };
+
+async function init() {
+  if (VERT) { $('stage').style.width = SW + 'px'; $('stage').style.height = SH + 'px'; }
+  buildFeed();
+  await document.fonts.ready;
+  await Promise.all(['assets/hero-desktop.jpg', 'assets/hero-mobile.jpg'].map((s) => new Promise((r) => { const i = new Image(); i.onload = i.onerror = r; i.src = s; })));
+  measure(); buildContacts();
+  // preview mode: fit to window and play in real time unless ?t= is given
+  const fixed = PARAMS.get('t');
+  if (!PARAMS.has('render')) {
+    const fit = () => { const k = Math.min(innerWidth / SW, innerHeight / SH); $('stage').style.transform = `scale(${k})`; };
+    fit(); addEventListener('resize', fit);
+  }
+  if (fixed != null) seek(+fixed);
+  else if (!PARAMS.has('render')) { const t0 = performance.now(); const loop = () => { seek((performance.now() - t0) / 1000); requestAnimationFrame(loop); }; loop(); }
+  else seek(0);
+  window.READY = true;
+}
+init();
+</script>
+</body>
+</html>
