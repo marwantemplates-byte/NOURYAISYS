@@ -1,5 +1,6 @@
 "use client";
 
+import { safeUrl } from "@/lib/safe-url";
 import { Fragment, useMemo, useState } from "react";
 import { LEVELS } from "@/lib/profile-options";
 import { PROJECT_BUCKET } from "@/lib/project-file";
@@ -266,8 +267,8 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
                               <dt className="font-bold text-olive">النموذج الأولي</dt>
                               <dd className="mt-1 whitespace-pre-line leading-relaxed text-ink/85">
                                 {r.has_prototype ? r.prototype_desc || "—" : "لا يوجد"}
-                                {r.prototype_link && (
-                                  <a href={r.prototype_link} target="_blank" rel="noopener noreferrer" dir="ltr" className="mt-1 block break-all text-emerald underline">
+                                {safeUrl(r.prototype_link) && (
+                                  <a href={safeUrl(r.prototype_link)!} target="_blank" rel="noopener noreferrer" dir="ltr" className="mt-1 block break-all text-emerald underline">
                                     {r.prototype_link}
                                   </a>
                                 )}

@@ -1,10 +1,12 @@
 /** Item cover: uploaded image, or a branded pattern placeholder. */
+import { safeUrl } from "@/lib/safe-url";
+
 export default function ItemImage({ id, src, className = "" }: { id: string; src: string | null; className?: string }) {
   return (
     <div className={`relative overflow-hidden bg-gradient-to-br from-olive via-emerald to-olive ${className}`}>
-      {src ? (
+      {safeUrl(src) ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
+        <img src={safeUrl(src)!} alt="" className="h-full w-full object-cover" loading="lazy" />
       ) : (
         <svg className="absolute inset-0 h-full w-full text-gold/25" aria-hidden="true">
           <defs>

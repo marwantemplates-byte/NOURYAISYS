@@ -1,3 +1,4 @@
+import { safeUrl } from "@/lib/safe-url";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import StatusToggle from "@/components/admin/StatusToggle";
@@ -98,8 +99,8 @@ export default async function StudentFilePage({ params }: { params: Promise<{ id
           <p className="mt-2 whitespace-pre-line leading-relaxed text-ink/85">{s.project_idea || "—"}</p>
           <p className="mt-4 text-sm text-ink/55">النموذج الأولي</p>
           <p className="font-medium">{s.has_prototype ? s.prototype_desc || "نعم" : "لا يوجد"}</p>
-          {s.prototype_link && (
-            <a href={s.prototype_link} target="_blank" rel="noopener noreferrer" dir="ltr" className="mt-1 block break-all text-emerald underline">{s.prototype_link}</a>
+          {safeUrl(s.prototype_link) && (
+            <a href={safeUrl(s.prototype_link)!} target="_blank" rel="noopener noreferrer" dir="ltr" className="mt-1 block break-all text-emerald underline">{s.prototype_link}</a>
           )}
           {pdfUrl && (
             <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-xl bg-gold px-4 font-bold text-ink hover:bg-gold-light">📄 فتح ملف المشروع (PDF)</a>

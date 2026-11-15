@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import Spinner from "@/components/ui/Spinner";
+import { safeUrl } from "@/lib/safe-url";
 import { RSVP_MESSAGES, arabicError } from "@/lib/errors";
 import { createClient } from "@/lib/supabase/client";
 
@@ -94,8 +95,8 @@ export default function RsvpButton(props: Props) {
             {props.attended === true && <span className="text-sm font-medium text-emerald">حضرت ✓</span>}
             {props.attended === false && <span className="text-sm font-medium text-red-800">سُجّلت غائبًا</span>}
           </div>
-          {props.online && link && !props.ended && (
-            <a href={link} target="_blank" rel="noopener noreferrer" className={`${btn} w-full bg-olive text-white hover:bg-emerald`}>
+          {props.online && safeUrl(link) && !props.ended && (
+            <a href={safeUrl(link)!} target="_blank" rel="noopener noreferrer" className={`${btn} w-full bg-olive text-white hover:bg-emerald`}>
               دخول الدورة (Google Meet)
               <span className="sr-only">(يفتح في نافذة جديدة)</span>
             </a>

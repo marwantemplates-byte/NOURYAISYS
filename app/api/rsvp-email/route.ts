@@ -18,8 +18,15 @@ export async function POST(request: NextRequest) {
   if (!uid) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   // RLS: the student only sees their own RSVP
-  const { data: rsvp } = await supabase.from("rsvps").select("item_id").eq("item_id", item_id).eq("user_id", uid).maybeSingle();
+  const { data: rsvp } = await supabase.from("rsvps").select("item_id,created_at").eq("item_id", item_id).eq("user_id", uid).maybeSingle();
   if (!rsvp) return NextResponse.json({ error: "no rsvp" }, { status: 404 });
+  // Only right after confirming (not replayable later)
+  if (Date.now() - new Date(rsvp.created_at).getTime() > 10 * 60 * 1000) {
+    return NextResponse.json({ ok: false, skipped: "too_late" });
+  }
+  // Per-student limit (10 automatic emails / 24h, 1 per 20s) — protects the Gmail daily quota
+  const { data: allowed, error: limitErr } = await supabase.rpc("allow_auto_email", { p_kind: "rsvp" });
+  if (!limitErr && allowed !== true) return NextResponse.json({ ok: false, skipped: "rate_limited" }, { status: 429 });
 
   const [{ data: item }, { data: me }, { data: link }] = await Promise.all([
     supabase.from("items").select(ITEM_COLUMNS).eq("id", item_id).maybeSingle<Item>(),
