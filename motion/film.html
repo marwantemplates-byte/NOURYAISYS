@@ -617,7 +617,7 @@ function leafAt(t) {
 
 /* ---------------- camera ---------------- */
 // z = zoom for 16:9; z9 = zoom for 9:16. cx,cy = world point at frame centre. fx/fy = follow-the-leaf weight.
-const HERO = { z: 1.2, z9: 0.74, cx: 720, cy: 449 };
+const HERO = { z: 1.2, z9: 1.05, cx: 720, cy: 449, cx9: 880 };
 const CAM = [
   { t: 0, ...HERO, fx: 0, fy: 0 },
   { t: T.leafOff - 0.1, ...HERO, fx: 0, fy: 0 },
@@ -628,21 +628,21 @@ const CAM = [
   { t: T.rsvp + 0.4, z: 1.3, z9: 1.6, cx: 1835, cy: 500, fx: 0, fy: .2 },
   { t: T.mail + 0.5, z: 1.18, z9: 1.05, cx: 1690, cy: 560, fx: 0, fy: 0 },
   { t: B(27.9), z: 0.92, z9: 0.62, cx: 1250, cy: 450, fx: .3, fy: .1 },
-  { t: T.tile1 - 0.05, z: 1.36, z9: 0.95, cx: 690, cy: 400, fx: 0, fy: 0 },
-  { t: T.add - 0.25, z: 1.36, z9: 0.95, cx: 690, cy: 410, fx: 0, fy: 0 },
-  { t: T.fTitle - 0.05, z: 1.5, z9: 1.05, cx: 740, cy: 400, fx: 0, fy: .5 },
-  { t: T.publish - 0.15, z: 1.5, z9: 1.05, cx: 740, cy: 470, fx: 0, fy: .5 },
-  { t: T.newCard + 0.15, z: 0.98, z9: 0.52, cx: 1150, cy: 470, fx: 0, fy: 0 },
-  { t: T.navItems + 0.25, z: 1.0, z9: 0.52, cx: 1100, cy: 470, fx: 0, fy: 0 },
-  { t: T.att[0], z: 1.36, z9: 0.95, cx: 660, cy: 420, fx: .15, fy: .3 },
-  { t: T.att[3] + .3, z: 1.36, z9: 0.95, cx: 660, cy: 430, fx: .15, fy: .3 },
-  { t: T.details, z: 1.36, z9: 0.95, cx: 660, cy: 410, fx: .15, fy: .3 },
-  { t: T.noteAdd + .3, z: 1.36, z9: 0.95, cx: 660, cy: 430, fx: .15, fy: .3 },
-  { t: T.send, z: 1.36, z9: 0.95, cx: 640, cy: 450, fx: 0, fy: 0 },
-  { t: T.burst + 0.5, z: 1.0, z9: 0.62, cx: 660, cy: 380, fx: 0, fy: 0 },
-  { t: T.pull, z: 1.0, z9: 0.62, cx: 660, cy: 380, fx: 0, fy: 0 },
-  { t: T.pull + 1.0, z: 0.8, z9: 0.43, cx: 1012, cy: 560, fx: 0, fy: 0 },
-  { t: 33.45, z: 0.8, z9: 0.43, cx: 1012, cy: 560, fx: 0, fy: 0 },
+  { t: T.tile1 - 0.05, z: 1.36, cx: 690, cy: 400, fx: 0, fy: 0, z9: 1.0, cx9: 660, fx9: .45 },
+  { t: T.add - 0.25, z: 1.36, cx: 690, cy: 410, fx: 0, fy: 0, z9: 1.0, cx9: 600, fx9: .45 },
+  { t: T.fTitle - 0.05, z: 1.5, cx: 740, cy: 400, fx: 0, fy: .5, z9: 1.25, cx9: 760 },
+  { t: T.publish - 0.15, z: 1.5, cx: 740, cy: 470, fx: 0, fy: .5, z9: 1.25, cx9: 760 },
+  { t: T.newCard + 0.15, z: 0.98, cx: 1150, cy: 470, fx: 0, fy: 0, z9: 0.62, cx9: 1250 },
+  { t: T.navItems + 0.25, z: 1.0, cx: 1100, cy: 470, fx: 0, fy: 0, z9: 0.62, cx9: 1150 },
+  { t: T.att[0], z: 1.36, z9: 1.0, cx: 660, cy: 420, fx: .15, fy: .3, cx9: 700, fx9: .4 },
+  { t: T.att[3] + .3, z: 1.36, cx: 660, cy: 430, fx: .15, fy: .3, z9: 1.0, cx9: 700, fx9: .4 },
+  { t: T.details, z: 1.36, z9: 1.0, cx: 660, cy: 410, fx: .15, fy: .3, cx9: 700, fx9: .4 },
+  { t: T.noteAdd + .3, z: 1.36, cx: 660, cy: 430, fx: .15, fy: .3, z9: 1.0, cx9: 700, fx9: .4 },
+  { t: T.send, z: 1.36, z9: 1.05, cx: 640, cy: 450, fx: 0, fy: 0, cx9: 640 },
+  { t: T.burst + 0.5, z: 1.0, cx: 660, cy: 380, fx: 0, fy: 0, z9: 0.8, cx9: 600 },
+  { t: T.pull, z: 1.0, cx: 660, cy: 380, fx: 0, fy: 0, z9: 0.8, cx9: 600 },
+  { t: T.pull + 1.0, z: 0.8, cx: 1012, cy: 560, fx: 0, fy: 0, z9: 0.5 },
+  { t: 33.45, z: 0.8, cx: 1012, cy: 560, fx: 0, fy: 0, z9: 0.5 },
   { t: 34.45, ...HERO, fx: 0, fy: 0 },
   { t: DUR, ...HERO, fx: 0, fy: 0 },
 ];
@@ -656,8 +656,10 @@ function camBase(t) {
   const a = CAM[i], b = CAM[i + 1], u = sm(prog(t, a.t, b.t));
   const za = VERT ? a.z9 : a.z, zb = VERT ? b.z9 : b.z;
   const L = leafSmooth(t);
-  const fx = lerp(a.fx, b.fx, u), fy = lerp(a.fy, b.fy, u);
-  const bx = lerp(a.cx, b.cx, u), by = lerp(a.cy, b.cy, u);
+  const ax = VERT && a.cx9 != null ? a.cx9 : a.cx, bx2 = VERT && b.cx9 != null ? b.cx9 : b.cx;
+  const afx = VERT && a.fx9 != null ? a.fx9 : a.fx, bfx = VERT && b.fx9 != null ? b.fx9 : b.fx;
+  const fx = lerp(afx, bfx, u), fy = lerp(a.fy, b.fy, u);
+  const bx = lerp(ax, bx2, u), by = lerp(a.cy, b.cy, u);
   return { z: Math.exp(lerp(Math.log(za), Math.log(zb), u)), cx: bx + (L.x - bx) * fx, cy: by + (L.y - by) * fy };
 }
 function camAt(t) {
