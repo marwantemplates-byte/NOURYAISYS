@@ -8,6 +8,13 @@
 export const INCUBATOR_AUDIENCE =
   "الحاضنة موجّهة لطلبة الليسانس والماستر والدكتوراه المقبلين على التخرّج، الراغبين في إنشاء مؤسساتهم.";
 
+/** Full official name (student about page title). */
+export const INCUBATOR_FULL_NAME = "حاضنة الأعمال / مركز تطوير المقاولاتية";
+
+/** The goal (about block). */
+export const INCUBATOR_GOAL =
+  "الهدف: الحصول على شهادة مؤسسة ناشئة، أو شهادة براءة اختراع، أو التوجّه نحو إنشاء مؤسسة اقتصادية.";
+
 export type Offer = { title: string; text: string; extra?: string; icon: string };
 
 /** What the incubator offers (cards). Icons: 24×24 stroke paths, same style as the home page. */

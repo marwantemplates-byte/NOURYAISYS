@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import ProjectFields from "@/components/auth/ProjectFields";
 import { Alert, Field, Input, SubmitButton } from "@/components/ui/form";
 import { arabicError } from "@/lib/errors";
-import { EMAIL_RE, PHONE_RE, checkPdf, needsPdf, type ProfileFields, validateProject } from "@/lib/profile-options";
+import { EMAIL_RE, PHONE_RE, checkPdf, cleanProfile, needsPdf, type ProfileFields, validateProject } from "@/lib/profile-options";
 import { uploadProjectPdf } from "@/lib/project-file";
 import { createClient } from "@/lib/supabase/client";
 
@@ -18,6 +18,11 @@ const EMPTY: ProfileFields = {
   faculty: "",
   specialty: "",
   level: "",
+  level_other: "",
+  idea_field: "",
+  idea_field_other: "",
+  linked_to_thesis: null,
+  extra_notes: "",
   project_title: "",
   project_idea: "",
   has_prototype: false,
@@ -40,7 +45,11 @@ export default function RegisterForm() {
   const [pdfWarning, setPdfWarning] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
-  const setP = <K extends keyof ProfileFields>(k: K, v: ProfileFields[K]) => setProfile((p) => ({ ...p, [k]: v }));
+  const setP = <K extends keyof ProfileFields>(k: K, v: ProfileFields[K]) => {
+    setProfile((p) => ({ ...p, [k]: v }));
+    // Clear that field's error as soon as it is edited
+    setErrors((e) => (e[k] ? { ...e, [k]: "" } : e));
+  };
   const setA = (k: keyof Account, v: string) => setAccount((a) => ({ ...a, [k]: v }));
 
   const goStep2 = (e: React.FormEvent) => {
@@ -70,9 +79,7 @@ export default function RegisterForm() {
 
     setLoading(true);
     const supabase = createClient();
-    const clean = Object.fromEntries(
-      Object.entries(profile).map(([k, v]) => [k, typeof v === "string" ? v.trim() : v]),
-    );
+    const clean = cleanProfile(profile);
     const { data, error } = await supabase.auth.signUp({
       email: account.email.trim(),
       password: account.password,

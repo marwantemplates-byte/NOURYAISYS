@@ -1,5 +1,5 @@
 import { STEPS } from "@/components/sections/HowItWorks";
-import { INCUBATOR_ADDRESS, INCUBATOR_AUDIENCE, STARTUP_DZ, STUDENT_OFFERS } from "@/data/incubator";
+import { INCUBATOR_ADDRESS, INCUBATOR_AUDIENCE, INCUBATOR_GOAL, STARTUP_DZ, STUDENT_OFFERS } from "@/data/incubator";
 import { CONTACT } from "@/data/site";
 
 /** About the incubator + what it offers (used inside the student area). */
@@ -17,6 +17,12 @@ export default function IncubatorInfo({ withContact = false }: { withContact?: b
             <path d="M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 21a8 8 0 0116 0M19 8l2 2-2 2" />
           </svg>
           <span>{INCUBATOR_AUDIENCE}</span>
+        </p>
+        <p className="mt-3 flex items-start gap-2 rounded-xl bg-white/10 px-4 py-3 leading-relaxed text-gold-light">
+          <svg className="mt-0.5 shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 16a4 4 0 100-8 4 4 0 000 8zM12 12h.01" />
+          </svg>
+          <span>{INCUBATOR_GOAL}</span>
         </p>
       </section>
 

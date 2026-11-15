@@ -6,7 +6,7 @@ export default async function StudentsPage() {
   const { data, error } = await supabase
     .from("profiles")
     .select(
-      "id,full_name,email,phone,faculty,specialty,level,project_title,project_idea,has_prototype,prototype_desc,prototype_link,project_file,status,created_at",
+      "id,full_name,email,phone,faculty,specialty,level,level_other,idea_field,idea_field_other,linked_to_thesis,extra_notes,project_title,project_idea,has_prototype,prototype_desc,prototype_link,project_file,status,created_at",
     )
     .eq("role", "student")
     .order("created_at", { ascending: false })

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import StatusToggle from "@/components/admin/StatusToggle";
 import StudentNotes, { type Note } from "@/components/admin/StudentNotes";
 import { pct } from "@/lib/admin";
+import { ideaFieldLabel, levelLabel } from "@/lib/profile-options";
 import { TYPE_LABELS, formatDate, type ItemType } from "@/lib/items";
 import { PROJECT_BUCKET } from "@/lib/project-file";
 import { requireProfile, type Profile } from "@/lib/session";
@@ -61,7 +62,7 @@ export default async function StudentFilePage({ params }: { params: Promise<{ id
         <div>
           <h1 className="text-3xl font-bold text-olive">{s.full_name || "—"}</h1>
           <p className="mt-1 text-ink/70">
-            {[s.specialty, s.level, s.faculty].filter(Boolean).join(" · ") || "—"}
+            {[s.specialty, levelLabel(s.level, s.level_other), s.faculty].filter(Boolean).join(" · ") || "—"}
             {s.status === "blocked" && <span className="ms-2 rounded-full bg-red-100 px-2 py-0.5 text-sm font-bold text-red-800">موقوف</span>}
           </p>
         </div>
@@ -88,7 +89,7 @@ export default async function StudentFilePage({ params }: { params: Promise<{ id
             <Info label="الهاتف">{s.phone && <a href={`tel:${s.phone}`} dir="ltr" className="hover:text-emerald">{s.phone}</a>}</Info>
             <Info label="الكلية">{s.faculty}</Info>
             <Info label="التخصص">{s.specialty}</Info>
-            <Info label="المستوى">{s.level}</Info>
+            <Info label="المستوى">{levelLabel(s.level, s.level_other)}</Info>
             <Info label="تاريخ التسجيل">{formatDate(s.created_at)}</Info>
           </dl>
         </section>
@@ -96,11 +97,22 @@ export default async function StudentFilePage({ params }: { params: Promise<{ id
         <section className={card} aria-labelledby="proj-t">
           <h2 id="proj-t" className="text-xl font-bold text-olive">المشروع</h2>
           <p className="mt-4 text-lg font-bold">{s.project_title || "—"}</p>
-          <p className="mt-2 whitespace-pre-line leading-relaxed text-ink/85">{s.project_idea || "—"}</p>
+          <dl className="mt-3 grid gap-3 sm:grid-cols-2">
+            <Info label="مجال الفكرة">{ideaFieldLabel(s.idea_field, s.idea_field_other)}</Info>
+            <Info label="مرتبطة بمذكرة التخرج">{s.linked_to_thesis === null ? "" : s.linked_to_thesis ? "نعم" : "لا"}</Info>
+          </dl>
+          <p className="mt-4 text-sm text-ink/55">موجز الفكرة</p>
+          <p className="mt-1 whitespace-pre-line leading-relaxed text-ink/85">{s.project_idea || "—"}</p>
           <p className="mt-4 text-sm text-ink/55">النموذج الأولي</p>
           <p className="font-medium">{s.has_prototype ? s.prototype_desc || "نعم" : "لا يوجد"}</p>
           {safeUrl(s.prototype_link) && (
             <a href={safeUrl(s.prototype_link)!} target="_blank" rel="noopener noreferrer" dir="ltr" className="mt-1 block break-all text-emerald underline">{s.prototype_link}</a>
+          )}
+          {s.extra_notes && (
+            <>
+              <p className="mt-4 text-sm text-ink/55">ملاحظات إضافية</p>
+              <p className="whitespace-pre-line leading-relaxed text-ink/85">{s.extra_notes}</p>
+            </>
           )}
           {pdfUrl && (
             <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-xl bg-gold px-4 font-bold text-ink hover:bg-gold-light">📄 فتح ملف المشروع (PDF)</a>

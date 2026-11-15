@@ -16,6 +16,11 @@ export type Profile = {
   prototype_desc: string | null;
   prototype_link: string | null;
   project_file: string | null;
+  level_other: string | null;
+  idea_field: string | null;
+  idea_field_other: string | null;
+  linked_to_thesis: boolean | null;
+  extra_notes: string | null;
   role: "student" | "admin";
   status: "active" | "blocked";
 };

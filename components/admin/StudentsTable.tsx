@@ -2,7 +2,7 @@
 
 import { safeUrl } from "@/lib/safe-url";
 import { Fragment, useMemo, useState } from "react";
-import { LEVELS } from "@/lib/profile-options";
+import { IDEA_FIELDS, LEVELS, ideaFieldLabel, levelLabel } from "@/lib/profile-options";
 import { PROJECT_BUCKET } from "@/lib/project-file";
 import { createClient } from "@/lib/supabase/client";
 
@@ -14,6 +14,11 @@ export type StudentRow = {
   faculty: string | null;
   specialty: string | null;
   level: string | null;
+  level_other: string | null;
+  idea_field: string | null;
+  idea_field_other: string | null;
+  linked_to_thesis: boolean | null;
+  extra_notes: string | null;
   project_title: string | null;
   project_idea: string | null;
   has_prototype: boolean;
@@ -40,6 +45,7 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
   const [level, setLevel] = useState("");
   const [proto, setProto] = useState<"" | "yes" | "no">("");
   const [pdf, setPdf] = useState<"" | "yes" | "no">("");
+  const [ideaField, setIdeaField] = useState("");
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "created_at", dir: -1 });
   const [openId, setOpenId] = useState<string | null>(null);
   const [pdfError, setPdfError] = useState("");
@@ -57,6 +63,7 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
       if (level && r.level !== level) return false;
       if (proto && r.has_prototype !== (proto === "yes")) return false;
       if (pdf && !!r.project_file !== (pdf === "yes")) return false;
+      if (ideaField && r.idea_field !== ideaField) return false;
       return true;
     });
     return list.sort((a, b) => {
@@ -65,9 +72,9 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
       const bv = sort.key === "created_at" ? b.created_at : (b[sort.key] ?? "");
       return av.localeCompare(bv, "ar") * sort.dir;
     });
-  }, [rows, q, specialty, level, proto, pdf, sort]);
+  }, [rows, q, specialty, level, proto, pdf, ideaField, sort]);
 
-  const filtered = q || specialty || level || proto || pdf;
+  const filtered = q || specialty || level || proto || pdf || ideaField;
 
   const toggleSort = (key: SortKey) =>
     setSort((s) => (s.key === key ? { key, dir: (s.dir * -1) as 1 | -1 } : { key, dir: key === "created_at" || key === "attended" || key === "rate" ? -1 : 1 }));
@@ -86,10 +93,10 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
   };
 
   const exportCsv = () => {
-    const head = ["الاسم واللقب", "البريد الإلكتروني", "الهاتف", "الكلية", "التخصص", "المستوى", "عنوان المشروع", "فكرة المشروع", "نموذج أولي", "وصف النموذج", "رابط النموذج", "ملف PDF", "دورات أكّدها", "دورات حضرها", "نسبة الحضور", "الحالة", "تاريخ التسجيل"];
+    const head = ["الاسم واللقب", "البريد الإلكتروني", "الهاتف", "الكلية", "التخصص", "المستوى", "المستوى (أخرى)", "مجال الفكرة", "المجال (أخرى)", "مرتبطة بالمذكرة", "عنوان المشروع", "موجز الفكرة", "نموذج أولي", "وصف النموذج", "رابط النموذج", "ملف PDF", "دورات أكّدها", "دورات حضرها", "نسبة الحضور", "ملاحظات إضافية", "الحالة", "تاريخ التسجيل"];
     const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
     const lines = shown.map((r) =>
-      [r.full_name, r.email, r.phone, r.faculty, r.specialty, r.level, r.project_title, r.project_idea, r.has_prototype ? "نعم" : "لا", r.prototype_desc, r.prototype_link, r.project_file ? "نعم" : "لا", r.confirmed, r.attended, r.rate < 0 ? "—" : `${r.rate}%`, r.status === "blocked" ? "موقوف" : "نشط", new Date(r.created_at).toLocaleDateString("fr-DZ")]
+      [r.full_name, r.email, r.phone, r.faculty, r.specialty, r.level, r.level_other, ideaFieldLabel(r.idea_field), r.idea_field_other, r.linked_to_thesis === null ? "" : r.linked_to_thesis ? "نعم" : "لا", r.project_title, r.project_idea, r.has_prototype ? "نعم" : "لا", r.prototype_desc, r.prototype_link, r.project_file ? "نعم" : "لا", r.confirmed, r.attended, r.rate < 0 ? "—" : `${r.rate}%`, r.extra_notes, r.status === "blocked" ? "موقوف" : "نشط", new Date(r.created_at).toLocaleDateString("fr-DZ")]
         .map(esc)
         .join(","),
     );
@@ -141,7 +148,7 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
             <span aria-hidden="true">⬇</span> تصدير Excel
           </button>
         </div>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5">
           <select aria-label="التخصص" value={specialty} onChange={(e) => setSpecialty(e.target.value)} className={sel}>
             <option value="">كل التخصصات</option>
             {specialties.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -160,6 +167,10 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
             <option value="yes">رفع ملف PDF</option>
             <option value="no">بدون ملف</option>
           </select>
+          <select aria-label="مجال الفكرة" value={ideaField} onChange={(e) => setIdeaField(e.target.value)} className={`${sel} col-span-2 md:col-span-4 lg:col-span-1`}>
+            <option value="">مجال الفكرة: الكل</option>
+            {IDEA_FIELDS.map((f) => <option key={f} value={f}>{ideaFieldLabel(f)}</option>)}
+          </select>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
           <p className="text-ink/70" aria-live="polite">
@@ -168,7 +179,7 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
           {filtered && (
             <button
               type="button"
-              onClick={() => { setQ(""); setSpecialty(""); setLevel(""); setProto(""); setPdf(""); }}
+              onClick={() => { setQ(""); setSpecialty(""); setLevel(""); setProto(""); setPdf(""); setIdeaField(""); }}
               className="min-h-11 font-medium text-emerald underline underline-offset-4"
             >
               مسح الفلاتر
@@ -187,13 +198,15 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
         <>
         <p className="text-xs text-ink/55 lg:hidden">↔ اسحب الجدول يمينًا ويسارًا لرؤية باقي الأعمدة.</p>
         <div className="overflow-x-auto rounded-2xl border border-olive/10 bg-white shadow-sm">
-          <table className="w-full min-w-[960px] border-collapse">
+          <table className="w-full min-w-[1120px] border-collapse">
             <thead className="sticky top-0 bg-olive/5">
               <tr>
                 <th scope="col" className={`${th} w-10`}>#</th>
                 <SortTh k="full_name">الاسم واللقب</SortTh>
                 <SortTh k="specialty">التخصص</SortTh>
                 <SortTh k="level">المستوى</SortTh>
+                <th scope="col" className={th}>مجال الفكرة</th>
+                <th scope="col" className={th}>المذكرة</th>
                 <th scope="col" className={th}>المشروع</th>
                 <th scope="col" className={th}>نموذج أولي</th>
                 <th scope="col" className={th}>PDF</th>
@@ -222,7 +235,9 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
                         {r.specialty || "—"}
                         {r.faculty && <span className="block text-xs text-ink/55">{r.faculty}</span>}
                       </td>
-                      <td className={`${td} whitespace-nowrap`}>{r.level || "—"}</td>
+                      <td className={`${td} whitespace-nowrap`}>{levelLabel(r.level, r.level_other) || "—"}</td>
+                      <td className={`${td} max-w-[160px]`}>{ideaFieldLabel(r.idea_field, r.idea_field_other) || "—"}</td>
+                      <td className={td}>{r.linked_to_thesis === null ? <span className="text-ink/40">—</span> : r.linked_to_thesis ? <span className="rounded-full bg-gold/25 px-2 py-0.5 font-medium">نعم</span> : <span className="text-ink/50">لا</span>}</td>
                       <td className={`${td} max-w-[220px]`}>
                         <span className="font-medium">{r.project_title || "—"}</span>
                       </td>
@@ -257,10 +272,10 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
                     </tr>
                     {open && (
                       <tr className="border-t border-dashed border-olive/10 bg-gold-light/15">
-                        <td colSpan={11} className="px-4 py-4">
+                        <td colSpan={13} className="px-4 py-4">
                           <dl className="grid gap-4 text-sm md:grid-cols-3">
                             <div className="md:col-span-2">
-                              <dt className="font-bold text-olive">فكرة المشروع</dt>
+                              <dt className="font-bold text-olive">موجز الفكرة</dt>
                               <dd className="mt-1 whitespace-pre-line leading-relaxed text-ink/85">{r.project_idea || "—"}</dd>
                             </div>
                             <div>
@@ -274,6 +289,12 @@ export default function StudentsTable({ rows }: { rows: StudentRow[] }) {
                                 )}
                               </dd>
                             </div>
+                            {r.extra_notes && (
+                              <div className="md:col-span-3">
+                                <dt className="font-bold text-olive">ملاحظات إضافية</dt>
+                                <dd className="mt-1 whitespace-pre-line leading-relaxed text-ink/85">{r.extra_notes}</dd>
+                              </div>
+                            )}
                           </dl>
                         </td>
                       </tr>

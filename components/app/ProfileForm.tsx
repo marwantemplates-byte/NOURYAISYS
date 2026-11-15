@@ -5,7 +5,7 @@ import { useState } from "react";
 import ProjectFields from "@/components/auth/ProjectFields";
 import { Alert, Field, Input, SubmitButton } from "@/components/ui/form";
 import { arabicError } from "@/lib/errors";
-import { PHONE_RE, checkPdf, needsPdf, type ProfileFields, validateProject } from "@/lib/profile-options";
+import { PHONE_RE, checkPdf, cleanProfile, needsPdf, type ProfileFields, validateProject } from "@/lib/profile-options";
 import { PROJECT_BUCKET, uploadProjectPdf } from "@/lib/project-file";
 import { createClient } from "@/lib/supabase/client";
 
@@ -32,6 +32,7 @@ export default function ProfileForm({
   const set = <K extends keyof ProfileFields>(k: K, v: ProfileFields[K]) => {
     setValues((p) => ({ ...p, [k]: v }));
     setResult(null);
+    setErrors((e) => (e[k] ? { ...e, [k]: "" } : e));
   };
 
   const submit = async (e: React.FormEvent) => {
@@ -49,8 +50,7 @@ export default function ProfileForm({
       return;
     }
     setLoading(true);
-    const clean = Object.fromEntries(Object.entries(values).map(([k, v]) => [k, typeof v === "string" ? v.trim() : v]));
-    if (!values.has_prototype) Object.assign(clean, { prototype_desc: null, prototype_link: null });
+    const clean: Record<string, unknown> = cleanProfile(values);
     const supabase = createClient();
     let newPath: string | null = null;
     if (pdf && needsPdf(values.level)) {

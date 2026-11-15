@@ -15,6 +15,8 @@ export function arabicError(message: string | undefined | null): string {
     return "محاولات كثيرة في وقت قصير. انتظر دقيقة ثم أعد المحاولة.";
   if (m.includes("invalid email") || m.includes("unable to validate email"))
     return "صيغة البريد الإلكتروني غير صحيحة.";
+  if (m.includes("database error saving new user") || m.includes("check constraint"))
+    return "تعذّر حفظ المعلومات: تحقّق من الحقول (موجز الفكرة لا يتعدّى 100 كلمة) وأعد المحاولة.";
   if (m.includes("failed to fetch") || m.includes("network"))
     return "تعذّر الاتصال بالخادم. تحقّق من الإنترنت وأعد المحاولة.";
   if (m.includes("expired") || m.includes("otp"))
