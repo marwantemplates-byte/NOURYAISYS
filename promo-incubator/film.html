@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>حاضنة الأعمال — فيلم تعريفي</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{--ink:#1F1F1F;--mid:#5F6368;--paper:#FBF8F1;--line:#E4DED2;
+  /* brand (end only) — from app/globals.css */
+  --olive:#1f3d2b;--emerald:#2e6b4a;--gold:#c9a24b;--gold-light:#e8d5a3;--gold-dark:#8a6a24}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#EDEAE5}
+#stage{position:absolute;inset:0;overflow:hidden;background:radial-gradient(90% 110% at 50% 38%,#FFFFFF 0%,#F4F1EB 45%,#E1DCD3 100%);font-family:Cairo,sans-serif;color:var(--ink)}
+#vp{position:absolute;inset:0;perspective:2000px;perspective-origin:50% 50%}
+#world{position:absolute;left:960px;top:540px;width:0;height:0;transform-style:preserve-3d}
+.o{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d}
+.f{position:absolute;backface-visibility:hidden}
+.fv{position:absolute}
+.pt{border-radius:50%}
+.w{display:inline-block;white-space:nowrap}
+#vign{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 100% at 50% 45%,rgba(0,0,0,0) 58%,rgba(60,45,30,.18) 100%)}
+#night{position:absolute;inset:0;pointer-events:none;background:#16202E;mix-blend-mode:multiply}
+#sun{position:absolute;inset:-300px;pointer-events:none;mix-blend-mode:soft-light}
+#flare{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 42%,#FFFFFF 0%,rgba(255,255,255,.95) 28%,rgba(255,251,242,0) 70%);opacity:0}
+#streak{position:absolute;left:-600px;top:0;width:900px;height:1080px;pointer-events:none;opacity:0;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95) 50%,rgba(255,255,255,0));filter:blur(8px)}
+
+/* ---------------- desk (warm oak + linen runner) ---------------- */
+.dt{position:absolute;width:402px;height:402px;
+  background-image:
+   repeating-linear-gradient(90deg,rgba(255,240,220,.05) 0 2px,transparent 2px 9px,rgba(90,55,25,.05) 9px 11px,transparent 11px 23px),
+   repeating-linear-gradient(90deg,rgba(110,70,35,.07) 0 60px,transparent 60px 140px,rgba(70,45,20,.05) 140px 190px,transparent 190px 330px),
+   repeating-linear-gradient(90deg,transparent 0 718px,rgba(60,38,18,.28) 718px 720px),
+   linear-gradient(180deg,#C99F70,#BD9264 50%,#C59A6B);
+  background-size:auto,auto,auto,14400px 6000px;}
+.shd{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(45,28,12,.42),rgba(45,28,12,0))}
+.pool{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(255,250,235,.55),rgba(255,250,235,0))}
+
+/* ---------------- notebook ---------------- */
+.pg{position:absolute;top:0;width:560px;height:740px;background:linear-gradient(90deg,#FBF8F0,#F6F1E6);overflow:hidden}
+.pg .lines{position:absolute;inset:70px 46px 40px 46px;background:repeating-linear-gradient(180deg,transparent 0 51px,rgba(110,140,180,.28) 51px 53px)}
+.pg .margin{position:absolute;top:0;bottom:0;width:2px;background:rgba(200,110,100,.35)}
+.hand{position:absolute;font-family:'Aref Ruqaa';font-weight:700;color:#2B3440;white-space:nowrap;line-height:1}
+#pencil{left:0;top:0}
+
+/* ---------------- laptop (silver aluminium, from the reference) ---------------- */
+.alu{background:linear-gradient(165deg,#F2F3F5 0%,#D9DBDF 50%,#C3C6CB 100%)}
+#lidF{left:-500px;top:-640px;width:1000px;height:640px;border-radius:34px 34px 8px 8px;background:#0E0F11;box-shadow:inset 0 0 0 3px #B9BCC1}
+#lidB{left:-500px;top:-640px;width:1000px;height:640px;border-radius:34px 34px 8px 8px;transform:translateZ(-14px) rotateY(180deg)}
+#lidE{left:-500px;top:-8px;width:1000px;height:14px;transform-origin:50% 100%;transform:rotateX(-90deg);background:#A9ADB3}
+#screen{position:absolute;left:24px;top:24px;right:24px;bottom:30px;border-radius:12px;overflow:hidden;background:#000}
+#glare{position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,0) 36%)}
+#baseT{left:-530px;top:0;width:1060px;height:700px;transform-origin:50% 0;transform:rotateX(90deg);border-radius:6px 6px 40px 40px;background:linear-gradient(180deg,#E6E8EB,#CDD0D5)}
+.keys{position:absolute;left:70px;right:70px;top:60px;height:330px;border-radius:14px;background:repeating-linear-gradient(90deg,#2A2B2E 0 58px,#B9BCC1 58px 66px),#B9BCC1;-webkit-mask:repeating-linear-gradient(#000 0 56px,transparent 56px 66px)}
+#pad{position:absolute;left:330px;width:400px;top:430px;height:220px;border-radius:20px;background:linear-gradient(180deg,#DDE0E4,#D1D4D9);box-shadow:inset 0 0 0 2px rgba(0,0,0,.08)}
+#baseF{left:-530px;top:0;width:1060px;height:26px;transform:translateZ(700px);border-radius:0 0 22px 22px;background:linear-gradient(#C9CCD1,#9FA3A9)}
+/* platform hero, real layout at 1440x886 scaled into the screen */
+#hero{position:absolute;left:0;top:0;width:1440px;height:886px;transform-origin:0 0;transform:scale(.6611);direction:rtl;font-family:Tajawal}
+.himg{position:absolute;inset:0;background:url(img/hero-desktop.jpg) center/cover}
+.sway{position:absolute;inset:0;background:url(img/hero-desktop.jpg) center/cover;transform-origin:50% 100%}
+#swL{-webkit-mask:linear-gradient(to right,#000 0,#000 26%,transparent 40%)}
+#swR{-webkit-mask:linear-gradient(to left,#000 0,#000 18%,transparent 31%)}
+.hg1{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.45),rgba(0,0,0,.15) 50%,rgba(12,26,18,.9))}
+.hg2{position:absolute;left:0;right:0;bottom:0;height:66%;background:linear-gradient(to top,rgba(12,26,18,.7),transparent)}
+
+/* ---------------- pillar objects ---------------- */
+.lab{left:-230px;width:460px;text-align:center;white-space:nowrap}
+.lab .t{font-family:Cairo;font-weight:900;font-size:50px;line-height:1.2;color:var(--ink)}
+.lab .s{font-family:Tajawal;font-weight:700;font-size:30px;line-height:1.3;color:#4A4F55;margin-top:4px}
+
+/* ---------------- journey ---------------- */
+.card{background:#FFFFFF;border-radius:22px;box-shadow:0 0 0 1px rgba(0,0,0,.05)}
+.fl{font-family:Tajawal;font-weight:700;font-size:22px;color:#6A6F75;margin:12px 0 5px}
+.in{height:52px;border-radius:12px;background:#F6F6F7;border:2px solid #E3E3E5;display:flex;align-items:center;padding:0 16px;font-family:Tajawal;font-weight:700;font-size:26px;color:#1F1F1F;white-space:nowrap;overflow:hidden}
+.in.on{border-color:#3C4043;background:#fff;box-shadow:0 0 0 4px rgba(60,64,67,.12)}
+.caret{display:inline-block;width:3px;height:28px;background:#3C4043;margin:0 2px;vertical-align:middle}
+.stl{font-family:Cairo;font-weight:900;font-size:56px;color:var(--ink);white-space:nowrap;text-align:center}
+.num{display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:50%;background:#1F1F1F;color:#fff;font-family:Cairo;font-weight:900;font-size:40px;margin-left:16px;vertical-align:middle}
+.cal{position:absolute;left:0;top:0;width:340px;height:380px;border-radius:14px;background:#FFFFFF;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+
+/* ---------------- final ---------------- */
+.cap{font-family:Cairo;font-weight:900;color:var(--ink);text-align:center;white-space:nowrap;line-height:1.3}
+</style>
+</head>
+<body>
+<div id="stage"><div id="vp"><div id="world">
+
+  <div class="o" id="glows"></div>
+  <div class="o" id="pts"></div>
+  <div class="o" id="desk"><div class="o" id="deskFlat" style="transform:rotateX(90deg)"></div></div>
+
+  <!-- ================= NOTEBOOK (hook) ================= -->
+  <div class="o" id="nb">
+    <div class="fv shd" style="left:-700px;top:-460px;width:1400px;height:920px;transform:translateY(-1px) rotateX(90deg)"></div>
+    <div class="o" id="nbFlat" style="transform:translateY(-2px) rotateX(90deg)">
+      <!-- page block thickness -->
+      <div class="fv" style="left:-572px;top:-376px;width:1144px;height:756px;border-radius:10px;background:#E9E2D3;box-shadow:0 2px 0 #D8CFBE"></div>
+      <!-- right page (bulb + idea) -->
+      <div class="fv pg" style="left:4px;top:-370px;border-radius:0 8px 8px 0;box-shadow:inset 18px 0 30px -18px rgba(0,0,0,.18)">
+        <div class="lines"></div><div class="margin" style="right:60px"></div>
+        <svg id="bulb" style="position:absolute;left:150px;top:96px;width:260px;height:300px;overflow:visible" viewBox="0 0 260 300">
+          <path id="bulbP" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="M96 214 C 96 182, 52 160, 52 104 C 52 56, 88 22, 130 22 C 172 22, 208 56, 208 104 C 208 160, 164 182, 164 214 L 96 214 M 100 238 L 160 238 M 106 260 L 154 260 M 118 282 L 142 282 M 112 214 L 120 150 L 130 172 L 140 150 L 148 214" fill="none" stroke="#2B3440" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path id="rays" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="M130 -14 L130 -38 M30 26 L12 8 M230 26 L248 8 M10 104 L-16 104 M250 104 L276 104" fill="none" stroke="#2B3440" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+        <div class="hand" id="h1" style="right:70px;top:470px;font-size:92px">عندي فكرة…</div>
+      </div>
+      <!-- left page = the leaf that turns (front: blank lines, back: the question) -->
+      <div class="o" id="leaf" style="left:0;top:-370px">
+        <div class="f pg" id="leafF" style="left:-560px;border-radius:8px 0 0 8px;box-shadow:inset -18px 0 30px -18px rgba(0,0,0,.18)"><div class="lines"></div><div class="margin" style="left:60px"></div></div>
+        <div class="f pg" id="leafB" style="left:-560px;border-radius:8px 0 0 8px;transform:rotateY(180deg)">
+          <div class="lines"></div><div class="margin" style="right:60px"></div>
+          <div class="hand" id="h2" style="right:60px;top:250px;font-size:84px">…لكن</div>
+          <div class="hand" id="h3" style="right:60px;top:400px;font-size:84px">من أين أبدأ؟</div>
+        </div>
+      </div>
+      <!-- spine shadow -->
+      <div class="fv" style="left:-30px;top:-370px;width:60px;height:740px;background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.14),rgba(0,0,0,0))"></div>
+    </div>
+    <!-- pencil (stands slightly above the paper) -->
+    <div class="o" id="pencil">
+      <div class="o" id="pencilR">
+        <div class="fv" style="left:-4px;top:-11px;width:460px;height:22px;transform:rotateX(0deg);transform-origin:50% 50%;background:linear-gradient(180deg,#F6CB5A,#E8AE3E);clip-path:polygon(17% 0,100% 0,100% 100%,17% 100%,0 50%)">
+          <div style="position:absolute;left:0;top:0;bottom:0;width:80px;background:linear-gradient(90deg,#2B2B2B 0 15%,#E8C9A0 15% 100%)"></div>
+          <div style="position:absolute;right:0;top:0;bottom:0;width:48px;background:linear-gradient(180deg,#D7D9DC,#9DA1A6)"></div>
+          <div style="position:absolute;right:48px;top:0;bottom:0;width:42px;background:linear-gradient(180deg,#F1A8A0,#C9746B)"></div>
+        </div>
+        <div class="fv" style="left:-4px;top:-11px;width:460px;height:22px;transform:rotateX(60deg);transform-origin:50% 50%;background:linear-gradient(180deg,#E2A63A,#C98D26);clip-path:polygon(17% 0,100% 0,100% 100%,17% 100%,0 50%)">
+          <div style="position:absolute;left:0;top:0;bottom:0;width:80px;background:linear-gradient(90deg,#2B2B2B 0 15%,#E8C9A0 15% 100%)"></div>
+          <div style="position:absolute;right:0;top:0;bottom:0;width:48px;background:linear-gradient(180deg,#D7D9DC,#9DA1A6)"></div>
+          <div style="position:absolute;right:48px;top:0;bottom:0;width:42px;background:linear-gradient(180deg,#F1A8A0,#C9746B)"></div>
+        </div>
+        <div class="fv" style="left:-4px;top:-11px;width:460px;height:22px;transform:rotateX(-60deg);transform-origin:50% 50%;background:linear-gradient(180deg,#FFD86E,#F0BC4C);clip-path:polygon(17% 0,100% 0,100% 100%,17% 100%,0 50%)">
+          <div style="position:absolute;left:0;top:0;bottom:0;width:80px;background:linear-gradient(90deg,#2B2B2B 0 15%,#E8C9A0 15% 100%)"></div>
+          <div style="position:absolute;right:0;top:0;bottom:0;width:48px;background:linear-gradient(180deg,#D7D9DC,#9DA1A6)"></div>
+          <div style="position:absolute;right:48px;top:0;bottom:0;width:42px;background:linear-gradient(180deg,#F1A8A0,#C9746B)"></div>
+        </div>
+      </div>
+      <div class="fv shd" id="pencilS" style="left:-20px;top:-30px;width:420px;height:60px;transform-origin:20px 30px;transform:translateY(-1px) rotateX(90deg)"></div>
+    </div>
+  </div>
+
+  <!-- folding sheet + paper plane -->
+  <div class="o" id="sheet">
+    <div class="o" id="shL" style="transform-origin:0 0"><div class="fv pg" style="left:-280px;top:-370px;width:280px;overflow:hidden;background:#F8F4EA"><div style="position:absolute;left:0;top:0;width:560px;height:740px"><div class="lines"></div></div></div></div>
+    <div class="o" id="shR"><div class="fv pg" style="left:0;top:-370px;width:280px;overflow:hidden;background:#F8F4EA"><div style="position:absolute;left:-280px;top:0;width:560px;height:740px"><div class="lines"></div><div class="hand" style="right:60px;top:250px;font-size:84px">…لكن</div><div class="hand" style="right:60px;top:400px;font-size:84px">من أين أبدأ؟</div></div></div></div>
+  </div>
+  <div class="o" id="plane">
+    <div class="o" id="planeR">
+      <div class="fv" id="pwL" style="left:-170px;top:-130px;width:340px;height:130px;transform-origin:50% 100%;transform:rotateX(78deg);background:linear-gradient(180deg,#F6F3EC,#E7E2D7);clip-path:polygon(100% 100%,0 0,12% 100%)"></div>
+      <div class="fv" id="pwR" style="left:-170px;top:0;width:340px;height:130px;transform-origin:50% 0;transform:rotateX(-78deg);background:linear-gradient(0deg,#FBF9F4,#ECE8DE);clip-path:polygon(100% 0,0 100%,12% 0)"></div>
+      <div class="fv" style="left:-170px;top:0;width:340px;height:46px;background:linear-gradient(180deg,#E2DCCF,#CFC8B9);clip-path:polygon(100% 0,0 0,8% 100%)"></div>
+    </div>
+  </div>
+  <div class="o" id="planeS"><div class="fv shd" style="left:-220px;top:-90px;width:440px;height:180px;transform:rotateX(90deg)"></div></div>
+
+  <!-- ================= LAPTOP ================= -->
+  <div class="o" id="laptop">
+    <div class="fv shd" style="left:-760px;top:-120px;width:1520px;height:1000px;transform:translateY(-1px) rotateX(90deg)"></div>
+    <div class="f fv" id="baseT"><div class="keys"></div><div id="pad"></div></div>
+    <div class="f" id="baseF"></div>
+    <div class="o" id="lid">
+      <div class="f alu" id="lidB"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><div style="width:70px;height:70px;border-radius:18px;background:rgba(150,154,160,.35)"></div></div></div>
+      <div class="f" id="lidE"></div>
+      <div class="f" id="lidF"><div id="screen">
+        <div id="hero">
+          <div class="himg"></div><div class="sway" id="swL"></div><div class="sway" id="swR"></div>
+          <div class="hg1"></div><div class="hg2"></div>
+          <canvas id="hLeaves" width="2160" height="1329" style="position:absolute;inset:0;width:1440px;height:886px"></canvas>
+          <div style="position:absolute;left:176px;right:176px;top:18px;height:44px;display:flex;align-items:center;justify-content:space-between;color:#fff">
+            <div style="display:flex;align-items:center;gap:8px;font:700 24px 'Reem Kufi'"><i style="width:36px;height:36px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:16px;color:#e8d5a3;background:rgba(255,255,255,.15);box-shadow:0 0 0 1px rgba(255,255,255,.3)">ح</i>حاضنة الأعمال</div>
+            <div style="display:flex;gap:28px;font:500 16px Tajawal"><span>الرئيسية</span><span>من نحن</span><span>الأحداث</span><span>تواصل</span></div>
+            <div style="display:flex;gap:8px;font:700 16px Tajawal"><span style="height:44px;padding:0 20px;border-radius:12px;border:2px solid rgba(255,255,255,.6);display:inline-flex;align-items:center">دخول</span><span style="height:44px;padding:0 20px;border-radius:12px;background:#c9a24b;color:#1a1a1a;display:inline-flex;align-items:center">سجّل الآن</span></div>
+          </div>
+          <div style="position:absolute;right:176px;top:440px;width:780px;color:#fff;text-align:right">
+            <div style="display:inline-flex;align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(232,213,163,.4);background:rgba(0,0,0,.25);padding:6px 16px;font-size:18px;color:#e8d5a3"><b style="width:6px;height:6px;border-radius:50%;background:#c9a24b"></b>جامعة الأمير عبد القادر للعلوم الإسلامية — قسنطينة</div>
+            <div style="font:700 84px/1.15 'Reem Kufi';margin-top:16px;text-shadow:0 2px 12px rgba(0,0,0,.45)">حاضنة الأعمال</div>
+            <div style="font-size:24px;line-height:1.6;margin-top:16px;color:rgba(255,255,255,.92);text-shadow:0 1px 8px rgba(0,0,0,.5);width:640px">من فكرة إلى مؤسسة: نرافق الطلبة في تحويل مشاريعهم إلى نماذج أولية ومؤسسات ناشئة</div>
+          </div>
+        </div>
+        <div id="glare"></div>
+        <div id="scrOff" style="position:absolute;inset:0;background:#0A0B0C"></div>
+        <div id="scrFlash" style="position:absolute;inset:0;background:#fff;opacity:0"></div>
+      </div></div>
+    </div>
+  </div>
+  <div class="o" id="cap1"><div class="fv cap" style="left:-900px;width:1800px;top:-90px;font-size:74px"><span class="w">حاضنة</span> <span class="w">الأعمال</span> <span class="w">بجامعة</span> <span class="w">الأمير</span> <span class="w">عبد</span> <span class="w">القادر</span><br><span class="w">للعلوم</span> <span class="w">الإسلامية</span></div></div>
+
+  <!-- ================= PILLARS ================= -->
+  <div class="o" id="pil"></div>
+
+  <!-- ================= JOURNEY (flat-lay) ================= -->
+  <div class="o" id="jr">
+    <div class="o" id="jrFlat" style="transform:translateY(-16px) rotateX(90deg)">
+      <div class="fv" style="left:-1450px;top:-820px;width:2900px;height:1640px;border-radius:6px;background:linear-gradient(160deg,#FCFAF5,#F3EEE4);box-shadow:0 30px 60px rgba(60,40,20,.18),0 0 0 1px rgba(0,0,0,.04)"></div>
+      <svg class="fv" style="left:-1450px;top:-820px;width:2900px;height:1640px;overflow:visible" viewBox="-1450 -820 2900 1640">
+        <path id="pathG" d="M 860 -260 C 640 -40, 260 -520, 20 -250 C -220 20, -560 -520, -860 -250" fill="none" stroke="#CFC7B9" stroke-width="8" stroke-dasharray="4 26" stroke-linecap="round"/>
+        <path id="pathI" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="M 860 -260 C 640 -40, 260 -520, 20 -250 C -220 20, -560 -520, -860 -250" fill="none" stroke="#2B2B2B" stroke-width="10" stroke-linecap="round"/>
+        <circle id="pathDot" r="18" fill="#2B2B2B" stroke="#fff" stroke-width="6"/>
+      </svg>
+      <div class="o" id="jPools"></div>
+      <div class="o" id="jLabs"></div>
+    </div>
+    <div class="o" id="st1"></div>
+    <div class="o" id="st2"></div>
+    <div class="o" id="st3"></div>
+  </div>
+
+  <!-- ================= CHART (pop-up) ================= -->
+  <div class="o" id="chart"><div class="f" id="chartF" style="left:-760px;top:-860px;width:1520px;height:860px;border-radius:30px;background:#FFFFFF;box-shadow:0 0 0 1px rgba(0,0,0,.05),0 60px 120px rgba(40,30,20,.2);transform-origin:50% 100%">
+    <div class="cap" style="position:absolute;top:40px;left:0;right:0;font-size:68px">من فكرة إلى مؤسسة</div>
+    <div id="bars"></div>
+    <div style="position:absolute;left:110px;right:110px;bottom:150px;height:3px;background:#E0E0E0"></div>
+    <svg style="position:absolute;inset:0;overflow:visible" viewBox="0 0 1520 860"><path id="trend" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="M1175 560 C 1000 520, 900 440, 760 400 C 620 360, 500 260, 345 225" fill="none" stroke="#1F1F1F" stroke-width="8" stroke-linecap="round"/><polygon id="trendA" points="300,210 360,196 346,252" fill="#1F1F1F"/></svg>
+  </div></div>
+
+  <!-- ================= FINAL ================= -->
+  <div class="o" id="final">
+    <div class="fv" id="fLogo" style="left:-900px;width:1800px;top:-330px;display:flex;justify-content:center;align-items:center;gap:40px;direction:rtl">
+      <span id="fName" style="font:700 170px/1.2 'Reem Kufi';color:var(--olive);white-space:nowrap">حاضنة الأعمال</span>
+      <i id="fBadge" style="width:180px;height:180px;border-radius:44px;background:var(--olive);color:var(--gold-light);font:700 92px 'Reem Kufi';font-style:normal;display:flex;align-items:center;justify-content:center;box-shadow:0 30px 60px rgba(31,61,43,.28)">ح</i>
+    </div>
+    <div class="fv" id="fRule" style="left:-110px;width:220px;top:-90px;height:6px;border-radius:3px;background:var(--gold)"></div>
+    <div class="fv" id="fUni" style="left:-900px;width:1800px;top:-56px;text-align:center;font:700 52px Tajawal;color:var(--gold-dark);white-space:nowrap">جامعة الأمير عبد القادر للعلوم الإسلامية — قسنطينة</div>
+    <div class="fv" id="fPill" style="left:-900px;width:1800px;top:80px;display:flex;justify-content:center">
+      <div style="position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:18px;background:var(--gold);color:var(--ink);border-radius:999px;padding:14px 64px;font:800 60px Cairo;box-shadow:0 24px 50px rgba(138,106,36,.3)">سجّل الآن على المنصة<i id="shine" style="position:absolute;top:-20px;bottom:-20px;width:140px;left:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg)"></i></div>
+    </div>
+    <div class="fv" id="fUrl" style="left:-900px;width:1800px;top:228px;text-align:center;direction:ltr;font:700 44px Tajawal;color:var(--olive);letter-spacing:1px">incubator-platform-beryl.vercel.app</div>
+  </div>
+
+</div></div>
+<div id="sun"></div>
+<div id="night"></div>
+<div id="flare"></div>
+<div id="streak"></div>
+<div id="vign"></div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
