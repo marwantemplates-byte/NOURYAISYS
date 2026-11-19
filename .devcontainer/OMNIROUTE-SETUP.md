@@ -1,18 +1,24 @@
 # OmniRoute dans Codespaces (NOURYS)
 
-1. Ouvrir ce depot dans un Codespace (branche `omniroute-setup`).
-   Le conteneur installe automatiquement `omniroute` et `claude-code` (patienter 1-3 min).
-2. Dans le terminal, choisir un mot de passe admin (ne jamais laisser CHANGEME) puis lancer:
+Teste: `npm install omniroute` puis la commande `omniroute` demarre bien sur le port 20128
+(tableau de bord: http://localhost:20128, API: http://localhost:20128/v1).
+
+1. Ouvrir ce depot dans un Codespace (branche `omniroute-setup`). Installation automatique (1-3 min).
+2. Dans le terminal:
 
    export INITIAL_PASSWORD="CHOISIS-UN-MOT-DE-PASSE-LONG"
    omniroute
 
-   (si la commande est differente: `omniroute --help` ou voir le README officiel
-   https://github.com/diegosouzapw/OmniRoute)
-3. Le port 20128 est transfere: ouvrir l'onglet PORTS, puis le lien du port 20128 pour la console.
-   Ne jamais rendre ce port public.
-4. Dans la console: connecter un fournisseur (cle API ou OAuth), creer une cle OmniRoute.
-5. Les outils en terminal utilisent `http://localhost:20128/v1` avec la cle OmniRoute et le modele `auto`.
-   Voir la section "Compatible CLIs" du README pour la config exacte de chaque outil.
+   (le serveur ecoute sur 127.0.0.1 et exige une cle API: reglages deja dans devcontainer.json)
+3. Onglet PORTS -> ouvrir le port 20128 (garder la visibilite *Private*).
+4. Dans la console: connecter un fournisseur (cle API / OAuth) puis creer une cle OmniRoute.
+5. Claude Code via OmniRoute (a tester; /v1/messages repond):
+
+   export ANTHROPIC_BASE_URL="http://localhost:20128"
+   export ANTHROPIC_AUTH_TOKEN="LA-CLE-OMNIROUTE"
+   export ANTHROPIC_MODEL="auto"
+   claude
+
+   Si ca echoue, utiliser un outil OpenAI-compatible avec http://localhost:20128/v1 (voir README OmniRoute, "Compatible CLIs").
 
 Ne jamais commiter de cle API dans ce depot (il est public).
