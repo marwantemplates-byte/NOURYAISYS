@@ -1,0 +1,9 @@
+{
+  "name": "NOURYS + OmniRoute",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "forwardPorts": [20128],
+  "portsAttributes": {
+    "20128": { "label": "OmniRoute", "onAutoForward": "notify" }
+  },
+  "postCreateCommand": "npm install -g omniroute @anthropic-ai/claude-code"
+}
