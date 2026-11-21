@@ -140,7 +140,7 @@
                 </div>
                 <div class="field" id="f-commune">
                   <label for="commune">البلدية <span class="req" aria-hidden="true">*</span></label>
-                  <input class="input" id="commune" name="commune" required autocomplete="address-level2" placeholder="مثلًا: باب الزوار" aria-describedby="commune-err">
+                  <select class="input" id="commune" name="commune" required aria-describedby="commune-err" disabled><option value="">اختاري الولاية أولًا</option></select>
                   <span class="err" id="commune-err"></span>
                 </div>
               </div>
@@ -204,6 +204,7 @@
 
   <div id="site-footer"></div>
 
+  <script src="../assets/communes.js"></script>
   <script src="../assets/lalla.js"></script>
   <script>
     (function () {
@@ -215,7 +216,29 @@
 
       const WILAYAS = ["أدرار","الشلف","الأغواط","أم البواقي","باتنة","بجاية","بسكرة","بشار","البليدة","البويرة","تمنراست","تبسة","تلمسان","تيارت","تيزي وزو","الجزائر","الجلفة","جيجل","سطيف","سعيدة","سكيكدة","سيدي بلعباس","عنابة","قالمة","قسنطينة","المدية","مستغانم","المسيلة","معسكر","ورقلة","وهران","البيض","إليزي","برج بوعريريج","بومرداس","الطارف","تندوف","تيسمسيلت","الوادي","خنشلة","سوق أهراس","تيبازة","ميلة","عين الدفلى","النعامة","عين تموشنت","غرداية","غليزان","تيميمون","برج باجي مختار","أولاد جلال","بني عباس","عين صالح","عين قزام","تقرت","جانت","المغير","المنيعة"];
       const wSel = $("wilaya");
-      WILAYAS.forEach((w, i) => { const v = String(i + 1).padStart(2, "0") + " - " + w; wSel.add(new Option(v, v)); });
+      WILAYAS.forEach((w, i) => { const o = new Option(w, w); o.dataset.id = String(i + 1); wSel.add(o); });
+      const cSel = $("commune");
+      const bureauRadio = document.querySelector('input[name="delivery_type"][value="Bureau"]');
+      const bureauLabel = bureauRadio.closest("label");
+      const domRadio = document.querySelector('input[name="delivery_type"][value="Domicile"]');
+      function fillCommunes() {
+        const id = wSel.selectedOptions[0] && wSel.selectedOptions[0].dataset.id;
+        const list = (window.DHD_COMMUNES && window.DHD_COMMUNES[id]) || [];
+        cSel.innerHTML = "";
+        cSel.add(new Option(list.length ? "اختاري البلدية" : "اختاري الولاية أولًا", ""));
+        list.forEach(c => { const o = new Option(c[0], c[0]); o.dataset.sd = c[1]; cSel.add(o); });
+        cSel.disabled = !list.length;
+        syncBureau();
+      }
+      function syncBureau() {
+        const o = cSel.selectedOptions[0];
+        const ok = !!(o && o.dataset.sd === "1");
+        bureauLabel.style.display = ok ? "" : "none";
+        if (!ok) { bureauRadio.checked = false; domRadio.checked = true; }
+      }
+      wSel.addEventListener("change", fillCommunes);
+      cSel.addEventListener("change", syncBureau);
+      syncBureau();
 
       let PRODUCT = null, qty = 1;
       const DELIVERY_AR = { Domicile: "للمنزل", Bureau: "للمكتب (Stop desk)" };
@@ -313,7 +336,7 @@
         name: (v) => v.trim().length < 2 ? "اكتبي الاسم واللقب." : "",
         phone: (v) => /^0[567][0-9]{8}$/.test(v.replace(/\s/g, "")) ? "" : "رقم الهاتف لازم يكون 10 أرقام ويبدأ بـ 05 أو 06 أو 07.",
         wilaya: (v) => v ? "" : "اختاري ولايتك من القائمة.",
-        commune: (v) => v.trim().length < 2 ? "اكتبي اسم البلدية." : ""
+        commune: (v) => v ? "" : "اختاري البلدية من القائمة."
       };
       function check(id) {
         const input = $(id), m = rules[id](input.value);
